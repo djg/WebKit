@@ -28,14 +28,13 @@
 #include "WebGPU.h"
 #include "WebGPUExt.h"
 
+#if __OBJC__
 #include <Metal/Metal.h>
+#endif
 
 #include <Metal/Metal.hpp>
 
 #include <wtf/Assertions.h>
-
 #include <wtf/DisallowCType.h>
-
 #include <wtf/Platform.h>
-
 #include <wtf/RetainPtr.h>

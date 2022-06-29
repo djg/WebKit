@@ -28,6 +28,10 @@
 #include <optional>
 #include <wtf/Vector.h>
 
+namespace MTL {
+    class Device;
+}
+
 namespace WebGPU {
 
 struct HardwareCapabilities {
@@ -35,14 +39,14 @@ struct HardwareCapabilities {
     Vector<WGPUFeatureName> features;
 
     struct BaseCapabilities {
-        MTLArgumentBuffersTier argumentBuffersTier { MTLArgumentBuffersTier1 };
+        MTL::ArgumentBuffersTier argumentBuffersTier { MTL::ArgumentBuffersTier1 };
         bool supportsNonPrivateDepthStencilTextures { false };
-        id<MTLCounterSet> timestampCounterSet { nil };
-        id<MTLCounterSet> statisticCounterSet { nil };
+        MTL::CounterSet* timestampCounterSet { nullptr };
+        MTL::CounterSet* statisticCounterSet { nullptr };
     } baseCapabilities;
 };
 
-std::optional<HardwareCapabilities> hardwareCapabilities(id<MTLDevice>);
+std::optional<HardwareCapabilities> hardwareCapabilities(MTL::Device*);
 bool isValid(const WGPULimits&);
 WGPULimits defaultLimits();
 bool anyLimitIsBetterThan(const WGPULimits& target, const WGPULimits& reference);

@@ -29,6 +29,8 @@
 
 namespace NS
 {
+struct FastEnumerationState;
+
 class Array : public Copying<Array>
 {
 public:
@@ -45,6 +47,9 @@ public:
     template <class _Object = Object>
     _Object* object(UInteger index) const;
     UInteger count() const;
+
+public:
+    NS::UInteger countByEnumerating(FastEnumerationState* pState, Object** pBuffer, NS::UInteger len);
 };
 }
 
@@ -110,6 +115,13 @@ template <class _Object>
 _NS_INLINE _Object* NS::Array::object(UInteger index) const
 {
     return Object::sendMessage<_Object*>(this, _NS_PRIVATE_SEL(objectAtIndex_), index);
+}
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+_NS_INLINE NS::UInteger NS::Array::countByEnumerating(FastEnumerationState* pState, Object** pBuffer, NS::UInteger len)
+{
+    return Object::sendMessage<UInteger>(this, _NS_PRIVATE_SEL(countByEnumeratingWithState_objects_count_), pState, pBuffer, len);
 }
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------

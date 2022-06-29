@@ -186,7 +186,7 @@ void Instance::requestAdapter(const WGPURequestAdapterOptions& options, Completi
 
     auto device = sortedDevices[0];
 
-    auto deviceCapabilities = hardwareCapabilities(device);
+    auto deviceCapabilities = hardwareCapabilities((__bridge MTL::Device*) device);
 
     if (!deviceCapabilities) {
         scheduleWork([strongThis = Ref { *this }, callback = WTFMove(callback)]() mutable {

@@ -23,14 +23,30 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import "config.h"
-#import "HardwareCapabilities.h"
+#include "config.h"
+#include "HardwareCapabilities.h"
 
-#import <algorithm>
-#import <limits>
-#import <wtf/MathExtras.h>
-#import <wtf/PageBlock.h>
-#import <wtf/StdLibExtras.h>
+#include <algorithm>
+#include <limits>
+#include <wtf/MathExtras.h>
+#include <wtf/PageBlock.h>
+#include <wtf/StdLibExtras.h>
+
+namespace NS {
+
+template <typename _Object = Object>
+struct Adapter {
+    FastEnumerationState state = {};
+    UInteger count = 0;
+
+    Adapter(Array* array) {
+        count = array->countByEnumerating(&state, nullptr, 0);
+    }
+    constexpr _Object** begin() { return reinterpret_cast<_Object**>(state.itemsPtr); }
+    constexpr _Object** end() { return reinterpret_cast<_Object**>(state.itemsPtr + count); }
+};
+
+} // namespace NS
 
 namespace WebGPU {
 
@@ -38,34 +54,45 @@ namespace WebGPU {
 
 // FIXME: https://github.com/gpuweb/gpuweb/issues/2749 we need more limits.
 
-static HardwareCapabilities::BaseCapabilities baseCapabilities(id<MTLDevice> device)
-{
-    id<MTLCounterSet> timestampCounterSet = nil;
-    id<MTLCounterSet> statisticCounterSet = nil;
 
+
+static HardwareCapabilities::BaseCapabilities baseCapabilities(MTL::Device* device)
+{
+    MTL::CounterSet* timestampCounterSet = nullptr;
+    MTL::CounterSet* statisticCounterSet = nullptr;
+
+#if 0
     for (id<MTLCounterSet> counterSet in device.counterSets) {
         if ([counterSet.name isEqualToString:MTLCommonCounterSetTimestamp])
             timestampCounterSet = counterSet;
         else if ([counterSet.name isEqualToString:MTLCommonCounterSetStatistic])
             statisticCounterSet = counterSet;
     }
+#else
+    for (MTL::CounterSet* counterSet : NS::Adapter<MTL::CounterSet>(device->counterSets())) {
+        if (counterSet->name()->isEqualToString(MTL::CommonCounterSetTimestamp))
+            timestampCounterSet = counterSet;
+        else if (counterSet->name()->isEqualToString(MTL::CommonCounterSetStatistic))
+            statisticCounterSet = counterSet;
+    }
+#endif
 
     return {
-        [device argumentBuffersSupport],
+        device->argumentBuffersSupport(),
         false, // To be filled in by the caller.
         timestampCounterSet,
         statisticCounterSet,
     };
 }
 
-static Vector<WGPUFeatureName> baseFeatures(id<MTLDevice> device, const HardwareCapabilities::BaseCapabilities& baseCapabilities)
+static Vector<WGPUFeatureName> baseFeatures(MTL::Device* device, const HardwareCapabilities::BaseCapabilities& baseCapabilities)
 {
     Vector<WGPUFeatureName> features;
 
     // FIXME: Determine if WGPUFeatureName_DepthClipControl is supported.
 
 #if PLATFORM(MAC) || PLATFORM(MACCATALYST)
-    if (device.depth24Stencil8PixelFormatSupported)
+    if (device->depth24Stencil8PixelFormatSupported())
         features.append(WGPUFeatureName_Depth24UnormStencil8);
 #else
     UNUSED_PARAM(device);
@@ -80,7 +107,7 @@ static Vector<WGPUFeatureName> baseFeatures(id<MTLDevice> device, const Hardware
         features.append(WGPUFeatureName_PipelineStatisticsQuery);
 
 #if PLATFORM(MAC)
-    if (device.supportsBCTextureCompression)
+    if (device->supportsBCTextureCompression())
         features.append(WGPUFeatureName_TextureCompressionBC);
 #endif
 
@@ -91,7 +118,7 @@ static Vector<WGPUFeatureName> baseFeatures(id<MTLDevice> device, const Hardware
     return features;
 }
 
-static HardwareCapabilities apple3(id<MTLDevice> device)
+static HardwareCapabilities apple3(MTL::Device* device)
 {
     auto baseCapabilities = WebGPU::baseCapabilities(device);
 
@@ -140,7 +167,7 @@ static HardwareCapabilities apple3(id<MTLDevice> device)
     };
 }
 
-static HardwareCapabilities apple4(id<MTLDevice> device)
+static HardwareCapabilities apple4(MTL::Device* device)
 {
     auto baseCapabilities = WebGPU::baseCapabilities(device);
 
@@ -189,7 +216,7 @@ static HardwareCapabilities apple4(id<MTLDevice> device)
     };
 }
 
-static HardwareCapabilities apple5(id<MTLDevice> device)
+static HardwareCapabilities apple5(MTL::Device* device)
 {
     auto baseCapabilities = WebGPU::baseCapabilities(device);
 
@@ -239,7 +266,7 @@ static HardwareCapabilities apple5(id<MTLDevice> device)
 }
 
 #if !PLATFORM(WATCHOS) && !PLATFORM(APPLETV)
-static HardwareCapabilities apple6(id<MTLDevice> device)
+static HardwareCapabilities apple6(MTL::Device* device)
 {
     auto baseCapabilities = WebGPU::baseCapabilities(device);
 
@@ -288,7 +315,7 @@ static HardwareCapabilities apple6(id<MTLDevice> device)
     };
 }
 
-static HardwareCapabilities apple7(id<MTLDevice> device)
+static HardwareCapabilities apple7(MTL::Device* device)
 {
     auto baseCapabilities = WebGPU::baseCapabilities(device);
 
@@ -338,7 +365,7 @@ static HardwareCapabilities apple7(id<MTLDevice> device)
 }
 #endif
 
-static HardwareCapabilities mac2(id<MTLDevice> device)
+static HardwareCapabilities mac2(MTL::Device* device)
 {
     auto baseCapabilities = WebGPU::baseCapabilities(device);
 
@@ -352,12 +379,12 @@ static HardwareCapabilities mac2(id<MTLDevice> device)
     uint32_t texturesPerBindGroup = 0;
     uint32_t samplersPerBindGroup = 0;
     switch (baseCapabilities.argumentBuffersTier) {
-    case MTLArgumentBuffersTier1:
+    case MTL::ArgumentBuffersTier1:
         buffersPerBindGroup = 64;
         texturesPerBindGroup = 128;
         samplersPerBindGroup = 16;
         break;
-    case MTLArgumentBuffersTier2:
+    case MTL::ArgumentBuffersTier2:
         buffersPerBindGroup = 500000 / 2;
         texturesPerBindGroup = 500000 / 2;
         samplersPerBindGroup = 1024;
@@ -460,8 +487,8 @@ static Vector<WGPUFeatureName> mergeFeatures(const Vector<WGPUFeatureName>& prev
 static HardwareCapabilities::BaseCapabilities mergeBaseCapabilities(const HardwareCapabilities::BaseCapabilities& previous, const HardwareCapabilities::BaseCapabilities& next)
 {
     ASSERT(previous.argumentBuffersTier == next.argumentBuffersTier);
-    ASSERT(!previous.timestampCounterSet || [previous.timestampCounterSet isEqual:next.timestampCounterSet]);
-    ASSERT(!previous.statisticCounterSet || [previous.statisticCounterSet isEqual:next.statisticCounterSet]);
+    ASSERT(!previous.timestampCounterSet || previous.timestampCounterSet->isEqual(next.timestampCounterSet));
+    ASSERT(!previous.statisticCounterSet || previous.statisticCounterSet->isEqual(next.statisticCounterSet));
     return {
         previous.argumentBuffersTier,
         previous.supportsNonPrivateDepthStencilTextures || next.supportsNonPrivateDepthStencilTextures,
@@ -470,7 +497,7 @@ static HardwareCapabilities::BaseCapabilities mergeBaseCapabilities(const Hardwa
     };
 }
 
-static std::optional<HardwareCapabilities> rawHardwareCapabilities(id<MTLDevice> device)
+static std::optional<HardwareCapabilities> rawHardwareCapabilities(MTL::Device* device)
 {
     std::optional<HardwareCapabilities> result;
 
@@ -487,24 +514,24 @@ static std::optional<HardwareCapabilities> rawHardwareCapabilities(id<MTLDevice>
 
     // The feature set tables do not list limits for MTLGPUFamilyCommon1, MTLGPUFamilyCommon2, or MTLGPUFamilyCommon3.
     // MTLGPUFamilyApple1 and MTLGPUFamilyApple2 are not supported.
-    if ([device supportsFamily:MTLGPUFamilyApple3])
+    if (device->supportsFamily(MTL::GPUFamilyApple3))
         merge(apple3(device));
-    if ([device supportsFamily:MTLGPUFamilyApple4])
+    if (device->supportsFamily(MTL::GPUFamilyApple4))
         merge(apple4(device));
-    if ([device supportsFamily:MTLGPUFamilyApple5])
+    if (device->supportsFamily(MTL::GPUFamilyApple5))
         merge(apple5(device));
 #if !PLATFORM(WATCHOS) && !PLATFORM(APPLETV)
-    if ([device supportsFamily:MTLGPUFamilyApple6])
+    if (device->supportsFamily(MTL::GPUFamilyApple6))
         merge(apple6(device));
-    if ([device supportsFamily:MTLGPUFamilyApple7])
+    if (device->supportsFamily(MTL::GPUFamilyApple7))
         merge(apple7(device));
 #endif
     // MTLGPUFamilyMac1 is not supported (yet?).
-    if ([device supportsFamily:MTLGPUFamilyMac2])
+    if (device->supportsFamily(MTL::GPUFamilyMac2))
         merge(mac2(device));
 
     if (result) {
-        auto maxBufferLength = device.maxBufferLength;
+        auto maxBufferLength = device->maxBufferLength();
         result->limits.maxUniformBufferBindingSize = maxBufferLength;
         result->limits.maxStorageBufferBindingSize = maxBufferLength;
     }
@@ -615,7 +642,7 @@ WGPULimits defaultLimits()
     };
 }
 
-std::optional<HardwareCapabilities> hardwareCapabilities(id<MTLDevice> device)
+std::optional<HardwareCapabilities> hardwareCapabilities(MTL::Device* device)
 {
     auto result = rawHardwareCapabilities(device);
 
