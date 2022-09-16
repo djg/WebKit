@@ -31,7 +31,7 @@
 
 namespace WGSL::AST {
 
-class TypeDecl : public ASTNode {
+class TypeName : public ASTNode {
     WTF_MAKE_FAST_ALLOCATED;
 
 public:
@@ -41,12 +41,12 @@ public:
         Parameterized,
     };
 
-    TypeDecl(SourceSpan span)
+    TypeName(SourceSpan span)
         : ASTNode(span)
     {
     }
 
-    virtual ~TypeDecl() {}
+    virtual ~TypeName() {}
 
     virtual Kind kind() const = 0;
     bool isArray() const { return kind() == Kind::Array; }
@@ -54,30 +54,30 @@ public:
     bool isParameterized() const { return kind() == Kind::Parameterized; }
 };
 
-class ArrayType final : public TypeDecl {
+class ArrayTypeName final : public TypeName {
     WTF_MAKE_FAST_ALLOCATED;
 public:
-    ArrayType(SourceSpan span, std::unique_ptr<TypeDecl>&& elementType, std::unique_ptr<Expression>&& elementCount)
-        : TypeDecl(span)
+    ArrayTypeName(SourceSpan span, std::unique_ptr<TypeName>&& elementType, std::unique_ptr<Expression>&& elementCount)
+        : TypeName(span)
         , m_elementType(WTFMove(elementType))
         , m_elementCount(WTFMove(elementCount))
     {
     }
 
     Kind kind() const override { return Kind::Array; }
-    TypeDecl* maybeElementType() const { return m_elementType.get(); }
+    TypeName* maybeElementType() const { return m_elementType.get(); }
     Expression* maybeElementCount() const { return m_elementCount.get(); }
 
 private:
-    std::unique_ptr<TypeDecl> m_elementType;
+    std::unique_ptr<TypeName> m_elementType;
     std::unique_ptr<Expression> m_elementCount;
 };
 
-class NamedType final : public TypeDecl {
+class NamedTypeName final : public TypeName {
     WTF_MAKE_FAST_ALLOCATED;
 public:
-    NamedType(SourceSpan span, StringView&& name)
-        : TypeDecl(span)
+    NamedTypeName(SourceSpan span, StringView&& name)
+        : TypeName(span)
         , m_name(WTFMove(name))
     {
     }
@@ -89,7 +89,7 @@ private:
     StringView m_name;
 };
 
-class ParameterizedType : public TypeDecl {
+class ParameterizedTypeName : public TypeName {
     WTF_MAKE_FAST_ALLOCATED;
 public:
     enum class Base {
@@ -107,8 +107,8 @@ public:
         Mat4x4
     };
 
-    ParameterizedType(SourceSpan span, Base base, UniqueRef<TypeDecl>&& elementType)
-        : TypeDecl(span)
+    ParameterizedTypeName(SourceSpan span, Base base, UniqueRef<TypeName>&& elementType)
+        : TypeName(span)
         , m_base(base)
         , m_elementType(WTFMove(elementType))
     {
@@ -145,20 +145,20 @@ public:
 
     Kind kind() const override { return Kind::Parameterized; }
     Base base() const { return m_base; }
-    TypeDecl& elementType() { return m_elementType; }
+    TypeName& elementType() { return m_elementType; }
 
 private:
     Base m_base;
-    UniqueRef<TypeDecl> m_elementType;
+    UniqueRef<TypeName> m_elementType;
 };
 
 } // namespace WGSL::AST
 
 #define SPECIALIZE_TYPE_TRAITS_WGSL_TYPE(ToValueTypeName, predicate) \
 SPECIALIZE_TYPE_TRAITS_BEGIN(WGSL::AST::ToValueTypeName) \
-    static bool isType(const WGSL::AST::TypeDecl& type) { return type.predicate; } \
+    static bool isType(const WGSL::AST::TypeName& type) { return type.predicate; } \
 SPECIALIZE_TYPE_TRAITS_END()
 
-SPECIALIZE_TYPE_TRAITS_WGSL_TYPE(ArrayType, isArray())
-SPECIALIZE_TYPE_TRAITS_WGSL_TYPE(NamedType, isNamed())
-SPECIALIZE_TYPE_TRAITS_WGSL_TYPE(ParameterizedType, isParameterized())
+SPECIALIZE_TYPE_TRAITS_WGSL_TYPE(ArrayTypeName, isArray())
+SPECIALIZE_TYPE_TRAITS_WGSL_TYPE(NamedTypeName, isNamed())
+SPECIALIZE_TYPE_TRAITS_WGSL_TYPE(ParameterizedTypeName, isParameterized())

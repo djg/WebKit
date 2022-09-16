@@ -78,10 +78,10 @@ public:
     virtual void visit(AST::VariableStatement&);
 
     // Types
-    virtual void visit(AST::TypeDecl&);
-    virtual void visit(AST::ArrayType&);
-    virtual void visit(AST::NamedType&);
-    virtual void visit(AST::ParameterizedType&);
+    virtual void visit(AST::TypeName&);
+    virtual void visit(AST::ArrayTypeName&);
+    virtual void visit(AST::NamedTypeName&);
+    virtual void visit(AST::ParameterizedTypeName&);
 
     bool hasError() const;
     Expected<void, Error> result();

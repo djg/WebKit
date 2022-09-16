@@ -38,7 +38,7 @@
 #include "ReturnStatement.h"
 #include "AssignmentStatement.h"
 #include "VariableStatement.h"
-#include "TypeDecl.h"
+#include "TypeName.h"
 #include "Visitor.h"
 #include <wtf/UniqueRef.h>
 
@@ -172,7 +172,7 @@ void Visitor::visit(AST::VariableDecl& varDeclaration)
     for (auto& attribute: varDeclaration.attributes())
         checkErrorAndVisit(attribute);
     maybeCheckErrorAndVisit(varDeclaration.maybeQualifier());
-    maybeCheckErrorAndVisit(varDeclaration.maybeTypeDecl());
+    maybeCheckErrorAndVisit(varDeclaration.maybeType());
     maybeCheckErrorAndVisit(varDeclaration.maybeInitializer());
 }
 
@@ -333,35 +333,35 @@ void Visitor::visit(AST::VariableStatement& varStatement)
 #pragma mark -
 #pragma mark Types
 
-void Visitor::visit(AST::TypeDecl& typeDecl)
+void Visitor::visit(AST::TypeName& TypeName)
 {
-    switch (typeDecl.kind())
+    switch (TypeName.kind())
     {
-    case AST::TypeDecl::Kind::Array:
-        checkErrorAndVisit(downcast<AST::ArrayType>(typeDecl));
+    case AST::TypeName::Kind::Array:
+        checkErrorAndVisit(downcast<AST::ArrayTypeName>(TypeName));
         break;
-    case AST::TypeDecl::Kind::Named:
-        checkErrorAndVisit(downcast<AST::NamedType>(typeDecl));
+    case AST::TypeName::Kind::Named:
+        checkErrorAndVisit(downcast<AST::NamedTypeName>(TypeName));
         break;
-    case AST::TypeDecl::Kind::Parameterized:
-        checkErrorAndVisit(downcast<AST::ParameterizedType>(typeDecl));
+    case AST::TypeName::Kind::Parameterized:
+        checkErrorAndVisit(downcast<AST::ParameterizedTypeName>(TypeName));
         break;
     }
 }
 
-void Visitor::visit(AST::ArrayType& arrayType)
+void Visitor::visit(AST::ArrayTypeName& arrayTypeName)
 {
-    maybeCheckErrorAndVisit(arrayType.maybeElementType());
-    maybeCheckErrorAndVisit(arrayType.maybeElementCount());
+    maybeCheckErrorAndVisit(arrayTypeName.maybeElementType());
+    maybeCheckErrorAndVisit(arrayTypeName.maybeElementCount());
 }
 
-void Visitor::visit(AST::NamedType&)
+void Visitor::visit(AST::NamedTypeName&)
 {
 }
 
-void Visitor::visit(AST::ParameterizedType& parameterizedType)
+void Visitor::visit(AST::ParameterizedTypeName& parameterizedTypeName)
 {
-    checkErrorAndVisit(parameterizedType.elementType());
+    checkErrorAndVisit(parameterizedTypeName.elementType());
 }
 
 } // namespace WGSL

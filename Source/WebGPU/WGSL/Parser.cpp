@@ -276,14 +276,14 @@ Expected<AST::StructMember, Error> Parser<Lexer>::parseStructMember()
     PARSE(attributes, Attributes);
     CONSUME_TYPE_NAMED(name, Identifier);
     CONSUME_TYPE(Colon);
-    PARSE(type, TypeDecl);
+    PARSE(type, TypeName);
     CONSUME_TYPE(Semicolon);
 
     RETURN_NODE(StructMember, name.m_ident, WTFMove(type), WTFMove(attributes));
 }
 
 template<typename Lexer>
-Expected<UniqueRef<AST::TypeDecl>, Error> Parser<Lexer>::parseTypeDecl()
+Expected<UniqueRef<AST::TypeName>, Error> Parser<Lexer>::parseTypeName()
 {
     START_PARSE();
 
@@ -291,48 +291,48 @@ Expected<UniqueRef<AST::TypeDecl>, Error> Parser<Lexer>::parseTypeDecl()
         return parseArrayType();
     if (current().m_type == TokenType::KeywordI32) {
         consume();
-        RETURN_NODE_REF(NamedType, StringView { "i32"_s });
+        RETURN_NODE_REF(NamedTypeName, StringView { "i32"_s });
     }
     if (current().m_type == TokenType::KeywordF32) {
         consume();
-        RETURN_NODE_REF(NamedType, StringView { "f32"_s });
+        RETURN_NODE_REF(NamedTypeName, StringView { "f32"_s });
     }
     if (current().m_type == TokenType::KeywordU32) {
         consume();
-        RETURN_NODE_REF(NamedType, StringView { "u32"_s });
+        RETURN_NODE_REF(NamedTypeName, StringView { "u32"_s });
     }
     if (current().m_type == TokenType::KeywordBool) {
         consume();
-        RETURN_NODE_REF(NamedType, StringView { "bool"_s });
+        RETURN_NODE_REF(NamedTypeName, StringView { "bool"_s });
     }
     if (current().m_type == TokenType::Identifier) {
         CONSUME_TYPE_NAMED(name, Identifier);
-        return parseTypeDeclAfterIdentifier(WTFMove(name.m_ident), _startOfElementPosition);
+        return parseTypeNameAfterIdentifier(WTFMove(name.m_ident), _startOfElementPosition);
     }
 
     FAIL("Tried parsing a type and it did not start with an identifier"_s);
 }
 
 template<typename Lexer>
-Expected<UniqueRef<AST::TypeDecl>, Error> Parser<Lexer>::parseTypeDeclAfterIdentifier(StringView&& name, SourcePosition _startOfElementPosition)
+Expected<UniqueRef<AST::TypeName>, Error> Parser<Lexer>::parseTypeNameAfterIdentifier(StringView&& name, SourcePosition _startOfElementPosition)
 {
-    if (auto kind = AST::ParameterizedType::stringViewToKind(name)) {
+    if (auto kind = AST::ParameterizedTypeName::stringViewToKind(name)) {
         CONSUME_TYPE(LT);
-        PARSE(elementType, TypeDecl);
+        PARSE(elementType, TypeName);
         CONSUME_TYPE(GT);
-        RETURN_NODE_REF(ParameterizedType, *kind, WTFMove(elementType));
+        RETURN_NODE_REF(ParameterizedTypeName, *kind, WTFMove(elementType));
     }
-    RETURN_NODE_REF(NamedType, WTFMove(name));
+    RETURN_NODE_REF(NamedTypeName, WTFMove(name));
 }
 
 template<typename Lexer>
-Expected<UniqueRef<AST::TypeDecl>, Error> Parser<Lexer>::parseArrayType()
+Expected<UniqueRef<AST::TypeName>, Error> Parser<Lexer>::parseArrayType()
 {
     START_PARSE();
 
     CONSUME_TYPE(KeywordArray);
 
-    std::unique_ptr<AST::TypeDecl> maybeElementType;
+    std::unique_ptr<AST::TypeName> maybeElementType;
     std::unique_ptr<AST::Expression> maybeElementCount;
 
     if (current().m_type == TokenType::LT) {
@@ -340,7 +340,7 @@ Expected<UniqueRef<AST::TypeDecl>, Error> Parser<Lexer>::parseArrayType()
         // which allows us to use `parseArrayType` in `parseCallableExpression`.
         consume();
 
-        PARSE(elementType, TypeDecl);
+        PARSE(elementType, TypeName);
         maybeElementType = elementType.moveToUniquePtr();
 
         if (current().m_type == TokenType::Comma) {
@@ -356,7 +356,7 @@ Expected<UniqueRef<AST::TypeDecl>, Error> Parser<Lexer>::parseArrayType()
         CONSUME_TYPE(GT);
     }
 
-    RETURN_NODE_REF(ArrayType, WTFMove(maybeElementType), WTFMove(maybeElementCount));
+    RETURN_NODE_REF(ArrayTypeName, WTFMove(maybeElementType), WTFMove(maybeElementCount));
 }
 
 template<typename Lexer>
@@ -380,10 +380,10 @@ Expected<UniqueRef<AST::VariableDecl>, Error> Parser<Lexer>::parseVariableDeclWi
 
     CONSUME_TYPE_NAMED(name, Identifier);
 
-    std::unique_ptr<AST::TypeDecl> maybeType = nullptr;
+    std::unique_ptr<AST::TypeName> maybeType = nullptr;
     if (current().m_type == TokenType::Colon) {
         consume();
-        PARSE(typeDecl, TypeDecl);
+        PARSE(typeDecl, TypeName);
         maybeType = typeDecl.moveToUniquePtr();
     }
 
@@ -485,12 +485,12 @@ Expected<UniqueRef<AST::FunctionDecl>, Error> Parser<Lexer>::parseFunctionDecl(A
     CONSUME_TYPE(ParenRight);
 
     AST::Attribute::List returnAttributes;
-    std::unique_ptr<AST::TypeDecl> maybeReturnType = nullptr;
+    std::unique_ptr<AST::TypeName> maybeReturnType = nullptr;
     if (current().m_type == TokenType::Arrow) {
         consume();
         PARSE(parsedReturnAttributes, Attributes);
         returnAttributes = WTFMove(parsedReturnAttributes);
-        PARSE(type, TypeDecl);
+        PARSE(type, TypeName);
         maybeReturnType = type.moveToUniquePtr();
     }
 
@@ -507,7 +507,7 @@ Expected<AST::Parameter, Error> Parser<Lexer>::parseParameter()
     PARSE(attributes, Attributes);
     CONSUME_TYPE_NAMED(name, Identifier)
     CONSUME_TYPE(Colon);
-    PARSE(type, TypeDecl);
+    PARSE(type, TypeName);
 
     RETURN_NODE(Parameter, name.m_ident, WTFMove(type), WTFMove(attributes));
 }
@@ -698,7 +698,7 @@ Expected<UniqueRef<AST::Expression>, Error> Parser<Lexer>::parsePrimaryExpressio
     case TokenType::Identifier: {
         CONSUME_TYPE_NAMED(ident, Identifier);
         if (current().m_type == TokenType::LT || current().m_type == TokenType::ParenLeft) {
-            PARSE(type, TypeDeclAfterIdentifier, WTFMove(ident.m_ident), _startOfElementPosition);
+            PARSE(type, TypeNameAfterIdentifier, WTFMove(ident.m_ident), _startOfElementPosition);
             PARSE(arguments, ArgumentExpressionList);
             RETURN_NODE_REF(CallableExpression, WTFMove(type), WTFMove(arguments));
         }

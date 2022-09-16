@@ -29,42 +29,53 @@ namespace WGSL {
 
 namespace AST {
 
-class AbstractFloatLiteral;
-class AbstractIntLiteral;
-class ArrayAccess;
-class ArrayType;
-class AssignmentStatement;
+// Shader Module
+class ShaderModule;
+class GlobalDirective;
+
+// Attribute
 class Attribute;
 class BindingAttribute;
-class BoolLiteral;
 class BuiltinAttribute;
-class CallableExpression;
-class CompoundStatement;
-class Decl;
-class Expression;
-class Float32Literal;
-class FunctionDecl;
-class GlobalDirective;
-class GroupAttribute;
-class IdentifierExpression;
-class Int32Literal;
-class LocationAttribute;
-class NamedType;
-class Parameter;
-class ParameterizedType;
-class ReturnStatement;
-class ShaderModule;
 class StageAttribute;
-class Statement;
+class GroupAttribute;
+class LocationAttribute;
+
+// Declaration
+class Decl;
+class FunctionDecl;
 class StructDecl;
-class StructMember;
-class StructureAccess;
-class TypeDecl;
-class Uint32Literal;
-class UnaryExpression;
 class VariableDecl;
+class Parameter;
+class StructMember;
 class VariableQualifier;
+
+// Expression
+class Expression;
+class BoolLiteral;
+class Int32Literal;
+class Uint32Literal;
+class Float32Literal;
+class AbstractIntLiteral;
+class AbstractFloatLiteral;
+class IdentifierExpression;
+class ArrayAccess;
+class StructureAccess;
+class CallableExpression;
+class UnaryExpression;
+
+// Statement
+class Statement;
+class CompoundStatement;
+class ReturnStatement;
+class AssignmentStatement;
 class VariableStatement;
+
+// Types
+class TypeName;
+class ArrayTypeName;
+class NamedTypeName;
+class ParameterizedTypeName;
 
 } // namespace AST
 

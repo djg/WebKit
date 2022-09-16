@@ -29,7 +29,7 @@
 #include "CompilationMessage.h"
 #include "Decl.h"
 #include "Expression.h"
-#include "TypeDecl.h"
+#include "TypeName.h"
 #include "VariableQualifier.h"
 #include <wtf/text/WTFString.h>
 
@@ -41,7 +41,7 @@ class VariableDecl final : public Decl {
 public:
     using List = UniqueRefVector<VariableDecl>;
 
-    VariableDecl(SourceSpan span, StringView name, std::unique_ptr<VariableQualifier>&& qualifier, std::unique_ptr<TypeDecl>&& type, std::unique_ptr<Expression>&& initializer, Attribute::List&& attributes)
+    VariableDecl(SourceSpan span, StringView name, std::unique_ptr<VariableQualifier>&& qualifier, std::unique_ptr<TypeName>&& type, std::unique_ptr<Expression>&& initializer, Attribute::List&& attributes)
         : Decl(span)
         , m_name(name)
         , m_attributes(WTFMove(attributes))
@@ -56,7 +56,7 @@ public:
     const StringView& name() const { return m_name; }
     Attribute::List& attributes() { return m_attributes; }
     VariableQualifier* maybeQualifier() { return m_qualifier.get(); }
-    TypeDecl* maybeTypeDecl() { return m_type.get(); }
+    TypeName* maybeType() { return m_type.get(); }
     Expression* maybeInitializer() { return m_initializer.get(); }
 
 private:
@@ -65,7 +65,7 @@ private:
     // Each of the following may be null
     // But at least one of type and initializer must be non-null
     std::unique_ptr<VariableQualifier> m_qualifier;
-    std::unique_ptr<TypeDecl> m_type;
+    std::unique_ptr<TypeName> m_type;
     std::unique_ptr<Expression> m_initializer;
 };
 

@@ -30,8 +30,8 @@
 #include "CompilationMessage.h"
 #include "Decl.h"
 #include "Statements/CompoundStatement.h"
-#include "TypeDecl.h"
-#include "wtf/UniqueRefVector.h"
+#include "TypeName.h"
+#include <wtf/UniqueRefVector.h>
 
 namespace WGSL::AST {
 
@@ -41,7 +41,7 @@ class Parameter final : public ASTNode {
 public:
     using List = UniqueRefVector<Parameter>;
 
-    Parameter(SourceSpan span, StringView name, UniqueRef<TypeDecl>&& type, Attribute::List&& attributes)
+    Parameter(SourceSpan span, StringView name, UniqueRef<TypeName>&& type, Attribute::List&& attributes)
         : ASTNode(span)
         , m_name(WTFMove(name))
         , m_type(WTFMove(type))
@@ -50,12 +50,15 @@ public:
     }
 
     const StringView& name() const { return m_name; }
-    TypeDecl& type() { return m_type; }
+    TypeName& type()
+    {
+        return m_type;
+    }
     Attribute::List& attributes() { return m_attributes; }
 
 private:
     StringView m_name;
-    UniqueRef<TypeDecl> m_type;
+    UniqueRef<TypeName> m_type;
     Attribute::List m_attributes;
 };
 
@@ -65,7 +68,7 @@ class FunctionDecl final : public Decl {
 public:
     using List = UniqueRefVector<FunctionDecl>;
 
-    FunctionDecl(SourceSpan sourceSpan, StringView name, Parameter::List&& parameters, std::unique_ptr<TypeDecl>&& returnType, CompoundStatement&& body, Attribute::List&& attributes, Attribute::List&& returnAttributes)
+    FunctionDecl(SourceSpan sourceSpan, StringView name, Parameter::List&& parameters, std::unique_ptr<TypeName>&& returnType, CompoundStatement&& body, Attribute::List&& attributes, Attribute::List&& returnAttributes)
         : Decl(sourceSpan)
         , m_name(name)
         , m_parameters(WTFMove(parameters))
@@ -78,18 +81,24 @@ public:
 
     Kind kind() const override { return Kind::Function; }
     const StringView& name() const { return m_name; }
-    Parameter::List& parameters() { return m_parameters; }
+    Parameter::List& parameters()
+    {
+        return m_parameters;
+    }
     Attribute::List& attributes() { return m_attributes; }
     Attribute::List& returnAttributes() { return m_returnAttributes; }
-    TypeDecl* maybeReturnType() { return m_returnType.get(); }
-    CompoundStatement& body() { return m_body; }
+    TypeName* maybeReturnType() { return m_returnType.get(); }
+    CompoundStatement& body()
+    {
+        return m_body;
+    }
 
 private:
     StringView m_name;
     Parameter::List m_parameters;
     Attribute::List m_attributes;
     Attribute::List m_returnAttributes;
-    std::unique_ptr<TypeDecl> m_returnType;
+    std::unique_ptr<TypeName> m_returnType;
     CompoundStatement m_body;
 };
 

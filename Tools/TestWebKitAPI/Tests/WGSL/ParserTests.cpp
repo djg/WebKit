@@ -60,23 +60,23 @@ static void checkIntLiteral(WGSL::AST::Expression& node, int32_t value)
     EXPECT_EQ(intLiteral.value(), value);
 }
 
-static void checkVecType(WGSL::AST::TypeDecl& type, WGSL::AST::ParameterizedType::Base vecType, ASCIILiteral paramTypeName)
+static void checkVecType(WGSL::AST::TypeName& type, WGSL::AST::ParameterizedTypeName::Base vecType, ASCIILiteral paramTypeName)
 {
     EXPECT_TRUE(type.isParameterized());
-    auto& parameterizedType = downcast<WGSL::AST::ParameterizedType>(type);
+    auto& parameterizedType = downcast<WGSL::AST::ParameterizedTypeName>(type);
     EXPECT_EQ(parameterizedType.base(), vecType);
     EXPECT_TRUE(parameterizedType.elementType().isNamed());
-    EXPECT_EQ(downcast<WGSL::AST::NamedType>(parameterizedType.elementType()).name(), paramTypeName);
+    EXPECT_EQ(downcast<WGSL::AST::NamedTypeName>(parameterizedType.elementType()).name(), paramTypeName);
 }
 
-static void checkVec2F32Type(WGSL::AST::TypeDecl& type)
+static void checkVec2F32Type(WGSL::AST::TypeName& type)
 {
-    checkVecType(type, WGSL::AST::ParameterizedType::Base::Vec2, "f32"_s);
+    checkVecType(type, WGSL::AST::ParameterizedTypeName::Base::Vec2, "f32"_s);
 }
 
-static void checkVec4F32Type(WGSL::AST::TypeDecl& type)
+static void checkVec4F32Type(WGSL::AST::TypeName& type)
 {
-    checkVecType(type, WGSL::AST::ParameterizedType::Base::Vec4, "f32"_s);
+    checkVecType(type, WGSL::AST::ParameterizedTypeName::Base::Vec4, "f32"_s);
 }
 
 static void logCompilationError(WGSL::CompilationMessage& error)
@@ -107,7 +107,7 @@ TEST(WGSLParserTests, Struct)
     EXPECT_TRUE(str.members()[0].attributes().isEmpty());
     EXPECT_EQ(str.members()[0].name(), "a"_s);
     EXPECT_TRUE(str.members()[0].type().isNamed());
-    auto& memberType = downcast<WGSL::AST::NamedType>(str.members()[0].type());
+    auto& memberType = downcast<WGSL::AST::NamedTypeName>(str.members()[0].type());
     EXPECT_EQ(memberType.name(), "i32"_s);
 }
 
@@ -133,9 +133,9 @@ TEST(WGSLParserTests, GlobalVariable)
     EXPECT_TRUE(var.maybeQualifier());
     EXPECT_EQ(var.maybeQualifier()->storageClass(), WGSL::AST::StorageClass::Storage);
     EXPECT_EQ(var.maybeQualifier()->accessMode(), WGSL::AST::AccessMode::ReadWrite);
-    EXPECT_TRUE(var.maybeTypeDecl());
-    EXPECT_TRUE(var.maybeTypeDecl()->isNamed());
-    auto& namedType = downcast<WGSL::AST::NamedType>(*var.maybeTypeDecl());
+    EXPECT_TRUE(var.maybeType());
+    EXPECT_TRUE(var.maybeType()->isNamed());
+    auto& namedType = downcast<WGSL::AST::NamedTypeName>(*var.maybeType());
     EXPECT_EQ(namedType.name(), "B"_s);
     EXPECT_FALSE(var.maybeInitializer());
 }
@@ -208,10 +208,10 @@ TEST(WGSLParserTests, TrivialGraphicsShader)
         EXPECT_TRUE(func.parameters()[0].attributes()[0].isLocation());
         EXPECT_FALSE(downcast<WGSL::AST::LocationAttribute>(func.parameters()[0].attributes()[0]).location());
         EXPECT_TRUE(func.parameters()[0].type().isParameterized());
-        auto& paramType = downcast<WGSL::AST::ParameterizedType>(func.parameters()[0].type());
-        EXPECT_EQ(paramType.base(), WGSL::AST::ParameterizedType::Base::Vec4);
+        auto& paramType = downcast<WGSL::AST::ParameterizedTypeName>(func.parameters()[0].type());
+        EXPECT_EQ(paramType.base(), WGSL::AST::ParameterizedTypeName::Base::Vec4);
         EXPECT_TRUE(paramType.elementType().isNamed());
-        EXPECT_EQ(downcast<WGSL::AST::NamedType>(paramType.elementType()).name(), "f32"_s);
+        EXPECT_EQ(downcast<WGSL::AST::NamedTypeName>(paramType.elementType()).name(), "f32"_s);
         EXPECT_EQ(func.returnAttributes().size(), 1u);
         checkBuiltin(func.returnAttributes()[0], "position"_s);
         EXPECT_TRUE(func.maybeReturnType());
@@ -291,7 +291,7 @@ TEST(WGSLParserTests, LocalVariable)
         EXPECT_EQ(varDecl.name(), "x"_s);
         EXPECT_TRUE(varDecl.attributes().isEmpty());
         EXPECT_EQ(varDecl.maybeQualifier(), nullptr);
-        EXPECT_EQ(varDecl.maybeTypeDecl(), nullptr);
+        EXPECT_EQ(varDecl.maybeType(), nullptr);
         EXPECT_TRUE(varDecl.maybeInitializer());
         auto& varInitExpr = downcast<WGSL::AST::CallableExpression>(*varDecl.maybeInitializer());
         EXPECT_TRUE(varInitExpr.target().isParameterized());
@@ -441,11 +441,11 @@ TEST(WGSLParserTests, TriangleVert)
         EXPECT_EQ(varDecl.name(), "pos"_s);
         EXPECT_TRUE(varDecl.attributes().isEmpty());
         EXPECT_EQ(varDecl.maybeQualifier(), nullptr);
-        EXPECT_EQ(varDecl.maybeTypeDecl(), nullptr);
+        EXPECT_EQ(varDecl.maybeType(), nullptr);
         EXPECT_TRUE(varDecl.maybeInitializer());
         auto& varInitExpr = downcast<WGSL::AST::CallableExpression>(*varDecl.maybeInitializer());
         EXPECT_TRUE(varInitExpr.target().isArray());
-        auto& varInitArrayType = downcast<WGSL::AST::ArrayType>(varInitExpr.target());
+        auto& varInitArrayType = downcast<WGSL::AST::ArrayTypeName>(varInitExpr.target());
         EXPECT_TRUE(varInitArrayType.maybeElementType());
         checkVec2F32Type(*varInitArrayType.maybeElementType());
         EXPECT_TRUE(varInitArrayType.maybeElementCount());

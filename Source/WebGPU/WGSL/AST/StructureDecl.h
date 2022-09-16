@@ -29,7 +29,7 @@
 #include "Attribute.h"
 #include "CompilationMessage.h"
 #include "Decl.h"
-#include "TypeDecl.h"
+#include "TypeName.h"
 #include <wtf/FastMalloc.h>
 #include <wtf/UniqueRef.h>
 #include <wtf/text/StringView.h>
@@ -42,7 +42,7 @@ class StructMember final : public ASTNode {
 public:
     using List = UniqueRefVector<StructMember>;
 
-    StructMember(SourceSpan span, StringView name, UniqueRef<TypeDecl>&& type, Attribute::List&& attributes)
+    StructMember(SourceSpan span, StringView name, UniqueRef<TypeName>&& type, Attribute::List&& attributes)
         : ASTNode(span)
         , m_name(name)
         , m_attributes(WTFMove(attributes))
@@ -51,13 +51,13 @@ public:
     }
 
     const StringView& name() const { return m_name; }
-    TypeDecl& type() { return m_type; }
+    TypeName& type() { return m_type; }
     Attribute::List& attributes() { return m_attributes; }
 
 private:
     StringView m_name;
     Attribute::List m_attributes;
-    UniqueRef<TypeDecl> m_type;
+    UniqueRef<TypeName> m_type;
 };
 
 class StructDecl final : public Decl {
