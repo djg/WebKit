@@ -48,8 +48,8 @@ public:
     }
 
     Kind kind() const override { return Kind::CallableExpression; }
-    const TypeDecl& target() const { return m_target; }
-    const Expression::List& arguments() const { return m_arguments; }
+    TypeDecl& target() { return m_target; }
+    Expression::List& arguments() { return m_arguments; }
 
 private:
     // If m_target is a NamedType, it could either be a:
