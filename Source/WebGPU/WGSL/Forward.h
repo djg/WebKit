@@ -25,32 +25,33 @@
 
 #pragma once
 
-namespace WGSL {
+namespace WGSL::AST {
 
-namespace AST {
-
-// Shader Module
+#pragma mark -
+#pragma mark Shader Module
 class ShaderModule;
 class GlobalDirective;
 
-// Attribute
+#pragma mark -
+#pragma mark Attribute
 class Attribute;
 class BindingAttribute;
 class BuiltinAttribute;
-class StageAttribute;
 class GroupAttribute;
 class LocationAttribute;
+class StageAttribute;
 
-// Declaration
-class Decl;
-class FunctionDecl;
-class StructDecl;
-class VariableDecl;
-class Parameter;
-class StructMember;
+#pragma mark -
+#pragma mark Declaration
+class Declaration;
+class FunctionDeclaration;
+class StructureDeclaration;
+class StructureMember;
+class VariableDeclaration;
 class VariableQualifier;
 
-// Expression
+#pragma mark -
+#pragma mark Expression
 class Expression;
 class BoolLiteral;
 class Int32Literal;
@@ -64,19 +65,21 @@ class StructureAccess;
 class CallableExpression;
 class UnaryExpression;
 
-// Statement
+class Parameter;
+
+#pragma mark -
+#pragma mark Statement
 class Statement;
+class AssignmentStatement;
 class CompoundStatement;
 class ReturnStatement;
-class AssignmentStatement;
 class VariableStatement;
 
-// Types
+#pragma mark -
+#pragma mark Types
 class TypeName;
 class ArrayTypeName;
 class NamedTypeName;
 class ParameterizedTypeName;
 
-} // namespace AST
-
-} // namespace WGSL
+} // namespace WGSL::AST

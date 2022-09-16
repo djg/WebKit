@@ -48,12 +48,12 @@ public:
     virtual void visit(AST::LocationAttribute&);
 
     // Declaration
-    virtual void visit(AST::Decl&);
-    virtual void visit(AST::FunctionDecl&);
-    virtual void visit(AST::StructDecl&);
-    virtual void visit(AST::VariableDecl&);
+    virtual void visit(AST::Declaration&);
+    virtual void visit(AST::FunctionDeclaration&);
+    virtual void visit(AST::StructureDeclaration&);
+    virtual void visit(AST::VariableDeclaration&);
     virtual void visit(AST::Parameter&);
-    virtual void visit(AST::StructMember&);
+    virtual void visit(AST::StructureMember&);
     virtual void visit(AST::VariableQualifier&);
 
     // Expression

@@ -26,11 +26,11 @@
 #pragma once
 
 #include "ASTNode.h"
-#include "Decl.h"
-#include "FunctionDecl.h"
+#include "Declaration.h"
+#include "FunctionDeclaration.h"
 #include "GlobalDirective.h"
-#include "StructureDecl.h"
-#include "VariableDecl.h"
+#include "StructureDeclaration.h"
+#include "VariableDeclaration.h"
 #include <wtf/HashMap.h>
 #include <wtf/text/StringHash.h>
 #include <wtf/text/WTFString.h>
@@ -45,21 +45,20 @@ public:
     ShaderModule(ShaderModule&&) = default;
 
     GlobalDirective::List& directives() { return m_directives; }
-    StructDecl::List& structs() { return m_structs; }
-    VariableDecl::List& variables() { return m_variables; }
-    FunctionDecl::List& functions() { return m_functions; }
+    StructureDeclaration::List& structures() { return m_structures; }
+    VariableDeclaration::List& variables() { return m_variables; }
+    FunctionDeclaration::List& functions() { return m_functions; }
 
     const GlobalDirective::List& directives() const { return m_directives; }
-    const StructDecl::List& structs() const { return m_structs; }
-    const VariableDecl::List& variables() const { return m_variables; }
-    const FunctionDecl::List& functions() const { return m_functions; }
+    const StructureDeclaration::List& structs() const { return m_structures; }
+    const VariableDeclaration::List& variables() const { return m_variables; }
+    const FunctionDeclaration::List& functions() const { return m_functions; }
 
 private:
     GlobalDirective::List m_directives;
-
-    StructDecl::List m_structs;
-    VariableDecl::List m_variables;
-    FunctionDecl::List m_functions;
+    StructureDeclaration::List m_structures;
+    VariableDeclaration::List m_variables;
+    FunctionDeclaration::List m_functions;
 };
 
 } // namespace WGSL::AST

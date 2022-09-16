@@ -49,17 +49,17 @@ public:
     // UniqueRef whenever it can return multiple types.
     Expected<AST::Attribute::List, Error> parseAttributes();
     Expected<UniqueRef<AST::Attribute>, Error> parseAttribute();
-    Expected<UniqueRef<AST::StructDecl>, Error> parseStructDecl(AST::Attribute::List&&);
-    Expected<AST::StructMember, Error> parseStructMember();
+    Expected<UniqueRef<AST::StructureDeclaration>, Error> parseStructureDeclaration(AST::Attribute::List&&);
+    Expected<AST::StructureMember, Error> parseStructureMember();
     Expected<UniqueRef<AST::TypeName>, Error> parseTypeName();
     Expected<UniqueRef<AST::TypeName>, Error> parseTypeNameAfterIdentifier(StringView&&, SourcePosition start);
-    Expected<UniqueRef<AST::TypeName>, Error> parseArrayType();
-    Expected<UniqueRef<AST::VariableDecl>, Error> parseVariableDecl();
-    Expected<UniqueRef<AST::VariableDecl>, Error> parseVariableDeclWithAttributes(AST::Attribute::List&&);
+    Expected<UniqueRef<AST::TypeName>, Error> parseArrayTypeName();
+    Expected<UniqueRef<AST::VariableDeclaration>, Error> parseVariableDeclaration();
+    Expected<UniqueRef<AST::VariableDeclaration>, Error> parseVariableDeclarationWithAttributes(AST::Attribute::List&&);
     Expected<AST::VariableQualifier, Error> parseVariableQualifier();
     Expected<AST::StorageClass, Error> parseStorageClass();
     Expected<AST::AccessMode, Error> parseAccessMode();
-    Expected<UniqueRef<AST::FunctionDecl>, Error> parseFunctionDecl(AST::Attribute::List&&);
+    Expected<UniqueRef<AST::FunctionDeclaration>, Error> parseFunctionDeclaration(AST::Attribute::List&&);
     Expected<AST::Parameter, Error> parseParameter();
     Expected<UniqueRef<AST::Statement>, Error> parseStatement();
     Expected<AST::CompoundStatement, Error> parseCompoundStatement();

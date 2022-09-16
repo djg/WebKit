@@ -27,7 +27,7 @@
 
 #include "Attribute.h"
 #include "CompilationMessage.h"
-#include "Decl.h"
+#include "Declaration.h"
 #include "Expression.h"
 #include "TypeName.h"
 #include "VariableQualifier.h"
@@ -35,14 +35,14 @@
 
 namespace WGSL::AST {
 
-class VariableDecl final : public Decl {
+class VariableDeclaration final : public Declaration {
     WTF_MAKE_FAST_ALLOCATED;
 
 public:
-    using List = UniqueRefVector<VariableDecl>;
+    using List = UniqueRefVector<VariableDeclaration>;
 
-    VariableDecl(SourceSpan span, StringView name, std::unique_ptr<VariableQualifier>&& qualifier, std::unique_ptr<TypeName>&& type, std::unique_ptr<Expression>&& initializer, Attribute::List&& attributes)
-        : Decl(span)
+    VariableDeclaration(SourceSpan span, StringView name, std::unique_ptr<VariableQualifier>&& qualifier, std::unique_ptr<TypeName>&& type, std::unique_ptr<Expression>&& initializer, Attribute::List&& attributes)
+        : Declaration(span)
         , m_name(name)
         , m_attributes(WTFMove(attributes))
         , m_qualifier(WTFMove(qualifier))
@@ -71,4 +71,4 @@ private:
 
 } // namespace WGSL::AST
 
-SPECIALIZE_TYPE_TRAITS_WGSL_GLOBAL_DECL(VariableDecl, isVariable())
+SPECIALIZE_TYPE_TRAITS_WGSL_DECL(VariableDeclaration, isVariable())

@@ -73,8 +73,8 @@ void Visitor::visit(AST::ShaderModule& shaderModule)
 {
     for (auto& directive: shaderModule.directives())
         checkErrorAndVisit(directive);
-    for (auto& structDecl: shaderModule.structs())
-        checkErrorAndVisit(structDecl);
+    for (auto& structureDecl: shaderModule.structures())
+        checkErrorAndVisit(structureDecl);
     for (auto& variableDecl: shaderModule.variables())
         checkErrorAndVisit(variableDecl);
     for (auto& functionDecl: shaderModule.functions())
@@ -132,22 +132,22 @@ void Visitor::visit(AST::LocationAttribute&)
 #pragma mark -
 #pragma mark Declaration
 
-void Visitor::visit(AST::Decl& declaration)
+void Visitor::visit(AST::Declaration& declaration)
 {
     switch (declaration.kind()) {
-    case AST::Decl::Kind::Function:
-        checkErrorAndVisit(downcast<AST::FunctionDecl>(declaration));
+    case AST::Declaration::Kind::Function:
+        checkErrorAndVisit(downcast<AST::FunctionDeclaration>(declaration));
         break;
-    case AST::Decl::Kind::Struct:
-        checkErrorAndVisit(downcast<AST::StructDecl>(declaration));
+    case AST::Declaration::Kind::Structure:
+        checkErrorAndVisit(downcast<AST::StructureDeclaration>(declaration));
         break;
-    case AST::Decl::Kind::Variable:
-        checkErrorAndVisit(downcast<AST::VariableDecl>(declaration));
+    case AST::Declaration::Kind::Variable:
+        checkErrorAndVisit(downcast<AST::VariableDeclaration>(declaration));
         break;
     }
 }
 
-void Visitor::visit(AST::FunctionDecl& functionDeclaration)
+void Visitor::visit(AST::FunctionDeclaration& functionDeclaration)
 {
     for (auto& attribute: functionDeclaration.attributes())
         checkErrorAndVisit(attribute);
@@ -159,15 +159,15 @@ void Visitor::visit(AST::FunctionDecl& functionDeclaration)
     checkErrorAndVisit(functionDeclaration.body());
 }
 
-void Visitor::visit(AST::StructDecl& structDeclaration)
+void Visitor::visit(AST::StructureDeclaration& structureDeclaration)
 {
-    for (auto& attribute: structDeclaration.attributes())
+    for (auto& attribute: structureDeclaration.attributes())
         checkErrorAndVisit(attribute);
-    for (auto& member: structDeclaration.members())
+    for (auto& member: structureDeclaration.members())
         checkErrorAndVisit(member);
 }
 
-void Visitor::visit(AST::VariableDecl& varDeclaration)
+void Visitor::visit(AST::VariableDeclaration& varDeclaration)
 {
     for (auto& attribute: varDeclaration.attributes())
         checkErrorAndVisit(attribute);
@@ -183,11 +183,11 @@ void Visitor::visit(AST::Parameter& parameter)
     checkErrorAndVisit(parameter.type());
 }
 
-void Visitor::visit(AST::StructMember& structMember)
+void Visitor::visit(AST::StructureMember& structureMember)
 {
-    for (auto& attribute: structMember.attributes())
+    for (auto& attribute: structureMember.attributes())
         checkErrorAndVisit(attribute);
-    checkErrorAndVisit(structMember.type());
+    checkErrorAndVisit(structureMember.type());
 }
 
 void Visitor::visit(AST::VariableQualifier&)

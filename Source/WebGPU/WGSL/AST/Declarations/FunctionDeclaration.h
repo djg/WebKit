@@ -28,8 +28,8 @@
 #include "ASTNode.h"
 #include "Attribute.h"
 #include "CompilationMessage.h"
-#include "Decl.h"
-#include "Statements/CompoundStatement.h"
+#include "CompoundStatement.h"
+#include "Declaration.h"
 #include "TypeName.h"
 #include <wtf/UniqueRefVector.h>
 
@@ -62,14 +62,14 @@ private:
     Attribute::List m_attributes;
 };
 
-class FunctionDecl final : public Decl {
+class FunctionDeclaration final : public Declaration {
     WTF_MAKE_FAST_ALLOCATED;
 
 public:
-    using List = UniqueRefVector<FunctionDecl>;
+    using List = UniqueRefVector<FunctionDeclaration>;
 
-    FunctionDecl(SourceSpan sourceSpan, StringView name, Parameter::List&& parameters, std::unique_ptr<TypeName>&& returnType, CompoundStatement&& body, Attribute::List&& attributes, Attribute::List&& returnAttributes)
-        : Decl(sourceSpan)
+    FunctionDeclaration(SourceSpan sourceSpan, StringView name, Parameter::List&& parameters, std::unique_ptr<TypeName>&& returnType, CompoundStatement&& body, Attribute::List&& attributes, Attribute::List&& returnAttributes)
+        : Declaration(sourceSpan)
         , m_name(name)
         , m_parameters(WTFMove(parameters))
         , m_attributes(WTFMove(attributes))
@@ -104,4 +104,4 @@ private:
 
 } // namespace WGSL::AST
 
-SPECIALIZE_TYPE_TRAITS_WGSL_GLOBAL_DECL(FunctionDecl, isFunction())
+SPECIALIZE_TYPE_TRAITS_WGSL_DECL(FunctionDeclaration, isFunction())

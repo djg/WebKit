@@ -28,7 +28,7 @@
 #include "ASTNode.h"
 #include "Attribute.h"
 #include "CompilationMessage.h"
-#include "Decl.h"
+#include "Declaration.h"
 #include "TypeName.h"
 #include <wtf/FastMalloc.h>
 #include <wtf/UniqueRef.h>
@@ -36,13 +36,13 @@
 
 namespace WGSL::AST {
 
-class StructMember final : public ASTNode {
+class StructureMember final : public ASTNode {
     WTF_MAKE_FAST_ALLOCATED;
 
 public:
-    using List = UniqueRefVector<StructMember>;
+    using List = UniqueRefVector<StructureMember>;
 
-    StructMember(SourceSpan span, StringView name, UniqueRef<TypeName>&& type, Attribute::List&& attributes)
+    StructureMember(SourceSpan span, StringView name, UniqueRef<TypeName>&& type, Attribute::List&& attributes)
         : ASTNode(span)
         , m_name(name)
         , m_attributes(WTFMove(attributes))
@@ -60,31 +60,31 @@ private:
     UniqueRef<TypeName> m_type;
 };
 
-class StructDecl final : public Decl {
+class StructureDeclaration final : public Declaration {
     WTF_MAKE_FAST_ALLOCATED;
 
 public:
-    using List = UniqueRefVector<StructDecl>;
+    using List = UniqueRefVector<StructureDeclaration>;
 
-    StructDecl(SourceSpan sourceSpan, StringView name, StructMember::List&& members, Attribute::List&& attributes)
-        : Decl(sourceSpan)
+    StructureDeclaration(SourceSpan sourceSpan, StringView name, StructureMember::List&& members, Attribute::List&& attributes)
+        : Declaration(sourceSpan)
         , m_name(name)
         , m_attributes(WTFMove(attributes))
         , m_members(WTFMove(members))
     {
     }
 
-    Kind kind() const override { return Kind::Struct; }
+    Kind kind() const override { return Kind::Structure; }
     const StringView& name() const { return m_name; }
     Attribute::List& attributes() { return m_attributes; }
-    StructMember::List& members() { return m_members; }
+    StructureMember::List& members() { return m_members; }
 
 private:
     StringView m_name;
     Attribute::List m_attributes;
-    StructMember::List m_members;
+    StructureMember::List m_members;
 };
 
 } // namespace WGSL::AST
 
-SPECIALIZE_TYPE_TRAITS_WGSL_GLOBAL_DECL(StructDecl, isStruct())
+SPECIALIZE_TYPE_TRAITS_WGSL_DECL(StructureDeclaration, isStructure())

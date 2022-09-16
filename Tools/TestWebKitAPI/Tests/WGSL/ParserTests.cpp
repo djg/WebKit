@@ -97,10 +97,10 @@ TEST(WGSLParserTests, Struct)
     EXPECT_SHADER(shader);
     EXPECT_TRUE(shader.has_value());
     EXPECT_TRUE(shader->directives().isEmpty());
-    EXPECT_EQ(shader->structs().size(), 1u);
+    EXPECT_EQ(shader->structures().size(), 1u);
     EXPECT_TRUE(shader->variables().isEmpty());
     EXPECT_TRUE(shader->functions().isEmpty());
-    auto& str = shader->structs()[0];
+    auto& str = shader->structures()[0];
     EXPECT_EQ(str.name(), "B"_s);
     EXPECT_TRUE(str.attributes().isEmpty());
     EXPECT_EQ(str.members().size(), 1u);
@@ -120,7 +120,7 @@ TEST(WGSLParserTests, GlobalVariable)
     EXPECT_SHADER(shader);
     EXPECT_TRUE(shader.has_value());
     EXPECT_TRUE(shader->directives().isEmpty());
-    EXPECT_TRUE(shader->structs().isEmpty());
+    EXPECT_TRUE(shader->structures().isEmpty());
     EXPECT_EQ(shader->variables().size(), 1u);
     EXPECT_TRUE(shader->functions().isEmpty());
     auto& var = shader->variables()[0];
@@ -151,7 +151,7 @@ TEST(WGSLParserTests, FunctionDecl)
     EXPECT_SHADER(shader);
     EXPECT_TRUE(shader.has_value());
     EXPECT_FALSE(shader->directives().size());
-    EXPECT_TRUE(shader->structs().isEmpty());
+    EXPECT_TRUE(shader->structures().isEmpty());
     EXPECT_TRUE(shader->variables().isEmpty());
     EXPECT_EQ(shader->functions().size(), 1u);
     auto& func = shader->functions()[0];
@@ -192,7 +192,7 @@ TEST(WGSLParserTests, TrivialGraphicsShader)
     EXPECT_SHADER(shader);
     EXPECT_TRUE(shader.has_value());
     EXPECT_FALSE(shader->directives().size());
-    EXPECT_TRUE(shader->structs().isEmpty());
+    EXPECT_TRUE(shader->structures().isEmpty());
     EXPECT_TRUE(shader->variables().isEmpty());
     EXPECT_EQ(shader->functions().size(), 2u);
 
@@ -265,7 +265,7 @@ TEST(WGSLParserTests, LocalVariable)
     EXPECT_SHADER(shader);
     EXPECT_TRUE(shader.has_value());
     EXPECT_TRUE(shader->directives().isEmpty());
-    EXPECT_TRUE(shader->structs().isEmpty());
+    EXPECT_TRUE(shader->structures().isEmpty());
     EXPECT_TRUE(shader->variables().isEmpty());
     EXPECT_EQ(shader->functions().size(), 1u);
 
@@ -287,7 +287,7 @@ TEST(WGSLParserTests, LocalVariable)
         // var x = vec4<f32>(0.4, 0.4, 0.8, 1.0);
         EXPECT_TRUE(func.body().statements()[0].isVariable());
         auto& varStmt = downcast<WGSL::AST::VariableStatement>(func.body().statements()[0]);
-        auto& varDecl = downcast<WGSL::AST::VariableDecl>(varStmt.declaration());
+        auto& varDecl = varStmt.declaration();
         EXPECT_EQ(varDecl.name(), "x"_s);
         EXPECT_TRUE(varDecl.attributes().isEmpty());
         EXPECT_EQ(varDecl.maybeQualifier(), nullptr);
@@ -321,7 +321,7 @@ TEST(WGSLParserTests, ArrayAccess)
     EXPECT_SHADER(shader);
     EXPECT_TRUE(shader.has_value());
     EXPECT_TRUE(shader->directives().isEmpty());
-    EXPECT_TRUE(shader->structs().isEmpty());
+    EXPECT_TRUE(shader->structures().isEmpty());
     EXPECT_TRUE(shader->variables().isEmpty());
     EXPECT_EQ(shader->functions().size(), 1u);
 
@@ -359,7 +359,7 @@ TEST(WGSLParserTests, UnaryExpression)
     EXPECT_SHADER(shader);
     EXPECT_TRUE(shader.has_value());
     EXPECT_TRUE(shader->directives().isEmpty());
-    EXPECT_TRUE(shader->structs().isEmpty());
+    EXPECT_TRUE(shader->structures().isEmpty());
     EXPECT_TRUE(shader->variables().isEmpty());
     EXPECT_EQ(shader->functions().size(), 1u);
 
@@ -410,7 +410,7 @@ TEST(WGSLParserTests, TriangleVert)
     EXPECT_SHADER(shader);
     EXPECT_TRUE(shader.has_value());
     EXPECT_TRUE(shader->directives().isEmpty());
-    EXPECT_TRUE(shader->structs().isEmpty());
+    EXPECT_TRUE(shader->structures().isEmpty());
     EXPECT_TRUE(shader->variables().isEmpty());
     EXPECT_EQ(shader->functions().size(), 1u);
 
@@ -437,7 +437,7 @@ TEST(WGSLParserTests, TriangleVert)
         auto& stmt = func.body().statements()[0];
         EXPECT_TRUE(stmt.isVariable());
         auto& varStmt = downcast<WGSL::AST::VariableStatement>(func.body().statements()[0]);
-        auto& varDecl = downcast<WGSL::AST::VariableDecl>(varStmt.declaration());
+        auto& varDecl = varStmt.declaration();
         EXPECT_EQ(varDecl.name(), "pos"_s);
         EXPECT_TRUE(varDecl.attributes().isEmpty());
         EXPECT_EQ(varDecl.maybeQualifier(), nullptr);
@@ -478,7 +478,7 @@ TEST(WGSLParserTests, RedFrag)
     EXPECT_SHADER(shader);
     EXPECT_TRUE(shader.has_value());
     EXPECT_TRUE(shader->directives().isEmpty());
-    EXPECT_TRUE(shader->structs().isEmpty());
+    EXPECT_TRUE(shader->structures().isEmpty());
     EXPECT_TRUE(shader->variables().isEmpty());
     EXPECT_EQ(shader->functions().size(), 1u);
 }
