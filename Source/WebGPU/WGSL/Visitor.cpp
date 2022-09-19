@@ -24,22 +24,9 @@
  */
 
 #include "config.h"
-
-#include "AssignmentStatement.h"
-#include "ArrayAccess.h"
-#include "CallableExpression.h"
-#include "Expression.h"
-#include "IdentifierExpression.h"
-#include "LiteralExpressions.h"
-#include "ShaderModule.h"
-#include "Statement.h"
-#include "StructureAccess.h"
-#include "UnaryExpression.h"
-#include "ReturnStatement.h"
-#include "AssignmentStatement.h"
-#include "VariableStatement.h"
-#include "TypeName.h"
 #include "Visitor.h"
+
+#include "AST.h"
 #include <wtf/UniqueRef.h>
 
 namespace WGSL {
@@ -71,13 +58,13 @@ template<typename T> void Visitor::maybeCheckErrorAndVisit(T* x)
 
 void Visitor::visit(AST::ShaderModule& shaderModule)
 {
-    for (auto& directive: shaderModule.directives())
+    for (auto& directive : shaderModule.directives())
         checkErrorAndVisit(directive);
-    for (auto& structureDecl: shaderModule.structures())
+    for (auto& structureDecl : shaderModule.structures())
         checkErrorAndVisit(structureDecl);
-    for (auto& variableDecl: shaderModule.variables())
+    for (auto& variableDecl : shaderModule.variables())
         checkErrorAndVisit(variableDecl);
-    for (auto& functionDecl: shaderModule.functions())
+    for (auto& functionDecl : shaderModule.functions())
         checkErrorAndVisit(functionDecl);
 }
 
@@ -149,11 +136,11 @@ void Visitor::visit(AST::Declaration& declaration)
 
 void Visitor::visit(AST::FunctionDeclaration& functionDeclaration)
 {
-    for (auto& attribute: functionDeclaration.attributes())
+    for (auto& attribute : functionDeclaration.attributes())
         checkErrorAndVisit(attribute);
-    for (auto& parameter: functionDeclaration.parameters())
+    for (auto& parameter : functionDeclaration.parameters())
         checkErrorAndVisit(parameter);
-    for (auto& attribute: functionDeclaration.returnAttributes())
+    for (auto& attribute : functionDeclaration.returnAttributes())
         checkErrorAndVisit(attribute);
     maybeCheckErrorAndVisit(functionDeclaration.maybeReturnType());
     checkErrorAndVisit(functionDeclaration.body());
@@ -161,15 +148,15 @@ void Visitor::visit(AST::FunctionDeclaration& functionDeclaration)
 
 void Visitor::visit(AST::StructureDeclaration& structureDeclaration)
 {
-    for (auto& attribute: structureDeclaration.attributes())
+    for (auto& attribute : structureDeclaration.attributes())
         checkErrorAndVisit(attribute);
-    for (auto& member: structureDeclaration.members())
+    for (auto& member : structureDeclaration.members())
         checkErrorAndVisit(member);
 }
 
 void Visitor::visit(AST::VariableDeclaration& varDeclaration)
 {
-    for (auto& attribute: varDeclaration.attributes())
+    for (auto& attribute : varDeclaration.attributes())
         checkErrorAndVisit(attribute);
     maybeCheckErrorAndVisit(varDeclaration.maybeQualifier());
     maybeCheckErrorAndVisit(varDeclaration.maybeType());
@@ -178,14 +165,14 @@ void Visitor::visit(AST::VariableDeclaration& varDeclaration)
 
 void Visitor::visit(AST::Parameter& parameter)
 {
-    for (auto& attribute: parameter.attributes())
+    for (auto& attribute : parameter.attributes())
         checkErrorAndVisit(attribute);
     checkErrorAndVisit(parameter.type());
 }
 
 void Visitor::visit(AST::StructureMember& structureMember)
 {
-    for (auto& attribute: structureMember.attributes())
+    for (auto& attribute : structureMember.attributes())
         checkErrorAndVisit(attribute);
     checkErrorAndVisit(structureMember.type());
 }
@@ -278,7 +265,7 @@ void Visitor::visit(AST::StructureAccess& structureAccess)
 void Visitor::visit(AST::CallableExpression& callableExpression)
 {
     checkErrorAndVisit(callableExpression.target());
-    for (auto& argument: callableExpression.arguments())
+    for (auto& argument : callableExpression.arguments())
         checkErrorAndVisit(argument);
 }
 
@@ -310,7 +297,7 @@ void Visitor::visit(AST::Statement& statement)
 
 void Visitor::visit(AST::CompoundStatement& compoundStatement)
 {
-    for (auto& statement: compoundStatement.statements())
+    for (auto& statement : compoundStatement.statements())
         checkErrorAndVisit(statement);
 }
 
@@ -335,8 +322,7 @@ void Visitor::visit(AST::VariableStatement& varStatement)
 
 void Visitor::visit(AST::TypeName& TypeName)
 {
-    switch (TypeName.kind())
-    {
+    switch (TypeName.kind()) {
     case AST::TypeName::Kind::Array:
         checkErrorAndVisit(downcast<AST::ArrayTypeName>(TypeName));
         break;

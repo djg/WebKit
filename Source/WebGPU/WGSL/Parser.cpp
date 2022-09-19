@@ -24,26 +24,11 @@
  */
 
 #include "Parser.h"
-#include "AST/ShaderModule.h"
 #include "ParserPrivate.h"
 
 #include "config.h"
 
-#include "AST/Attribute.h"
-#include "AST/Declaration.h"
-#include "AST/Declarations/StructureDeclaration.h"
-#include "AST/Expression.h"
-#include "AST/Expressions/ArrayAccess.h"
-#include "AST/Expressions/CallableExpression.h"
-#include "AST/Expressions/IdentifierExpression.h"
-#include "AST/Expressions/LiteralExpressions.h"
-#include "AST/Expressions/StructureAccess.h"
-#include "AST/Expressions/UnaryExpression.h"
-#include "AST/Statement.h"
-#include "AST/Statements/AssignmentStatement.h"
-#include "AST/Statements/CompoundStatement.h"
-#include "AST/Statements/ReturnStatement.h"
-#include "AST/Statements/VariableStatement.h"
+#include "AST.h"
 #include "Lexer.h"
 #include <wtf/text/StringBuilder.h>
 

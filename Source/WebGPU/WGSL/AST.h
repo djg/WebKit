@@ -25,64 +25,24 @@
 
 #pragma once
 
-namespace WGSL::AST {
-
-enum class AccessMode : uint8_t;
-enum class StorageClass : uint8_t;
-
-#pragma mark -
-#pragma mark Shader Module
-class ShaderModule;
-class GlobalDirective;
-
-#pragma mark -
-#pragma mark Attribute
-class Attribute;
-class BindingAttribute;
-class BuiltinAttribute;
-class GroupAttribute;
-class LocationAttribute;
-class StageAttribute;
-
-#pragma mark -
-#pragma mark Declaration
-class Declaration;
-class FunctionDeclaration;
-class StructureDeclaration;
-class StructureMember;
-class VariableDeclaration;
-class VariableQualifier;
-
-#pragma mark -
-#pragma mark Expression
-class Expression;
-class BoolLiteral;
-class Int32Literal;
-class Uint32Literal;
-class Float32Literal;
-class AbstractIntLiteral;
-class AbstractFloatLiteral;
-class IdentifierExpression;
-class ArrayAccess;
-class StructureAccess;
-class CallableExpression;
-class UnaryExpression;
-
-class Parameter;
-
-#pragma mark -
-#pragma mark Statement
-class Statement;
-class AssignmentStatement;
-class CompoundStatement;
-class ReturnStatement;
-class VariableStatement;
-
-#pragma mark -
-#pragma mark Types
-class TypeName;
-class ArrayTypeName;
-class NamedTypeName;
-class ParameterizedTypeName;
-
-} // namespace WGSL::AST
+#include "AST/Attribute.h"
+#include "AST/Declaration.h"
+#include "AST/Declarations/FunctionDeclaration.h"
+#include "AST/Declarations/StructureDeclaration.h"
+#include "AST/Declarations/VariableDeclaration.h"
+#include "AST/Expression.h"
+#include "AST/Expressions/ArrayAccess.h"
+#include "AST/Expressions/CallableExpression.h"
+#include "AST/Expressions/IdentifierExpression.h"
+#include "AST/Expressions/LiteralExpressions.h"
+#include "AST/Expressions/StructureAccess.h"
+#include "AST/Expressions/UnaryExpression.h"
+#include "AST/GlobalDirective.h"
+#include "AST/ShaderModule.h"
+#include "AST/Statement.h"
+#include "AST/Statements/AssignmentStatement.h"
+#include "AST/Statements/CompoundStatement.h"
+#include "AST/Statements/ReturnStatement.h"
+#include "AST/Statements/VariableStatement.h"
+#include "AST/TypeName.h"
+#include "AST/VariableQualifier.h"
