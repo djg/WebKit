@@ -69,6 +69,8 @@ String toString(TokenType type)
         return "storage"_s;
     case TokenType::KeywordUniform:
         return "uniform"_s;
+    case TokenType::KeywordType:
+        return "type"_s;
     case TokenType::KeywordVar:
         return "var"_s;
     case TokenType::KeywordWorkgroup:

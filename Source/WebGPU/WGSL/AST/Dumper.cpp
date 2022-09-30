@@ -180,6 +180,17 @@ void Dumper::visit(StructureDeclaration& structure)
     NODENT("}\n");
 }
 
+void Dumper::visit(TypeDeclaration& type)
+{
+    if (!type.attributes().isEmpty()) {
+        visitVector(type.attributes(), " ");
+        NODENT(" ");
+    }
+    NODENT("type ", type.name(), " = ");
+    visit(type.type());
+    NODENT(";");
+}
+
 void Dumper::visit(VariableDeclaration& variable)
 {
     if (!variable.attributes().isEmpty()) {

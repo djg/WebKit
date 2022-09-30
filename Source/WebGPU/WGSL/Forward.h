@@ -50,6 +50,7 @@ class Declaration;
 class FunctionDeclaration;
 class StructureDeclaration;
 class StructureMember;
+class TypeDeclaration;
 class VariableDeclaration;
 class VariableQualifier;
 

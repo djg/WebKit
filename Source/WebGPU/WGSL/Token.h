@@ -59,6 +59,7 @@ enum class TokenType: uint32_t {
     KeywordReturn,
     KeywordStorage,
     KeywordStruct,
+    KeywordType,
     KeywordUniform,
     KeywordVar,
     KeywordWorkgroup,

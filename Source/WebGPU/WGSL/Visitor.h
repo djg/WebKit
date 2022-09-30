@@ -50,10 +50,11 @@ public:
     // Declaration
     virtual void visit(AST::Declaration&);
     virtual void visit(AST::FunctionDeclaration&);
-    virtual void visit(AST::StructureDeclaration&);
-    virtual void visit(AST::VariableDeclaration&);
     virtual void visit(AST::Parameter&);
+    virtual void visit(AST::StructureDeclaration&);
     virtual void visit(AST::StructureMember&);
+    virtual void visit(AST::TypeDeclaration&);
+    virtual void visit(AST::VariableDeclaration&);
     virtual void visit(AST::VariableQualifier&);
 
     // Expression

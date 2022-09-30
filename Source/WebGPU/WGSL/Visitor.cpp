@@ -128,6 +128,9 @@ void Visitor::visit(AST::Declaration& declaration)
     case AST::Declaration::Kind::Structure:
         checkErrorAndVisit(downcast<AST::StructureDeclaration>(declaration));
         break;
+    case AST::Declaration::Kind::Type:
+        checkErrorAndVisit(downcast<AST::TypeDeclaration>(declaration));
+        break;
     case AST::Declaration::Kind::Variable:
         checkErrorAndVisit(downcast<AST::VariableDeclaration>(declaration));
         break;
@@ -152,6 +155,12 @@ void Visitor::visit(AST::StructureDeclaration& structureDeclaration)
         checkErrorAndVisit(attribute);
     for (auto& member : structureDeclaration.members())
         checkErrorAndVisit(member);
+}
+
+void Visitor::visit(AST::TypeDeclaration& typeDeclaration)
+{
+    for (auto& attribute: typeDeclaration.attributes())
+        checkErrorAndVisit(attribute);
 }
 
 void Visitor::visit(AST::VariableDeclaration& varDeclaration)

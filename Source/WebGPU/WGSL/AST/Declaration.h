@@ -36,9 +36,10 @@ class Declaration : public ASTNode {
 
 public:
     enum class Kind {
-        Variable,
-        Structure,
         Function,
+        Structure,
+        Type,
+        Variable,
     };
 
     using List = UniqueRefVector<Declaration>;
@@ -51,9 +52,10 @@ public:
     virtual ~Declaration() {}
 
     virtual Kind kind() const = 0;
-    bool isVariable() const { return kind() == Kind::Variable; }
-    bool isStructure() const { return kind() == Kind::Structure; }
     bool isFunction() const { return kind() == Kind::Function; }
+    bool isStructure() const { return kind() == Kind::Structure; }
+    bool isType() const { return kind() == Kind::Type; }
+    bool isVariable() const { return kind() == Kind::Variable; }
 };
 
 } // namespace WGSL::AST

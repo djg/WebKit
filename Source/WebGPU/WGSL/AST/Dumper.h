@@ -25,6 +25,7 @@
 
 #pragma once
 
+#include "Declarations/TypeDeclaration.h"
 #include "Visitor.h"
 #include <wtf/StringPrintStream.h>
 
@@ -53,10 +54,11 @@ public:
 
     // Declaration
     void visit(FunctionDeclaration&) override;
-    void visit(StructureDeclaration&) override;
-    void visit(VariableDeclaration&) override;
     void visit(Parameter&) override;
+    void visit(StructureDeclaration&) override;
     void visit(StructureMember&) override;
+    void visit(TypeDeclaration&) override;
+    void visit(VariableDeclaration&) override;
     void visit(VariableQualifier&) override;
 
     // Expression

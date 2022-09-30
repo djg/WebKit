@@ -53,6 +53,7 @@ public:
     Result<AST::TypeName::Ref> parseTypeName();
     Result<AST::TypeName::Ref> parseTypeNameAfterIdentifier(StringView&&, SourcePosition start);
     Result<AST::TypeName::Ref> parseArrayTypeName();
+    Result<AST::TypeDeclaration::Ref> parseTypeDeclaration();
     Result<AST::VariableDeclaration::Ref> parseVariableDeclaration();
     Result<AST::VariableQualifier> parseVariableQualifier();
     Result<AST::StorageClass> parseStorageClass();

@@ -111,6 +111,7 @@ TEST(WGSLLexerTests, KeywordTokens)
     checkSingleToken("return"_s,     TokenType::KeywordReturn);
     checkSingleToken("storage"_s,    TokenType::KeywordStorage);
     checkSingleToken("struct"_s,     TokenType::KeywordStruct);
+    checkSingleToken("type"_s,       TokenType::KeywordType);
     checkSingleToken("uniform"_s,    TokenType::KeywordUniform);
     checkSingleToken("var"_s,        TokenType::KeywordVar);
     checkSingleToken("workgroup"_s,  TokenType::KeywordWorkgroup);

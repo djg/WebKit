@@ -164,6 +164,13 @@ Result<AST::ShaderModule> Parser<Lexer>::parseShader()
             shaderModule.functions().append(WTFMove(functionDecl));
             break;
         }
+        case TokenType::KeywordType: {
+            PARSE(typeDecl, TypeDeclaration);
+            typeDecl->attributes() = WTFMove(attributes);
+            CONSUME_TYPE(Semicolon);
+            shaderModule.types().append(WTFMove(typeDecl));
+            break;
+        }
         default:
             FAIL("Trying to parse a GlobalDecl, expected 'var', 'fn', or 'struct'."_s);
         }
@@ -344,6 +351,19 @@ Result<AST::TypeName::Ref> Parser<Lexer>::parseArrayTypeName()
     }
 
     RETURN_NODE_REF(ArrayTypeName, WTFMove(maybeElementType), WTFMove(maybeElementCount));
+}
+
+template<typename Lexer>
+Result<AST::TypeDeclaration::Ref> Parser<Lexer>::parseTypeDeclaration()
+{
+    START_PARSE();
+
+    CONSUME_TYPE(KeywordType);
+    CONSUME_TYPE_NAMED(name, Identifier);
+    CONSUME_TYPE(Equal);
+    PARSE(typeName, TypeName);
+
+    RETURN_NODE_REF(TypeDeclaration, name.m_ident, WTFMove(typeName));
 }
 
 template<typename Lexer>

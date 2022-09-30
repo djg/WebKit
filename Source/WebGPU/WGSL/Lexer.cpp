@@ -228,6 +228,8 @@ Token Lexer<T>::lex()
                 return makeToken(TokenType::KeywordStorage);
             if (view == "struct"_s)
                 return makeToken(TokenType::KeywordStruct);
+            if (view == "type"_s)
+                return makeToken(TokenType::KeywordType);
             if (view == "uniform"_s)
                 return makeToken(TokenType::KeywordUniform);
             if (view == "var"_s)

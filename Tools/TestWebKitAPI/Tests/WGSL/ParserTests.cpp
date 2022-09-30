@@ -470,4 +470,13 @@ TEST(WGSLParserTests, RedFrag)
     EXPECT_EQ(shader->functions().size(), 1u);
 }
 
+TEST(WGSLParserTests, TypeAliases)
+{
+    auto shader = WGSL::parseLChar(
+        "type Arr = array<i32, 2>;\n"
+        "type single = f32;\n"_s);
+
+    EXPECT_SHADER(shader);
 }
+
+} // namespace TestWGSLAPI
