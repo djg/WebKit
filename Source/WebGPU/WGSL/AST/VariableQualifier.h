@@ -45,7 +45,10 @@ enum class AccessMode : uint8_t {
 
 class VariableQualifier final : public ASTNode {
     WTF_MAKE_FAST_ALLOCATED;
+
 public:
+    using Ptr = std::unique_ptr<VariableQualifier>;
+
     VariableQualifier(SourceSpan span, StorageClass storageClass, AccessMode accessMode)
         : ASTNode(span)
         , m_storageClass(storageClass)

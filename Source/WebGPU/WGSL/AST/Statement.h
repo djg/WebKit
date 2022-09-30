@@ -26,7 +26,10 @@
 #pragma once
 
 #include "ASTNode.h"
+
 #include <wtf/TypeCasts.h>
+#include <wtf/UniqueRef.h>
+#include <wtf/UniqueRefVector.h>
 
 namespace WGSL::AST {
 
@@ -41,6 +44,7 @@ public:
         Variable,
     };
 
+    using Ref = UniqueRef<Statement>;
     using List = UniqueRefVector<Statement>;
 
     Statement(SourceSpan span)

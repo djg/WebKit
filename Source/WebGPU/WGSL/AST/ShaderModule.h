@@ -50,7 +50,7 @@ public:
     FunctionDeclaration::List& functions() { return m_functions; }
 
     const GlobalDirective::List& directives() const { return m_directives; }
-    const StructureDeclaration::List& structs() const { return m_structures; }
+    const StructureDeclaration::List& structures() const { return m_structures; }
     const VariableDeclaration::List& variables() const { return m_variables; }
     const FunctionDeclaration::List& functions() const { return m_functions; }
 

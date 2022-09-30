@@ -28,6 +28,7 @@
 #include "ASTNode.h"
 #include "Expression.h"
 #include <wtf/TypeCasts.h>
+#include <wtf/text/StringView.h>
 
 namespace WGSL::AST {
 
@@ -40,6 +41,9 @@ public:
         Named,
         Parameterized,
     };
+
+    using Ptr = std::unique_ptr<TypeName>;
+    using Ref = UniqueRef<TypeName>;
 
     TypeName(SourceSpan span)
         : ASTNode(span)
@@ -56,8 +60,9 @@ public:
 
 class ArrayTypeName final : public TypeName {
     WTF_MAKE_FAST_ALLOCATED;
+
 public:
-    ArrayTypeName(SourceSpan span, std::unique_ptr<TypeName>&& elementType, std::unique_ptr<Expression>&& elementCount)
+    ArrayTypeName(SourceSpan span, TypeName::Ptr&& elementType, Expression::Ptr&& elementCount)
         : TypeName(span)
         , m_elementType(WTFMove(elementType))
         , m_elementCount(WTFMove(elementCount))
@@ -69,12 +74,13 @@ public:
     Expression* maybeElementCount() const { return m_elementCount.get(); }
 
 private:
-    std::unique_ptr<TypeName> m_elementType;
-    std::unique_ptr<Expression> m_elementCount;
+    TypeName::Ptr m_elementType;
+    Expression::Ptr m_elementCount;
 };
 
 class NamedTypeName final : public TypeName {
     WTF_MAKE_FAST_ALLOCATED;
+
 public:
     NamedTypeName(SourceSpan span, StringView&& name)
         : TypeName(span)
@@ -91,6 +97,7 @@ private:
 
 class ParameterizedTypeName : public TypeName {
     WTF_MAKE_FAST_ALLOCATED;
+
 public:
     enum class Base {
         Vec2,
@@ -107,7 +114,7 @@ public:
         Mat4x4
     };
 
-    ParameterizedTypeName(SourceSpan span, Base base, UniqueRef<TypeName>&& elementType)
+    ParameterizedTypeName(SourceSpan span, Base base, TypeName::Ref&& elementType)
         : TypeName(span)
         , m_base(base)
         , m_elementType(WTFMove(elementType))
@@ -149,7 +156,7 @@ public:
 
 private:
     Base m_base;
-    UniqueRef<TypeName> m_elementType;
+    TypeName::Ref m_elementType;
 };
 
 } // namespace WGSL::AST

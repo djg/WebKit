@@ -34,7 +34,7 @@ namespace WGSL::AST {
 class VariableStatement final : public Statement {
     WTF_MAKE_FAST_ALLOCATED;
 public:
-    VariableStatement(SourceSpan span, UniqueRef<VariableDeclaration>&& decl)
+    VariableStatement(SourceSpan span, VariableDeclaration::Ref&& decl)
         : Statement(span)
         , m_declaration(WTFMove(decl))
     {
@@ -44,7 +44,7 @@ public:
     VariableDeclaration& declaration() { return m_declaration.get(); }
 
 private:
-    UniqueRef<VariableDeclaration> m_declaration;
+    VariableDeclaration::Ref m_declaration;
 };
 
 } // namespace WGSL::AST

@@ -33,6 +33,8 @@ class CompoundStatement final : public Statement {
     WTF_MAKE_FAST_ALLOCATED;
 
 public:
+    using Ref = UniqueRef<CompoundStatement>;
+
     CompoundStatement(SourceSpan span, Statement::List&& statements)
         : Statement(span)
         , m_statements(WTFMove(statements))

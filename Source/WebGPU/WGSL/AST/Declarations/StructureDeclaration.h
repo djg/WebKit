@@ -42,7 +42,7 @@ class StructureMember final : public ASTNode {
 public:
     using List = UniqueRefVector<StructureMember>;
 
-    StructureMember(SourceSpan span, StringView name, UniqueRef<TypeName>&& type, Attribute::List&& attributes)
+    StructureMember(SourceSpan span, StringView name, TypeName::Ref&& type, Attribute::List&& attributes)
         : ASTNode(span)
         , m_name(name)
         , m_attributes(WTFMove(attributes))
@@ -57,13 +57,14 @@ public:
 private:
     StringView m_name;
     Attribute::List m_attributes;
-    UniqueRef<TypeName> m_type;
+    TypeName::Ref m_type;
 };
 
 class StructureDeclaration final : public Declaration {
     WTF_MAKE_FAST_ALLOCATED;
 
 public:
+    using Ref = UniqueRef<StructureDeclaration>;
     using List = UniqueRefVector<StructureDeclaration>;
 
     StructureDeclaration(SourceSpan sourceSpan, StringView name, StructureMember::List&& members, Attribute::List&& attributes)

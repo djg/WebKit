@@ -39,9 +39,10 @@ class VariableDeclaration final : public Declaration {
     WTF_MAKE_FAST_ALLOCATED;
 
 public:
+    using Ref = UniqueRef<VariableDeclaration>;
     using List = UniqueRefVector<VariableDeclaration>;
 
-    VariableDeclaration(SourceSpan span, StringView name, std::unique_ptr<VariableQualifier>&& qualifier, std::unique_ptr<TypeName>&& type, std::unique_ptr<Expression>&& initializer, Attribute::List&& attributes)
+    VariableDeclaration(SourceSpan span, StringView name, VariableQualifier::Ptr&& qualifier, TypeName::Ptr&& type, Expression::Ptr&& initializer, Attribute::List&& attributes)
         : Declaration(span)
         , m_name(name)
         , m_attributes(WTFMove(attributes))
@@ -64,9 +65,9 @@ private:
     Attribute::List m_attributes;
     // Each of the following may be null
     // But at least one of type and initializer must be non-null
-    std::unique_ptr<VariableQualifier> m_qualifier;
-    std::unique_ptr<TypeName> m_type;
-    std::unique_ptr<Expression> m_initializer;
+    VariableQualifier::Ptr m_qualifier;
+    TypeName::Ptr m_type;
+    Expression::Ptr m_initializer;
 };
 
 } // namespace WGSL::AST

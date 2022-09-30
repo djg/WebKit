@@ -33,7 +33,7 @@ namespace WGSL::AST {
 class StructureAccess final : public Expression {
     WTF_MAKE_FAST_ALLOCATED;
 public:
-    StructureAccess(SourceSpan span, UniqueRef<Expression>&& base, StringView fieldName)
+    StructureAccess(SourceSpan span, Expression::Ref&& base, StringView fieldName)
         : Expression(span)
         , m_base(WTFMove(base))
         , m_fieldName(fieldName)
@@ -45,7 +45,7 @@ public:
     const StringView& fieldName() const { return m_fieldName; }
 
 private:
-    UniqueRef<Expression> m_base;
+    Expression::Ref m_base;
     StringView m_fieldName;
 };
 

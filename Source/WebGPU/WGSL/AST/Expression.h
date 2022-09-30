@@ -27,6 +27,7 @@
 
 #include "ASTNode.h"
 
+#include <memory>
 #include <wtf/TypeCasts.h>
 #include <wtf/UniqueRefVector.h>
 
@@ -50,6 +51,8 @@ public:
         UnaryExpression,
     };
 
+    using Ptr = std::unique_ptr<Expression>;
+    using Ref = UniqueRef<Expression>;
     using List = UniqueRefVector<Expression>;
 
     Expression(SourceSpan span)

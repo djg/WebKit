@@ -34,7 +34,7 @@ namespace WGSL::AST {
 class ArrayAccess final : public Expression {
     WTF_MAKE_FAST_ALLOCATED;
 public:
-    ArrayAccess(SourceSpan span, UniqueRef<Expression>&& base, UniqueRef<Expression>&& index)
+    ArrayAccess(SourceSpan span, Expression::Ref&& base, Expression::Ref&& index)
         : Expression(span)
         , m_base(WTFMove(base))
         , m_index(WTFMove(index))
@@ -46,8 +46,8 @@ public:
     Expression& index() { return m_index.get(); }
 
 private:
-    UniqueRef<Expression> m_base;
-    UniqueRef<Expression> m_index;
+    Expression::Ref m_base;
+    Expression::Ref m_index;
 };
 
 } // namespace WGSL::AST

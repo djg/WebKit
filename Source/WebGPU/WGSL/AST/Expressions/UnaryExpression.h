@@ -36,7 +36,7 @@ enum class UnaryOperation : uint8_t {
 class UnaryExpression final : public Expression {
     WTF_MAKE_FAST_ALLOCATED;
 public:
-    UnaryExpression(SourceSpan span, UniqueRef<Expression>&& expression, UnaryOperation operation)
+    UnaryExpression(SourceSpan span, Expression::Ref&& expression, UnaryOperation operation)
         : Expression(span)
         , m_expression(WTFMove(expression))
         , m_operation(operation)
@@ -48,7 +48,7 @@ public:
     Expression& expression() { return m_expression.get(); }
 
 private:
-    UniqueRef<Expression> m_expression;
+    Expression::Ref m_expression;
     UnaryOperation m_operation;
 };
 

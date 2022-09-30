@@ -46,6 +46,7 @@ public:
         Builtin,
     };
 
+    using Ref = UniqueRef<Attribute>;
     using List = UniqueRefVector<Attribute, 2>;
 
     Attribute(SourceSpan span)

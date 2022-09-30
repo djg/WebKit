@@ -40,7 +40,7 @@ class CallableExpression final : public Expression {
     WTF_MAKE_FAST_ALLOCATED;
 
 public:
-    CallableExpression(SourceSpan span, UniqueRef<TypeName>&& target, Expression::List&& arguments)
+    CallableExpression(SourceSpan span, TypeName::Ref&& target, Expression::List&& arguments)
         : Expression(span)
         , m_target(WTFMove(target))
         , m_arguments(WTFMove(arguments))
@@ -48,10 +48,7 @@ public:
     }
 
     Kind kind() const override { return Kind::CallableExpression; }
-    TypeName& target()
-    {
-        return m_target;
-    }
+    TypeName& target() { return m_target; }
     Expression::List& arguments() { return m_arguments; }
 
 private:
@@ -59,7 +56,7 @@ private:
     //   * Type that does not accept parameters (bool, i32, u32, ...)
     //   * Identifier that refers to a type alias.
     //   * Identifier that refers to a function.
-    UniqueRef<TypeName> m_target;
+    TypeName::Ref m_target;
     Expression::List m_arguments;
 };
 

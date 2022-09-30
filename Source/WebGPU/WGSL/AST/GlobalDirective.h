@@ -26,6 +26,8 @@
 #pragma once
 
 #include "ASTNode.h"
+
+#include <wtf/UniqueRefVector.h>
 #include <wtf/text/WTFString.h>
 
 namespace WGSL::AST {

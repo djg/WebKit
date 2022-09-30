@@ -39,9 +39,10 @@ class Parameter final : public ASTNode {
     WTF_MAKE_FAST_ALLOCATED;
 
 public:
+    using Ref = UniqueRef<Parameter>;
     using List = UniqueRefVector<Parameter>;
 
-    Parameter(SourceSpan span, StringView name, UniqueRef<TypeName>&& type, Attribute::List&& attributes)
+    Parameter(SourceSpan span, StringView name, TypeName::Ref&& type, Attribute::List&& attributes)
         : ASTNode(span)
         , m_name(WTFMove(name))
         , m_type(WTFMove(type))
@@ -50,15 +51,12 @@ public:
     }
 
     const StringView& name() const { return m_name; }
-    TypeName& type()
-    {
-        return m_type;
-    }
+    TypeName& type() { return m_type; }
     Attribute::List& attributes() { return m_attributes; }
 
 private:
     StringView m_name;
-    UniqueRef<TypeName> m_type;
+    TypeName::Ref m_type;
     Attribute::List m_attributes;
 };
 
@@ -66,9 +64,10 @@ class FunctionDeclaration final : public Declaration {
     WTF_MAKE_FAST_ALLOCATED;
 
 public:
+    using Ref = UniqueRef<FunctionDeclaration>;
     using List = UniqueRefVector<FunctionDeclaration>;
 
-    FunctionDeclaration(SourceSpan sourceSpan, StringView name, Parameter::List&& parameters, std::unique_ptr<TypeName>&& returnType, CompoundStatement&& body, Attribute::List&& attributes, Attribute::List&& returnAttributes)
+    FunctionDeclaration(SourceSpan sourceSpan, StringView name, Parameter::List&& parameters, TypeName::Ptr&& returnType, CompoundStatement&& body, Attribute::List&& attributes, Attribute::List&& returnAttributes)
         : Declaration(sourceSpan)
         , m_name(name)
         , m_parameters(WTFMove(parameters))
@@ -81,10 +80,7 @@ public:
 
     Kind kind() const override { return Kind::Function; }
     const StringView& name() const { return m_name; }
-    Parameter::List& parameters()
-    {
-        return m_parameters;
-    }
+    Parameter::List& parameters() { return m_parameters; }
     Attribute::List& attributes() { return m_attributes; }
     Attribute::List& returnAttributes() { return m_returnAttributes; }
     TypeName* maybeReturnType() { return m_returnType.get(); }
@@ -98,7 +94,7 @@ private:
     Parameter::List m_parameters;
     Attribute::List m_attributes;
     Attribute::List m_returnAttributes;
-    std::unique_ptr<TypeName> m_returnType;
+    TypeName::Ptr m_returnType;
     CompoundStatement m_body;
 };
 
