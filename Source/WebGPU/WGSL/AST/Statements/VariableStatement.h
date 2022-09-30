@@ -27,6 +27,7 @@
 
 #include "Decl.h"
 #include "Statement.h"
+#include "VariableDecl.h"
 #include <wtf/UniqueRef.h>
 
 namespace WGSL::AST {
@@ -34,9 +35,9 @@ namespace WGSL::AST {
 class VariableStatement final : public Statement {
     WTF_MAKE_FAST_ALLOCATED;
 public:
-    VariableStatement(SourceSpan span, VariableDecl&& decl)
+    VariableStatement(SourceSpan span, UniqueRef<VariableDecl>&& decl)
         : Statement(span)
-        , m_decl(makeUniqueRef<VariableDecl>(WTFMove(decl)))
+        , m_decl(WTFMove(decl))
     {
     }
 

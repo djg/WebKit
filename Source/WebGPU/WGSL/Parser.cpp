@@ -24,6 +24,7 @@
  */
 
 #include "Parser.h"
+#include "AST/ShaderModule.h"
 #include "ParserPrivate.h"
 
 #include "config.h"
@@ -54,17 +55,17 @@ namespace WGSL {
 #define CURRENT_SOURCE_SPAN() \
     SourceSpan(_startOfElementPosition, m_lexer.currentPosition())
 
-#define RETURN_NODE(type, ...) \
-    do { \
+#define RETURN_NODE(type, ...)                                       \
+    do {                                                             \
         AST::type astNodeResult(CURRENT_SOURCE_SPAN(), __VA_ARGS__); \
-        return { WTFMove(astNodeResult) }; \
+        return { WTFMove(astNodeResult) };                           \
     } while (false)
 
 // Passing 0 arguments beyond the type to RETURN_NODE is invalid because of a stupid limitation of the C preprocessor
-#define RETURN_NODE_NO_ARGS(type) \
-    do { \
+#define RETURN_NODE_NO_ARGS(type)                       \
+    do {                                                \
         AST::type astNodeResult(CURRENT_SOURCE_SPAN()); \
-        return { WTFMove(astNodeResult) }; \
+        return { WTFMove(astNodeResult) };              \
     } while (false)
 
 #define RETURN_NODE_REF(type, ...) \
@@ -79,37 +80,37 @@ namespace WGSL {
 
 // Warning: cannot use the do..while trick because it defines a new identifier named `name`.
 // So do not use after an if/for/while without braces.
-#define PARSE(name, element, ...) \
+#define PARSE(name, element, ...)                      \
     auto name##Expected = parse##element(__VA_ARGS__); \
-    if (!name##Expected) \
+    if (!name##Expected)                               \
         return makeUnexpected(name##Expected.error()); \
     auto& name = *name##Expected;
 
 // Warning: cannot use the do..while trick because it defines a new identifier named `name`.
 // So do not use after an if/for/while without braces.
-#define CONSUME_TYPE_NAMED(name, type) \
-    auto name##Expected = consumeType(TokenType::type); \
-    if (!name##Expected) { \
-        StringBuilder builder; \
-        builder.append("Expected a "); \
-        builder.append(toString(TokenType::type)); \
-        builder.append(", but got a "); \
+#define CONSUME_TYPE_NAMED(name, type)                    \
+    auto name##Expected = consumeType(TokenType::type);   \
+    if (!name##Expected) {                                \
+        StringBuilder builder;                            \
+        builder.append("Expected a ");                    \
+        builder.append(toString(TokenType::type));        \
+        builder.append(", but got a ");                   \
         builder.append(toString(name##Expected.error())); \
-        FAIL(builder.toString()); \
-    } \
+        FAIL(builder.toString());                         \
+    }                                                     \
     auto& name = *name##Expected;
 
-#define CONSUME_TYPE(type) \
-    do { \
-        auto expectedToken = consumeType(TokenType::type); \
-        if (!expectedToken) { \
-            StringBuilder builder; \
-            builder.append("Expected a "); \
-            builder.append(toString(TokenType::type)); \
-            builder.append(", but got a "); \
+#define CONSUME_TYPE(type)                                   \
+    do {                                                     \
+        auto expectedToken = consumeType(TokenType::type);   \
+        if (!expectedToken) {                                \
+            StringBuilder builder;                           \
+            builder.append("Expected a ");                   \
+            builder.append(toString(TokenType::type));       \
+            builder.append(", but got a ");                  \
             builder.append(toString(expectedToken.error())); \
-            FAIL(builder.toString()); \
-        } \
+            FAIL(builder.toString());                        \
+        }                                                    \
     } while (false)
 
 template<typename Lexer>
@@ -117,7 +118,7 @@ Expected<AST::ShaderModule, Error> parse(const String& wgsl)
 {
     Lexer lexer(wgsl);
     Parser parser(lexer);
-    
+
     return parser.parseShader();
 }
 
@@ -153,42 +154,35 @@ Expected<AST::ShaderModule, Error> Parser<Lexer>::parseShader()
 {
     START_PARSE();
 
-    AST::GlobalDirective::List directives;
+    AST::ShaderModule shaderModule;
+
     // FIXME: parse directives here.
-
-    AST::Decl::List decls;
     while (!m_lexer.isAtEndOfFile()) {
-        PARSE(globalDecl, GlobalDecl)
-        decls.append(WTFMove(globalDecl));
+        PARSE(attributes, Attributes);
+
+        switch (current().m_type) {
+        case TokenType::KeywordStruct: {
+            PARSE(structDecl, StructDecl, WTFMove(attributes));
+            shaderModule.structs().append(WTFMove(structDecl));
+            break;
+        }
+        case TokenType::KeywordVar: {
+            PARSE(variableDecl, VariableDeclWithAttributes, WTFMove(attributes));
+            CONSUME_TYPE(Semicolon);
+            shaderModule.variables().append(WTFMove(variableDecl));
+            break;
+        }
+        case TokenType::KeywordFn: {
+            PARSE(functionDecl, FunctionDecl, WTFMove(attributes));
+            shaderModule.functions().append(WTFMove(functionDecl));
+            break;
+        }
+        default:
+            FAIL("Trying to parse a GlobalDecl, expected 'var', 'fn', or 'struct'."_s);
+        }
     }
 
-    RETURN_NODE(ShaderModule, WTFMove(directives), WTFMove(decls));
-}
-
-template<typename Lexer>
-Expected<UniqueRef<AST::Decl>, Error> Parser<Lexer>::parseGlobalDecl()
-{
-    START_PARSE();
-
-    PARSE(attributes, Attributes);
-
-    switch (current().m_type) {
-    case TokenType::KeywordStruct: {
-        PARSE(structDecl, StructDecl, WTFMove(attributes));
-        return { makeUniqueRef<AST::StructDecl>(WTFMove(structDecl)) };
-    }
-    case TokenType::KeywordVar: {
-        PARSE(varDecl, VariableDeclWithAttributes, WTFMove(attributes));
-        CONSUME_TYPE(Semicolon);
-        return { makeUniqueRef<AST::VariableDecl>(WTFMove(varDecl)) };
-    }
-    case TokenType::KeywordFn: {
-        PARSE(fn, FunctionDecl, WTFMove(attributes));
-        return { makeUniqueRef<AST::FunctionDecl>(WTFMove(fn)) };
-    }
-    default:
-        FAIL("Trying to parse a GlobalDecl, expected 'var', 'fn', or 'struct'."_s);
-    }
+    return shaderModule;
 }
 
 template<typename Lexer>
@@ -255,7 +249,7 @@ Expected<UniqueRef<AST::Attribute>, Error> Parser<Lexer>::parseAttribute()
 }
 
 template<typename Lexer>
-Expected<AST::StructDecl, Error> Parser<Lexer>::parseStructDecl(AST::Attribute::List&& attributes)
+Expected<UniqueRef<AST::StructDecl>, Error> Parser<Lexer>::parseStructDecl(AST::Attribute::List&& attributes)
 {
     START_PARSE();
 
@@ -271,7 +265,7 @@ Expected<AST::StructDecl, Error> Parser<Lexer>::parseStructDecl(AST::Attribute::
 
     CONSUME_TYPE(BraceRight);
 
-    RETURN_NODE(StructDecl, name.m_ident, WTFMove(members), WTFMove(attributes));
+    RETURN_NODE_REF(StructDecl, name.m_ident, WTFMove(members), WTFMove(attributes));
 }
 
 template<typename Lexer>
@@ -366,13 +360,13 @@ Expected<UniqueRef<AST::TypeDecl>, Error> Parser<Lexer>::parseArrayType()
 }
 
 template<typename Lexer>
-Expected<AST::VariableDecl, Error> Parser<Lexer>::parseVariableDecl()
+Expected<UniqueRef<AST::VariableDecl>, Error> Parser<Lexer>::parseVariableDecl()
 {
     return parseVariableDeclWithAttributes(AST::Attribute::List {});
 }
 
 template<typename Lexer>
-Expected<AST::VariableDecl, Error> Parser<Lexer>::parseVariableDeclWithAttributes(AST::Attribute::List&& attributes)
+Expected<UniqueRef<AST::VariableDecl>, Error> Parser<Lexer>::parseVariableDeclWithAttributes(AST::Attribute::List&& attributes)
 {
     START_PARSE();
 
@@ -400,7 +394,7 @@ Expected<AST::VariableDecl, Error> Parser<Lexer>::parseVariableDeclWithAttribute
         maybeInitializer = initializerExpr.moveToUniquePtr();
     }
 
-    RETURN_NODE(VariableDecl, name.m_ident, WTFMove(maybeQualifier), WTFMove(maybeType), WTFMove(maybeInitializer), WTFMove(attributes));
+    RETURN_NODE_REF(VariableDecl, name.m_ident, WTFMove(maybeQualifier), WTFMove(maybeType), WTFMove(maybeInitializer), WTFMove(attributes));
 }
 
 template<typename Lexer>
@@ -475,7 +469,7 @@ Expected<AST::AccessMode, Error> Parser<Lexer>::parseAccessMode()
 }
 
 template<typename Lexer>
-Expected<AST::FunctionDecl, Error> Parser<Lexer>::parseFunctionDecl(AST::Attribute::List&& attributes)
+Expected<UniqueRef<AST::FunctionDecl>, Error> Parser<Lexer>::parseFunctionDecl(AST::Attribute::List&& attributes)
 {
     START_PARSE();
 
@@ -502,7 +496,7 @@ Expected<AST::FunctionDecl, Error> Parser<Lexer>::parseFunctionDecl(AST::Attribu
 
     PARSE(body, CompoundStatement);
 
-    RETURN_NODE(FunctionDecl, name.m_ident, WTFMove(parameters), WTFMove(maybeReturnType), WTFMove(body), WTFMove(attributes), WTFMove(returnAttributes));
+    RETURN_NODE_REF(FunctionDecl, name.m_ident, WTFMove(parameters), WTFMove(maybeReturnType), WTFMove(body), WTFMove(attributes), WTFMove(returnAttributes));
 }
 
 template<typename Lexer>
@@ -582,7 +576,7 @@ Expected<AST::ReturnStatement, Error> Parser<Lexer>::parseReturnStatement()
     CONSUME_TYPE(KeywordReturn);
 
     if (current().m_type == TokenType::Semicolon) {
-        RETURN_NODE(ReturnStatement, { });
+        RETURN_NODE(ReturnStatement, {});
     }
 
     PARSE(expr, ShortCircuitOrExpression);
@@ -743,7 +737,7 @@ Expected<UniqueRef<AST::Expression>, Error> Parser<Lexer>::parsePrimaryExpressio
         CONSUME_TYPE_NAMED(lit, HexFloatLiteral);
         RETURN_NODE_REF(AbstractFloatLiteral, lit.m_literalValue);
     }
-    // TODO: bitcast expression
+        // TODO: bitcast expression
 
     default:
         break;

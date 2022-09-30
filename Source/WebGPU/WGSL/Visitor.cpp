@@ -75,7 +75,7 @@ void Visitor::visit(AST::ShaderModule& shaderModule)
         checkErrorAndVisit(directive);
     for (auto& structDecl: shaderModule.structs())
         checkErrorAndVisit(structDecl);
-    for (auto& variableDecl: shaderModule.globalVars())
+    for (auto& variableDecl: shaderModule.variables())
         checkErrorAndVisit(variableDecl);
     for (auto& functionDecl: shaderModule.functions())
         checkErrorAndVisit(functionDecl);
