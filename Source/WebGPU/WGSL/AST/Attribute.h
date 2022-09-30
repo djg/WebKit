@@ -26,6 +26,7 @@
 #pragma once
 
 #include "ASTNode.h"
+#include "SourceSpan.h"
 
 #include <wtf/UniqueRef.h>
 #include <wtf/UniqueRefVector.h>
@@ -44,6 +45,7 @@ public:
         Stage,
         Location,
         Builtin,
+        Native,
     };
 
     using Ref = UniqueRef<Attribute>;
@@ -62,6 +64,7 @@ public:
     bool isStage() const { return kind() == Kind::Stage; }
     bool isLocation() const { return kind() == Kind::Location; }
     bool isBuiltin() const { return kind() == Kind::Builtin; }
+    bool isNative() const { return kind() == Kind::Native; }
 };
 
 class GroupAttribute final : public Attribute {
@@ -155,6 +158,18 @@ private:
     unsigned m_value;
 };
 
+class NativeAttribute final : public Attribute {
+    WTF_MAKE_FAST_ALLOCATED;
+
+public:
+    NativeAttribute(SourceSpan span)
+        : Attribute(span)
+    {
+    }
+
+    Kind kind() const override { return Kind::Native; }
+};
+
 } // namespace WGSL::AST
 
 #define SPECIALIZE_TYPE_TRAITS_WGSL_ATTRIBUTE(ToValueTypeName, predicate) \
@@ -167,3 +182,4 @@ SPECIALIZE_TYPE_TRAITS_WGSL_ATTRIBUTE(BindingAttribute, isBinding())
 SPECIALIZE_TYPE_TRAITS_WGSL_ATTRIBUTE(StageAttribute, isStage())
 SPECIALIZE_TYPE_TRAITS_WGSL_ATTRIBUTE(LocationAttribute, isLocation())
 SPECIALIZE_TYPE_TRAITS_WGSL_ATTRIBUTE(BuiltinAttribute, isBuiltin())
+SPECIALIZE_TYPE_TRAITS_WGSL_ATTRIBUTE(NativeAttribute, isNative())

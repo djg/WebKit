@@ -28,6 +28,7 @@
 #include "AST/Attribute.h"
 #include "AST/Declaration.h"
 #include "AST/Declarations/FunctionDeclaration.h"
+#include "AST/Declarations/NativeTypeDeclaration.h"
 #include "AST/Declarations/StructureDeclaration.h"
 #include "AST/Declarations/TypeDeclaration.h"
 #include "AST/Declarations/VariableDeclaration.h"

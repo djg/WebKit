@@ -37,6 +37,7 @@ class Declaration : public ASTNode {
 public:
     enum class Kind {
         Function,
+        NativeType,
         Structure,
         Type,
         Variable,
@@ -53,6 +54,7 @@ public:
 
     virtual Kind kind() const = 0;
     bool isFunction() const { return kind() == Kind::Function; }
+    bool isNativeType() const { return kind() == Kind::NativeType; }
     bool isStructure() const { return kind() == Kind::Structure; }
     bool isType() const { return kind() == Kind::Type; }
     bool isVariable() const { return kind() == Kind::Variable; }

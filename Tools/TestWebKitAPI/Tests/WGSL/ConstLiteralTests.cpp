@@ -24,6 +24,7 @@
  */
 
 #import "config.h"
+#include "Parser.h"
 
 #import "LiteralExpressions.h"
 #import "ParserPrivate.h"
@@ -31,7 +32,7 @@
 static Expected<UniqueRef<WGSL::AST::Expression>, WGSL::Error> parseLCharPrimaryExpression(const String& input)
 {
     WGSL::Lexer<LChar> lexer(input);
-    WGSL::Parser parser(lexer);
+    WGSL::Parser parser(lexer, WGSL::ParsingMode::User);
 
     return parser.parsePrimaryExpression();
 }

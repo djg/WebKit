@@ -25,6 +25,7 @@
 
 #pragma once
 
+#include "AST/Attribute.h"
 #include "CompilationMessage.h"
 #include "Forward.h"
 #include <wtf/Expected.h>
@@ -46,11 +47,13 @@ public:
     virtual void visit(AST::StageAttribute&);
     virtual void visit(AST::GroupAttribute&);
     virtual void visit(AST::LocationAttribute&);
+    virtual void visit(AST::NativeAttribute&);
 
     // Declaration
     virtual void visit(AST::Declaration&);
     virtual void visit(AST::FunctionDeclaration&);
     virtual void visit(AST::Parameter&);
+    virtual void visit(AST::NativeTypeDeclaration&);
     virtual void visit(AST::StructureDeclaration&);
     virtual void visit(AST::StructureMember&);
     virtual void visit(AST::TypeDeclaration&);

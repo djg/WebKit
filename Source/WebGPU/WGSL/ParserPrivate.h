@@ -28,6 +28,7 @@
 #include "AST.h"
 #include "CompilationMessage.h"
 #include "Lexer.h"
+#include "Parser.h"
 
 namespace WGSL {
 
@@ -37,9 +38,10 @@ using Result = Expected<T, Error>;
 template<typename Lexer>
 class Parser {
 public:
-    Parser(Lexer& lexer)
+    Parser(Lexer& lexer, ParsingMode mode)
         : m_lexer(lexer)
         , m_current(lexer.lex())
+        , m_mode(mode)
     {
     }
 
@@ -53,6 +55,7 @@ public:
     Result<AST::TypeName::Ref> parseTypeName();
     Result<AST::TypeName::Ref> parseTypeNameAfterIdentifier(StringView&&);
     Result<AST::TypeName::Ref> parseArrayTypeName();
+    Result<AST::NativeTypeDeclaration::Ref> parseNativeTypeDeclaration();
     Result<AST::TypeDeclaration::Ref> parseTypeDeclaration();
     Result<AST::VariableDeclaration::Ref> parseVariableDeclaration();
     Result<AST::VariableQualifier> parseVariableQualifier();
@@ -92,6 +95,7 @@ private:
 
     Lexer& m_lexer;
     Token m_current;
+    ParsingMode m_mode;
 };
 
 } // namespace WGSL

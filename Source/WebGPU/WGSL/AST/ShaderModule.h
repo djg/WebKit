@@ -29,6 +29,7 @@
 #include "Declaration.h"
 #include "FunctionDeclaration.h"
 #include "GlobalDirective.h"
+#include "NativeTypeDeclaration.h"
 #include "StructureDeclaration.h"
 #include "TypeDeclaration.h"
 #include "VariableDeclaration.h"
@@ -46,12 +47,14 @@ public:
     ShaderModule(ShaderModule&&) = default;
 
     GlobalDirective::List& directives() { return m_directives; }
+    NativeTypeDeclaration::List& nativeTypes() { return m_nativeTypes; }
     StructureDeclaration::List& structures() { return m_structures; }
     TypeDeclaration::List& types() { return m_types; }
     VariableDeclaration::List& variables() { return m_variables; }
     FunctionDeclaration::List& functions() { return m_functions; }
 
     const GlobalDirective::List& directives() const { return m_directives; }
+    const NativeTypeDeclaration::List& nativeTypes() const { return m_nativeTypes; }
     const StructureDeclaration::List& structures() const { return m_structures; }
     const TypeDeclaration::List& types() const { return m_types; }
     const VariableDeclaration::List& variables() const { return m_variables; }
@@ -59,6 +62,7 @@ public:
 
 private:
     GlobalDirective::List m_directives;
+    NativeTypeDeclaration::List m_nativeTypes;
     StructureDeclaration::List m_structures;
     TypeDeclaration::List m_types;
     VariableDeclaration::List m_variables;

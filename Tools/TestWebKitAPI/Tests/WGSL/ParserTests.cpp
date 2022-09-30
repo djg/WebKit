@@ -25,8 +25,6 @@
 
 #include "config.h"
 
-#include "TestWGSLAPI.h"
-#include "Parser.h"
 #include "ArrayAccess.h"
 #include "AssignmentStatement.h"
 #include "Attribute.h"
@@ -34,8 +32,12 @@
 #include "IdentifierExpression.h"
 #include "Lexer.h"
 #include "LiteralExpressions.h"
+#include "Parser.h"
+#include "ParserPrivate.h"
 #include "ReturnStatement.h"
 #include "StructureAccess.h"
+#include "TestWGSLAPI.h"
+#include "TypeName.h"
 #include "UnaryExpression.h"
 #include "VariableStatement.h"
 #include "WGSL.h"
@@ -53,13 +55,19 @@ static void checkIntLiteral(WGSL::AST::Expression& node, int32_t value)
     EXPECT_EQ(intLiteral.value(), value);
 }
 
+static void checkNamedType(WGSL::AST::TypeName& type, ASCIILiteral name)
+{
+    EXPECT_TRUE(type.isNamed());
+    auto& namedType = downcast<WGSL::AST::NamedTypeName>(type);
+    EXPECT_EQ(namedType.name(), name);
+}
+
 static void checkVecType(WGSL::AST::TypeName& type, WGSL::AST::ParameterizedTypeName::Base vecType, ASCIILiteral paramTypeName)
 {
     EXPECT_TRUE(type.isParameterized());
     auto& parameterizedType = downcast<WGSL::AST::ParameterizedTypeName>(type);
     EXPECT_EQ(parameterizedType.base(), vecType);
-    EXPECT_TRUE(parameterizedType.elementType().isNamed());
-    EXPECT_EQ(downcast<WGSL::AST::NamedTypeName>(parameterizedType.elementType()).name(), paramTypeName);
+    checkNamedType(parameterizedType.elementType(), paramTypeName);
 }
 
 static void checkVec2F32Type(WGSL::AST::TypeName& type)
@@ -463,7 +471,6 @@ TEST(WGSLParserTests, RedFrag)
         "}\n"_s);
 
     EXPECT_SHADER(shader);
-    EXPECT_TRUE(shader.has_value());
     EXPECT_TRUE(shader->directives().isEmpty());
     EXPECT_TRUE(shader->structures().isEmpty());
     EXPECT_TRUE(shader->variables().isEmpty());
@@ -477,6 +484,23 @@ TEST(WGSLParserTests, TypeAliases)
         "type single = f32;\n"_s);
 
     EXPECT_SHADER(shader);
+}
+
+TEST(WGSLParserTests, NativeTypeFoo)
+{
+    auto shader = WGSL::parseLChar(
+        "@native type foo;"_s,
+        WGSL::ParsingMode::StandardLibrary);
+
+    EXPECT_SHADER(shader);
+    EXPECT_TRUE(shader->directives().isEmpty());
+    EXPECT_TRUE(shader->functions().isEmpty());
+    EXPECT_EQ(shader->nativeTypes().size(), 1u);
+    EXPECT_TRUE(shader->structures().isEmpty());
+    EXPECT_TRUE(shader->variables().isEmpty());
+
+    auto& nativeType = shader->nativeTypes()[0];
+    checkNamedType(nativeType.type(), "foo"_s);
 }
 
 } // namespace TestWGSLAPI

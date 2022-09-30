@@ -161,6 +161,17 @@ void Dumper::visit(FunctionDeclaration& function)
     visit(function.body());
 }
 
+void Dumper::visit(NativeTypeDeclaration& nativeType)
+{
+    INDENT();
+    if (!nativeType.attributes().isEmpty()) {
+        visitVector(nativeType.attributes(), " ");
+        NL_INDENT();
+    }
+    visit(nativeType.type());
+    NODENT("type ");
+}
+
 void Dumper::visit(StructureDeclaration& structure)
 {
     INDENT();

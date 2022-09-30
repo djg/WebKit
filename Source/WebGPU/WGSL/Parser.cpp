@@ -92,22 +92,22 @@ UniqueRef<T> Parser<Lexer>::make(Args&&... args)
 }
 
 template<typename Lexer>
-Result<AST::ShaderModule> parse(const String& wgsl)
+Result<AST::ShaderModule> parse(const String& wgsl, ParsingMode mode)
 {
     Lexer lexer(wgsl);
-    Parser parser(lexer);
+    Parser parser(lexer, mode);
 
     return parser.parseShader();
 }
 
-Result<AST::ShaderModule> parseLChar(const String& wgsl)
+Result<AST::ShaderModule> parseLChar(const String& wgsl, ParsingMode mode)
 {
-    return parse<Lexer<LChar>>(wgsl);
+    return parse<Lexer<LChar>>(wgsl, mode);
 }
 
-Result<AST::ShaderModule> parseUChar(const String& wgsl)
+Result<AST::ShaderModule> parseUChar(const String& wgsl, ParsingMode mode)
 {
-    return parse<Lexer<UChar>>(wgsl);
+    return parse<Lexer<UChar>>(wgsl, mode);
 }
 
 template<typename Lexer>
@@ -159,10 +159,18 @@ Result<AST::ShaderModule> Parser<Lexer>::parseShader()
             break;
         }
         case TokenType::KeywordType: {
-            PARSE(typeDecl, TypeDeclaration);
-            typeDecl->attributes() = WTFMove(attributes);
-            CONSUME_TYPE(Semicolon);
-            shaderModule.types().append(WTFMove(typeDecl));
+            bool isNativeType = attributes.containsIf([](auto& attr) { return attr.isNative(); });
+            if (isNativeType) {
+                PARSE(typeDecl, NativeTypeDeclaration);
+                typeDecl->attributes() = WTFMove(attributes);
+                CONSUME_TYPE(Semicolon);
+                shaderModule.nativeTypes().append(WTFMove(typeDecl));
+            } else {
+                PARSE(typeDecl, TypeDeclaration);
+                typeDecl->attributes() = WTFMove(attributes);
+                CONSUME_TYPE(Semicolon);
+                shaderModule.types().append(WTFMove(typeDecl));
+            }
             break;
         }
         default:
@@ -232,6 +240,9 @@ Result<AST::Attribute::Ref> Parser<Lexer>::parseAttribute()
         return { make<AST::StageAttribute>(AST::StageAttribute::Stage::Compute) };
     if (ident.m_ident == "fragment"_s)
         return { make<AST::StageAttribute>(AST::StageAttribute::Stage::Fragment) };
+
+    if (ident.m_ident == "native"_s && m_mode == ParsingMode::StandardLibrary)
+        return { make<AST::NativeAttribute>() };
 
     FAIL("Unknown attribute. Supported attributes are 'group', 'binding', 'location', 'builtin', 'vertex', 'compute', 'fragment'."_s);
 }
@@ -345,6 +356,17 @@ Result<AST::TypeName::Ref> Parser<Lexer>::parseArrayTypeName()
     }
 
     return { make<AST::ArrayTypeName>(WTFMove(maybeElementType), WTFMove(maybeElementCount)) };
+}
+
+template<typename Lexer>
+Result<AST::NativeTypeDeclaration::Ref> Parser<Lexer>::parseNativeTypeDeclaration()
+{
+    START_PARSE();
+
+    CONSUME_TYPE(KeywordType);
+    PARSE(typeName, TypeName);
+
+    return { make<AST::NativeTypeDeclaration>(WTFMove(typeName)) };
 }
 
 template<typename Lexer>

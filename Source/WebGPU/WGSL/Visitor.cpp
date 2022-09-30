@@ -24,6 +24,7 @@
  */
 
 #include "config.h"
+#include "AST/Declarations/NativeTypeDeclaration.h"
 #include "Visitor.h"
 
 #include "AST.h"
@@ -90,6 +91,9 @@ void Visitor::visit(AST::Attribute& attribute)
     case AST::Attribute::Kind::Location:
         checkErrorAndVisit(downcast<AST::LocationAttribute>(attribute));
         break;
+    case AST::Attribute::Kind::Native:
+        checkErrorAndVisit(downcast<AST::LocationAttribute>(attribute));
+        break;
     case AST::Attribute::Kind::Stage:
         checkErrorAndVisit(downcast<AST::StageAttribute>(attribute));
         break;
@@ -116,6 +120,10 @@ void Visitor::visit(AST::LocationAttribute&)
 {
 }
 
+void Visitor::visit(AST::NativeAttribute&)
+{
+}
+
 #pragma mark -
 #pragma mark Declaration
 
@@ -124,6 +132,9 @@ void Visitor::visit(AST::Declaration& declaration)
     switch (declaration.kind()) {
     case AST::Declaration::Kind::Function:
         checkErrorAndVisit(downcast<AST::FunctionDeclaration>(declaration));
+        break;
+    case AST::Declaration::Kind::NativeType:
+        checkErrorAndVisit(downcast<AST::NativeTypeDeclaration>(declaration));
         break;
     case AST::Declaration::Kind::Structure:
         checkErrorAndVisit(downcast<AST::StructureDeclaration>(declaration));
@@ -147,6 +158,13 @@ void Visitor::visit(AST::FunctionDeclaration& functionDeclaration)
         checkErrorAndVisit(attribute);
     maybeCheckErrorAndVisit(functionDeclaration.maybeReturnType());
     checkErrorAndVisit(functionDeclaration.body());
+}
+
+void Visitor::visit(AST::NativeTypeDeclaration& nativeTypeDeclaration)
+{
+    for (auto& attribute : nativeTypeDeclaration.attributes())
+        checkErrorAndVisit(attribute);
+    checkErrorAndVisit(nativeTypeDeclaration.type());
 }
 
 void Visitor::visit(AST::StructureDeclaration& structureDeclaration)

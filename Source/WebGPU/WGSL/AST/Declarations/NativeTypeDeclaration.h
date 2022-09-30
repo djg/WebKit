@@ -25,67 +25,37 @@
 
 #pragma once
 
+#include "Attribute.h"
+#include "Declaration.h"
+#include "TypeName.h"
+
 namespace WGSL::AST {
 
-enum class AccessMode : uint8_t;
-enum class StorageClass : uint8_t;
+class NativeTypeDeclaration : public Declaration {
+    WTF_MAKE_FAST_ALLOCATED;
 
-#pragma mark -
-#pragma mark Shader Module
-class ShaderModule;
-class GlobalDirective;
+public:
+    using Ref = UniqueRef<NativeTypeDeclaration>;
+    using List = UniqueRefVector<NativeTypeDeclaration>;
 
-#pragma mark -
-#pragma mark Attribute
-class Attribute;
-class BindingAttribute;
-class BuiltinAttribute;
-class GroupAttribute;
-class LocationAttribute;
-class NativeAttribute;
-class StageAttribute;
+    NativeTypeDeclaration(SourceSpan span, TypeName::Ref&& typeName)
+        : Declaration(span)
+        , m_typeName(WTFMove(typeName))
+    {
+    }
 
-#pragma mark -
-#pragma mark Declaration
-class Declaration;
-class FunctionDeclaration;
-class NativeTypeDeclaration;
-class StructureDeclaration;
-class StructureMember;
-class TypeDeclaration;
-class VariableDeclaration;
-class VariableQualifier;
+    virtual ~NativeTypeDeclaration() {}
 
-#pragma mark -
-#pragma mark Expression
-class Expression;
-class BoolLiteral;
-class Int32Literal;
-class Uint32Literal;
-class Float32Literal;
-class AbstractIntLiteral;
-class AbstractFloatLiteral;
-class IdentifierExpression;
-class ArrayAccess;
-class StructureAccess;
-class CallableExpression;
-class UnaryExpression;
+    virtual Kind kind() const { return Declaration::Kind::NativeType; }
 
-class Parameter;
+    Attribute::List& attributes() { return m_attributes; }
+    TypeName& type() { return m_typeName.get(); }
 
-#pragma mark -
-#pragma mark Statement
-class Statement;
-class AssignmentStatement;
-class CompoundStatement;
-class ReturnStatement;
-class VariableStatement;
-
-#pragma mark -
-#pragma mark Types
-class TypeName;
-class ArrayTypeName;
-class NamedTypeName;
-class ParameterizedTypeName;
+private:
+    Attribute::List m_attributes;
+    TypeName::Ref m_typeName;
+};
 
 } // namespace WGSL::AST
+
+SPECIALIZE_TYPE_TRAITS_WGSL_DECL(NativeTypeDeclaration, isNativeType())

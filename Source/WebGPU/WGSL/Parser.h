@@ -32,10 +32,16 @@
 
 namespace WGSL {
 
-template<typename Lexer>
-Expected<AST::ShaderModule, Error> parse(const String& wgsl);
+enum class ParsingMode : uint8_t
+{
+    StandardLibrary,
+    User,
+};
 
-Expected<AST::ShaderModule, Error> parseLChar(const String& wgsl);
-Expected<AST::ShaderModule, Error> parseUChar(const String& wgsl);
+template<typename Lexer>
+Expected<AST::ShaderModule, Error> parse(const String& wgsl, ParsingMode);
+
+Expected<AST::ShaderModule, Error> parseLChar(const String& wgsl, ParsingMode = ParsingMode::User);
+Expected<AST::ShaderModule, Error> parseUChar(const String& wgsl, ParsingMode = ParsingMode::User);
 
 } // namespace WGSL
