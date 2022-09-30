@@ -146,18 +146,21 @@ Result<AST::ShaderModule> Parser<Lexer>::parseShader()
 
         switch (current().m_type) {
         case TokenType::KeywordStruct: {
-            PARSE(structDecl, StructureDeclaration, WTFMove(attributes));
+            PARSE(structDecl, StructureDeclaration);
+            structDecl->attributes() = WTFMove(attributes);
             shaderModule.structures().append(WTFMove(structDecl));
             break;
         }
         case TokenType::KeywordVar: {
-            PARSE(variableDecl, VariableDeclarationWithAttributes, WTFMove(attributes));
+            PARSE(variableDecl, VariableDeclaration);
+            variableDecl->attributes() = WTFMove(attributes);
             CONSUME_TYPE(Semicolon);
             shaderModule.variables().append(WTFMove(variableDecl));
             break;
         }
         case TokenType::KeywordFn: {
-            PARSE(functionDecl, FunctionDeclaration, WTFMove(attributes));
+            PARSE(functionDecl, FunctionDeclaration);
+            functionDecl->attributes() = WTFMove(attributes);
             shaderModule.functions().append(WTFMove(functionDecl));
             break;
         }
@@ -233,7 +236,7 @@ Result<AST::Attribute::Ref> Parser<Lexer>::parseAttribute()
 }
 
 template<typename Lexer>
-Result<AST::StructureDeclaration::Ref> Parser<Lexer>::parseStructureDeclaration(AST::Attribute::List&& attributes)
+Result<AST::StructureDeclaration::Ref> Parser<Lexer>::parseStructureDeclaration()
 {
     START_PARSE();
 
@@ -249,7 +252,7 @@ Result<AST::StructureDeclaration::Ref> Parser<Lexer>::parseStructureDeclaration(
 
     CONSUME_TYPE(BraceRight);
 
-    RETURN_NODE_REF(StructureDeclaration, name.m_ident, WTFMove(members), WTFMove(attributes));
+    RETURN_NODE_REF(StructureDeclaration, name.m_ident, WTFMove(members));
 }
 
 template<typename Lexer>
@@ -346,12 +349,6 @@ Result<AST::TypeName::Ref> Parser<Lexer>::parseArrayTypeName()
 template<typename Lexer>
 Result<AST::VariableDeclaration::Ref> Parser<Lexer>::parseVariableDeclaration()
 {
-    return parseVariableDeclarationWithAttributes(AST::Attribute::List {});
-}
-
-template<typename Lexer>
-Result<UniqueRef<AST::VariableDeclaration>> Parser<Lexer>::parseVariableDeclarationWithAttributes(AST::Attribute::List&& attributes)
-{
     START_PARSE();
 
     CONSUME_TYPE(KeywordVar);
@@ -378,7 +375,7 @@ Result<UniqueRef<AST::VariableDeclaration>> Parser<Lexer>::parseVariableDeclarat
         maybeInitializer = initializerExpr.moveToUniquePtr();
     }
 
-    RETURN_NODE_REF(VariableDeclaration, name.m_ident, WTFMove(maybeQualifier), WTFMove(maybeType), WTFMove(maybeInitializer), WTFMove(attributes));
+    RETURN_NODE_REF(VariableDeclaration, name.m_ident, WTFMove(maybeQualifier), WTFMove(maybeType), WTFMove(maybeInitializer));
 }
 
 template<typename Lexer>
@@ -453,7 +450,7 @@ Result<AST::AccessMode> Parser<Lexer>::parseAccessMode()
 }
 
 template<typename Lexer>
-Result<AST::FunctionDeclaration::Ref> Parser<Lexer>::parseFunctionDeclaration(AST::Attribute::List&& attributes)
+Result<AST::FunctionDeclaration::Ref> Parser<Lexer>::parseFunctionDeclaration()
 {
     START_PARSE();
 
@@ -480,7 +477,7 @@ Result<AST::FunctionDeclaration::Ref> Parser<Lexer>::parseFunctionDeclaration(AS
 
     PARSE(body, CompoundStatement);
 
-    RETURN_NODE_REF(FunctionDeclaration, name.m_ident, WTFMove(parameters), WTFMove(maybeReturnType), WTFMove(body), WTFMove(attributes), WTFMove(returnAttributes));
+    RETURN_NODE_REF(FunctionDeclaration, name.m_ident, WTFMove(parameters), WTFMove(maybeReturnType), WTFMove(body), WTFMove(returnAttributes));
 }
 
 template<typename Lexer>

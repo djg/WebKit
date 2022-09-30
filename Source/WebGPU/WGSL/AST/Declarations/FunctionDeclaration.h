@@ -67,11 +67,11 @@ public:
     using Ref = UniqueRef<FunctionDeclaration>;
     using List = UniqueRefVector<FunctionDeclaration>;
 
-    FunctionDeclaration(SourceSpan sourceSpan, StringView name, Parameter::List&& parameters, TypeName::Ptr&& returnType, CompoundStatement&& body, Attribute::List&& attributes, Attribute::List&& returnAttributes)
+    FunctionDeclaration(SourceSpan sourceSpan, StringView name, Parameter::List&& parameters, TypeName::Ptr&& returnType, CompoundStatement&& body, Attribute::List&& returnAttributes)
         : Declaration(sourceSpan)
         , m_name(name)
         , m_parameters(WTFMove(parameters))
-        , m_attributes(WTFMove(attributes))
+        , m_attributes()
         , m_returnAttributes(WTFMove(returnAttributes))
         , m_returnType(WTFMove(returnType))
         , m_body(WTFMove(body))

@@ -48,17 +48,16 @@ public:
     // UniqueRef whenever it can return multiple types.
     Result<AST::Attribute::List> parseAttributes();
     Result<AST::Attribute::Ref> parseAttribute();
-    Result<AST::StructureDeclaration::Ref> parseStructureDeclaration(AST::Attribute::List&&);
+    Result<AST::StructureDeclaration::Ref> parseStructureDeclaration();
     Result<AST::StructureMember> parseStructureMember();
     Result<AST::TypeName::Ref> parseTypeName();
     Result<AST::TypeName::Ref> parseTypeNameAfterIdentifier(StringView&&, SourcePosition start);
     Result<AST::TypeName::Ref> parseArrayTypeName();
     Result<AST::VariableDeclaration::Ref> parseVariableDeclaration();
-    Result<AST::VariableDeclaration::Ref> parseVariableDeclarationWithAttributes(AST::Attribute::List&&);
     Result<AST::VariableQualifier> parseVariableQualifier();
     Result<AST::StorageClass> parseStorageClass();
     Result<AST::AccessMode> parseAccessMode();
-    Result<AST::FunctionDeclaration::Ref> parseFunctionDeclaration(AST::Attribute::List&&);
+    Result<AST::FunctionDeclaration::Ref> parseFunctionDeclaration();
     Result<AST::Parameter> parseParameter();
     Result<AST::Statement::Ref> parseStatement();
     Result<AST::CompoundStatement> parseCompoundStatement();

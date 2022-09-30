@@ -67,10 +67,10 @@ public:
     using Ref = UniqueRef<StructureDeclaration>;
     using List = UniqueRefVector<StructureDeclaration>;
 
-    StructureDeclaration(SourceSpan sourceSpan, StringView name, StructureMember::List&& members, Attribute::List&& attributes)
+    StructureDeclaration(SourceSpan sourceSpan, StringView name, StructureMember::List&& members)
         : Declaration(sourceSpan)
         , m_name(name)
-        , m_attributes(WTFMove(attributes))
+        , m_attributes()
         , m_members(WTFMove(members))
     {
     }

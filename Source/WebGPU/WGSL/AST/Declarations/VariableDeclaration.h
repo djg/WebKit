@@ -42,10 +42,10 @@ public:
     using Ref = UniqueRef<VariableDeclaration>;
     using List = UniqueRefVector<VariableDeclaration>;
 
-    VariableDeclaration(SourceSpan span, StringView name, VariableQualifier::Ptr&& qualifier, TypeName::Ptr&& type, Expression::Ptr&& initializer, Attribute::List&& attributes)
+    VariableDeclaration(SourceSpan span, StringView name, VariableQualifier::Ptr&& qualifier, TypeName::Ptr&& type, Expression::Ptr&& initializer)
         : Declaration(span)
         , m_name(name)
-        , m_attributes(WTFMove(attributes))
+        , m_attributes()
         , m_qualifier(WTFMove(qualifier))
         , m_type(WTFMove(type))
         , m_initializer(WTFMove(initializer))
