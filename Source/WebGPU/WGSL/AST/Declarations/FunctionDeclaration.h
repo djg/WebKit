@@ -67,7 +67,7 @@ public:
     using Ref = UniqueRef<FunctionDeclaration>;
     using List = UniqueRefVector<FunctionDeclaration>;
 
-    FunctionDeclaration(SourceSpan sourceSpan, StringView name, Parameter::List&& parameters, TypeName::Ptr&& returnType, CompoundStatement&& body, Attribute::List&& returnAttributes)
+    FunctionDeclaration(SourceSpan sourceSpan, StringView name, Parameter::List&& parameters, TypeName::Ptr&& returnType, CompoundStatement::Ref&& body, Attribute::List&& returnAttributes)
         : Declaration(sourceSpan)
         , m_name(name)
         , m_parameters(WTFMove(parameters))
@@ -84,10 +84,7 @@ public:
     Attribute::List& attributes() { return m_attributes; }
     Attribute::List& returnAttributes() { return m_returnAttributes; }
     TypeName* maybeReturnType() { return m_returnType.get(); }
-    CompoundStatement& body()
-    {
-        return m_body;
-    }
+    CompoundStatement& body() { return m_body.get(); }
 
 private:
     StringView m_name;
@@ -95,7 +92,7 @@ private:
     Attribute::List m_attributes;
     Attribute::List m_returnAttributes;
     TypeName::Ptr m_returnType;
-    CompoundStatement m_body;
+    CompoundStatement::Ref m_body;
 };
 
 } // namespace WGSL::AST

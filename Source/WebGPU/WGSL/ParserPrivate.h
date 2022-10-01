@@ -49,9 +49,9 @@ public:
     Result<AST::Attribute::List> parseAttributes();
     Result<AST::Attribute::Ref> parseAttribute();
     Result<AST::StructureDeclaration::Ref> parseStructureDeclaration();
-    Result<AST::StructureMember> parseStructureMember();
+    Result<AST::StructureMember::Ref> parseStructureMember();
     Result<AST::TypeName::Ref> parseTypeName();
-    Result<AST::TypeName::Ref> parseTypeNameAfterIdentifier(StringView&&, SourcePosition start);
+    Result<AST::TypeName::Ref> parseTypeNameAfterIdentifier(StringView&&);
     Result<AST::TypeName::Ref> parseArrayTypeName();
     Result<AST::TypeDeclaration::Ref> parseTypeDeclaration();
     Result<AST::VariableDeclaration::Ref> parseVariableDeclaration();
@@ -61,8 +61,8 @@ public:
     Result<AST::FunctionDeclaration::Ref> parseFunctionDeclaration();
     Result<AST::Parameter> parseParameter();
     Result<AST::Statement::Ref> parseStatement();
-    Result<AST::CompoundStatement> parseCompoundStatement();
-    Result<AST::ReturnStatement> parseReturnStatement();
+    Result<AST::CompoundStatement::Ref> parseCompoundStatement();
+    Result<AST::ReturnStatement::Ref> parseReturnStatement();
     Result<AST::Expression::Ref> parseShortCircuitOrExpression();
     Result<AST::Expression::Ref> parseRelationalExpression();
     Result<AST::Expression::Ref> parseShiftExpression();
@@ -82,6 +82,13 @@ private:
     void consume();
 
     Token& current() { return m_current; }
+    SourcePosition startPosition() const { return m_startOfElementPosition; }
+    SourceSpan currentSpan() const { return SourceSpan(startPosition(), m_lexer.currentPosition()); }
+
+    template<typename T, typename... Args>
+    UniqueRef<T> make(Args&&...);
+
+    SourcePosition m_startOfElementPosition = {};
 
     Lexer& m_lexer;
     Token m_current;

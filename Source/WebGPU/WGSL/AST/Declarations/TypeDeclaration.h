@@ -34,10 +34,10 @@ namespace WGSL::AST {
 
 class TypeDeclaration final : public Declaration {
     WTF_MAKE_FAST_ALLOCATED;
-public:
 
+public:
     using Ref = UniqueRef<TypeDeclaration>;
-    using List = UniqueRefs<TypeDeclaration>;
+    using List = UniqueRefVector<TypeDeclaration>;
 
     TypeDeclaration(SourceSpan span, StringView name, TypeName::Ref&& type)
         : Declaration(span)

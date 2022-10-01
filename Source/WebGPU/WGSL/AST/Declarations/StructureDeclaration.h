@@ -40,6 +40,7 @@ class StructureMember final : public ASTNode {
     WTF_MAKE_FAST_ALLOCATED;
 
 public:
+    using Ref = UniqueRef<StructureMember>;
     using List = UniqueRefVector<StructureMember>;
 
     StructureMember(SourceSpan span, StringView name, TypeName::Ref&& type, Attribute::List&& attributes)

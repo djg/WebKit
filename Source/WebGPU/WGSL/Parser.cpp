@@ -29,35 +29,16 @@
 #include "ParserPrivate.h"
 
 #include "Lexer.h"
+#include "wtf/SetForScope.h"
 #include <wtf/text/StringBuilder.h>
 
 namespace WGSL {
 
 #define START_PARSE() \
-    auto _startOfElementPosition = m_lexer.currentPosition();
+    auto _startOfElementPosition = SetForScope { m_startOfElementPosition, m_lexer.currentPosition() }
 
 #define CURRENT_SOURCE_SPAN() \
-    SourceSpan(_startOfElementPosition, m_lexer.currentPosition())
-
-#define RETURN_NODE(type, ...)                                       \
-    do {                                                             \
-        AST::type astNodeResult(CURRENT_SOURCE_SPAN(), __VA_ARGS__); \
-        return { WTFMove(astNodeResult) };                           \
-    } while (false)
-
-// Passing 0 arguments beyond the type to RETURN_NODE is invalid because of a stupid limitation of the C preprocessor
-#define RETURN_NODE_NO_ARGS(type)                       \
-    do {                                                \
-        AST::type astNodeResult(CURRENT_SOURCE_SPAN()); \
-        return { WTFMove(astNodeResult) };              \
-    } while (false)
-
-#define RETURN_NODE_REF(type, ...) \
-    return { makeUniqueRef<AST::type>(CURRENT_SOURCE_SPAN(), __VA_ARGS__) };
-
-// Passing 0 arguments beyond the type to RETURN_NODE_REF is invalid because of a stupid limitation of the C preprocessor
-#define RETURN_NODE_REF_NO_ARGS(type) \
-    return { makeUniqueRef<AST::type>(CURRENT_SOURCE_SPAN()) };
+    currentSpan()
 
 #define FAIL(string) \
     return makeUnexpected(Error(string, CURRENT_SOURCE_SPAN()));
@@ -96,6 +77,19 @@ namespace WGSL {
             FAIL(builder.toString());                        \
         }                                                    \
     } while (false)
+
+template<typename T, typename... Args>
+UniqueRef<T> makeWithSpan(SourceSpan span, Args&&... args)
+{
+    return makeUniqueRef<T>(span, std::forward<Args>(args)...);
+}
+
+template<typename Lexer>
+template<typename T, typename... Args>
+UniqueRef<T> Parser<Lexer>::make(Args&&... args)
+{
+    return makeWithSpan<T>(currentSpan(), std::forward<Args>(args)...);
+}
 
 template<typename Lexer>
 Result<AST::ShaderModule> parse(const String& wgsl)
@@ -205,7 +199,7 @@ Result<AST::Attribute::Ref> Parser<Lexer>::parseAttribute()
         // FIXME: should more kinds of literals be accepted here?
         CONSUME_TYPE_NAMED(id, IntegerLiteral);
         CONSUME_TYPE(ParenRight);
-        RETURN_NODE_REF(GroupAttribute, id.m_literalValue);
+        return { make<AST::GroupAttribute>(id.m_literalValue) };
     }
 
     if (ident.m_ident == "binding"_s) {
@@ -213,7 +207,7 @@ Result<AST::Attribute::Ref> Parser<Lexer>::parseAttribute()
         // FIXME: should more kinds of literals be accepted here?
         CONSUME_TYPE_NAMED(id, IntegerLiteral);
         CONSUME_TYPE(ParenRight);
-        RETURN_NODE_REF(BindingAttribute, id.m_literalValue);
+        return { make<AST::BindingAttribute>(id.m_literalValue) };
     }
 
     if (ident.m_ident == "location"_s) {
@@ -221,23 +215,23 @@ Result<AST::Attribute::Ref> Parser<Lexer>::parseAttribute()
         // FIXME: should more kinds of literals be accepted here?
         CONSUME_TYPE_NAMED(id, IntegerLiteral);
         CONSUME_TYPE(ParenRight);
-        RETURN_NODE_REF(LocationAttribute, id.m_literalValue);
+        return { make<AST::LocationAttribute>(id.m_literalValue) };
     }
 
     if (ident.m_ident == "builtin"_s) {
         CONSUME_TYPE(ParenLeft);
         CONSUME_TYPE_NAMED(name, Identifier);
         CONSUME_TYPE(ParenRight);
-        RETURN_NODE_REF(BuiltinAttribute, name.m_ident);
+        return { make<AST::BuiltinAttribute>(name.m_ident) };
     }
 
     // https://gpuweb.github.io/gpuweb/wgsl/#pipeline-stage-attributes
     if (ident.m_ident == "vertex"_s)
-        RETURN_NODE_REF(StageAttribute, AST::StageAttribute::Stage::Vertex);
+        return { make<AST::StageAttribute>(AST::StageAttribute::Stage::Vertex) };
     if (ident.m_ident == "compute"_s)
-        RETURN_NODE_REF(StageAttribute, AST::StageAttribute::Stage::Compute);
+        return { make<AST::StageAttribute>(AST::StageAttribute::Stage::Compute) };
     if (ident.m_ident == "fragment"_s)
-        RETURN_NODE_REF(StageAttribute, AST::StageAttribute::Stage::Fragment);
+        return { make<AST::StageAttribute>(AST::StageAttribute::Stage::Fragment) };
 
     FAIL("Unknown attribute. Supported attributes are 'group', 'binding', 'location', 'builtin', 'vertex', 'compute', 'fragment'."_s);
 }
@@ -254,16 +248,16 @@ Result<AST::StructureDeclaration::Ref> Parser<Lexer>::parseStructureDeclaration(
     AST::StructureMember::List members;
     while (current().m_type != TokenType::BraceRight) {
         PARSE(member, StructureMember);
-        members.append(makeUniqueRef<AST::StructureMember>(WTFMove(member)));
+        members.append(WTFMove(member));
     }
 
     CONSUME_TYPE(BraceRight);
 
-    RETURN_NODE_REF(StructureDeclaration, name.m_ident, WTFMove(members));
+    return { make<AST::StructureDeclaration>(name.m_ident, WTFMove(members)) };
 }
 
 template<typename Lexer>
-Result<AST::StructureMember> Parser<Lexer>::parseStructureMember()
+Result<AST::StructureMember::Ref> Parser<Lexer>::parseStructureMember()
 {
     START_PARSE();
 
@@ -273,7 +267,7 @@ Result<AST::StructureMember> Parser<Lexer>::parseStructureMember()
     PARSE(type, TypeName);
     CONSUME_TYPE(Semicolon);
 
-    RETURN_NODE(StructureMember, name.m_ident, WTFMove(type), WTFMove(attributes));
+    return { make<AST::StructureMember>(name.m_ident, WTFMove(type), WTFMove(attributes)) };
 }
 
 template<typename Lexer>
@@ -285,38 +279,38 @@ Result<AST::TypeName::Ref> Parser<Lexer>::parseTypeName()
         return parseArrayTypeName();
     if (current().m_type == TokenType::KeywordI32) {
         consume();
-        RETURN_NODE_REF(NamedTypeName, StringView { "i32"_s });
+        return { make<AST::NamedTypeName>(StringView { "i32"_s }) };
     }
     if (current().m_type == TokenType::KeywordF32) {
         consume();
-        RETURN_NODE_REF(NamedTypeName, StringView { "f32"_s });
+        return { make<AST::NamedTypeName>(StringView { "f32"_s }) };
     }
     if (current().m_type == TokenType::KeywordU32) {
         consume();
-        RETURN_NODE_REF(NamedTypeName, StringView { "u32"_s });
+        return { make<AST::NamedTypeName>(StringView { "u32"_s }) };
     }
     if (current().m_type == TokenType::KeywordBool) {
         consume();
-        RETURN_NODE_REF(NamedTypeName, StringView { "bool"_s });
+        return { make<AST::NamedTypeName>(StringView { "bool"_s }) };
     }
     if (current().m_type == TokenType::Identifier) {
         CONSUME_TYPE_NAMED(name, Identifier);
-        return parseTypeNameAfterIdentifier(WTFMove(name.m_ident), _startOfElementPosition);
+        return parseTypeNameAfterIdentifier(WTFMove(name.m_ident));
     }
 
     FAIL("Tried parsing a type and it did not start with an identifier"_s);
 }
 
 template<typename Lexer>
-Result<AST::TypeName::Ref> Parser<Lexer>::parseTypeNameAfterIdentifier(StringView&& name, SourcePosition _startOfElementPosition)
+Result<AST::TypeName::Ref> Parser<Lexer>::parseTypeNameAfterIdentifier(StringView&& name)
 {
     if (auto kind = AST::ParameterizedTypeName::stringViewToKind(name)) {
         CONSUME_TYPE(LT);
         PARSE(elementType, TypeName);
         CONSUME_TYPE(GT);
-        RETURN_NODE_REF(ParameterizedTypeName, *kind, WTFMove(elementType));
+        return { make<AST::ParameterizedTypeName>(*kind, WTFMove(elementType)) };
     }
-    RETURN_NODE_REF(NamedTypeName, WTFMove(name));
+    return { make<AST::NamedTypeName>(WTFMove(name)) };
 }
 
 template<typename Lexer>
@@ -350,7 +344,7 @@ Result<AST::TypeName::Ref> Parser<Lexer>::parseArrayTypeName()
         CONSUME_TYPE(GT);
     }
 
-    RETURN_NODE_REF(ArrayTypeName, WTFMove(maybeElementType), WTFMove(maybeElementCount));
+    return { make<AST::ArrayTypeName>(WTFMove(maybeElementType), WTFMove(maybeElementCount)) };
 }
 
 template<typename Lexer>
@@ -363,7 +357,7 @@ Result<AST::TypeDeclaration::Ref> Parser<Lexer>::parseTypeDeclaration()
     CONSUME_TYPE(Equal);
     PARSE(typeName, TypeName);
 
-    RETURN_NODE_REF(TypeDeclaration, name.m_ident, WTFMove(typeName));
+    return { make<AST::TypeDeclaration>(name.m_ident, WTFMove(typeName)) };
 }
 
 template<typename Lexer>
@@ -395,7 +389,7 @@ Result<AST::VariableDeclaration::Ref> Parser<Lexer>::parseVariableDeclaration()
         maybeInitializer = initializerExpr.moveToUniquePtr();
     }
 
-    RETURN_NODE_REF(VariableDeclaration, name.m_ident, WTFMove(maybeQualifier), WTFMove(maybeType), WTFMove(maybeInitializer));
+    return { make<AST::VariableDeclaration>(name.m_ident, WTFMove(maybeQualifier), WTFMove(maybeType), WTFMove(maybeInitializer)) };
 }
 
 template<typename Lexer>
@@ -416,7 +410,7 @@ Result<AST::VariableQualifier> Parser<Lexer>::parseVariableQualifier()
 
     CONSUME_TYPE(GT);
 
-    RETURN_NODE(VariableQualifier, storageClass, accessMode);
+    return { AST::VariableQualifier(currentSpan(), storageClass, accessMode) };
 }
 
 template<typename Lexer>
@@ -497,7 +491,7 @@ Result<AST::FunctionDeclaration::Ref> Parser<Lexer>::parseFunctionDeclaration()
 
     PARSE(body, CompoundStatement);
 
-    RETURN_NODE_REF(FunctionDeclaration, name.m_ident, WTFMove(parameters), WTFMove(maybeReturnType), WTFMove(body), WTFMove(returnAttributes));
+    return { make<AST::FunctionDeclaration>(name.m_ident, WTFMove(parameters), WTFMove(maybeReturnType), WTFMove(body), WTFMove(returnAttributes)) };
 }
 
 template<typename Lexer>
@@ -510,7 +504,7 @@ Result<AST::Parameter> Parser<Lexer>::parseParameter()
     CONSUME_TYPE(Colon);
     PARSE(type, TypeName);
 
-    RETURN_NODE(Parameter, name.m_ident, WTFMove(type), WTFMove(attributes));
+    return { AST::Parameter(currentSpan(), name.m_ident, WTFMove(type), WTFMove(attributes)) };
 }
 
 template<typename Lexer>
@@ -521,22 +515,22 @@ Result<AST::Statement::Ref> Parser<Lexer>::parseStatement()
     switch (current().m_type) {
     case TokenType::BraceLeft: {
         PARSE(compoundStmt, CompoundStatement);
-        return { makeUniqueRef<AST::CompoundStatement>(WTFMove(compoundStmt)) };
+        return { WTFMove(compoundStmt) };
     }
     case TokenType::Semicolon: {
         consume();
         AST::Statement::List statements;
-        return { makeUniqueRef<AST::CompoundStatement>(CURRENT_SOURCE_SPAN(), WTFMove(statements)) };
+        return { make<AST::CompoundStatement>(WTFMove(statements)) };
     }
     case TokenType::KeywordReturn: {
         PARSE(returnStmt, ReturnStatement);
         CONSUME_TYPE(Semicolon);
-        return { makeUniqueRef<AST::ReturnStatement>(WTFMove(returnStmt)) };
+        return { WTFMove(returnStmt) };
     }
     case TokenType::KeywordVar: {
         PARSE(varDecl, VariableDeclaration);
         CONSUME_TYPE(Semicolon);
-        return { makeUniqueRef<AST::VariableStatement>(CURRENT_SOURCE_SPAN(), WTFMove(varDecl)) };
+        return { make<AST::VariableStatement>(WTFMove(varDecl)) };
     }
     case TokenType::Identifier: {
         // FIXME: there will be other cases here eventually for function calls
@@ -544,7 +538,7 @@ Result<AST::Statement::Ref> Parser<Lexer>::parseStatement()
         CONSUME_TYPE(Equal);
         PARSE(rhs, Expression);
         CONSUME_TYPE(Semicolon);
-        RETURN_NODE_REF(AssignmentStatement, lhs.moveToUniquePtr(), WTFMove(rhs));
+        return { make<AST::AssignmentStatement>(lhs.moveToUniquePtr(), WTFMove(rhs)) };
     }
     default:
         FAIL("Not a valid statement"_s);
@@ -552,7 +546,7 @@ Result<AST::Statement::Ref> Parser<Lexer>::parseStatement()
 }
 
 template<typename Lexer>
-Result<AST::CompoundStatement> Parser<Lexer>::parseCompoundStatement()
+Result<AST::CompoundStatement::Ref> Parser<Lexer>::parseCompoundStatement()
 {
     START_PARSE();
 
@@ -566,22 +560,22 @@ Result<AST::CompoundStatement> Parser<Lexer>::parseCompoundStatement()
 
     CONSUME_TYPE(BraceRight);
 
-    RETURN_NODE(CompoundStatement, WTFMove(statements));
+    return { make<AST::CompoundStatement>(WTFMove(statements)) };
 }
 
 template<typename Lexer>
-Result<AST::ReturnStatement> Parser<Lexer>::parseReturnStatement()
+Result<AST::ReturnStatement::Ref> Parser<Lexer>::parseReturnStatement()
 {
     START_PARSE();
 
     CONSUME_TYPE(KeywordReturn);
 
     if (current().m_type == TokenType::Semicolon) {
-        RETURN_NODE(ReturnStatement, {});
+        return { make<AST::ReturnStatement>(nullptr) };
     }
 
     PARSE(expr, ShortCircuitOrExpression);
-    RETURN_NODE(ReturnStatement, expr.moveToUniquePtr());
+    return { make<AST::ReturnStatement>(expr.moveToUniquePtr()) };
 }
 
 template<typename Lexer>
@@ -627,7 +621,7 @@ Result<AST::Expression::Ref> Parser<Lexer>::parseUnaryExpression()
     if (current().m_type == TokenType::Minus) {
         consume();
         PARSE(expression, SingularExpression);
-        RETURN_NODE_REF(UnaryExpression, WTFMove(expression), AST::UnaryOperation::Negate);
+        return { make<AST::UnaryExpression>(WTFMove(expression), AST::UnaryOperation::Negate) };
     }
 
     return parseSingularExpression();
@@ -638,7 +632,7 @@ Result<AST::Expression::Ref> Parser<Lexer>::parseSingularExpression()
 {
     START_PARSE();
     PARSE(base, PrimaryExpression);
-    return parsePostfixExpression(WTFMove(base), _startOfElementPosition);
+    return parsePostfixExpression(WTFMove(base), startPosition());
 }
 
 template<typename Lexer>
@@ -699,44 +693,44 @@ Result<AST::Expression::Ref> Parser<Lexer>::parsePrimaryExpression()
     case TokenType::Identifier: {
         CONSUME_TYPE_NAMED(ident, Identifier);
         if (current().m_type == TokenType::LT || current().m_type == TokenType::ParenLeft) {
-            PARSE(type, TypeNameAfterIdentifier, WTFMove(ident.m_ident), _startOfElementPosition);
+            PARSE(type, TypeNameAfterIdentifier, WTFMove(ident.m_ident));
             PARSE(arguments, ArgumentExpressionList);
-            RETURN_NODE_REF(CallableExpression, WTFMove(type), WTFMove(arguments));
+            return { make<AST::CallableExpression>(WTFMove(type), WTFMove(arguments)) };
         }
-        RETURN_NODE_REF(IdentifierExpression, ident.m_ident);
+        return { make<AST::IdentifierExpression>(ident.m_ident) };
     }
     case TokenType::KeywordArray: {
         PARSE(arrayType, ArrayTypeName);
         PARSE(arguments, ArgumentExpressionList);
-        RETURN_NODE_REF(CallableExpression, WTFMove(arrayType), WTFMove(arguments));
+        return { make<AST::CallableExpression>(WTFMove(arrayType), WTFMove(arguments)) };
     }
 
     // const_literal
     case TokenType::LiteralTrue:
         consume();
-        RETURN_NODE_REF(BoolLiteral, true);
+        return { make<AST::BoolLiteral>(true) };
     case TokenType::LiteralFalse:
         consume();
-        RETURN_NODE_REF(BoolLiteral, false);
+        return { make<AST::BoolLiteral>(false) };
     case TokenType::IntegerLiteral: {
         CONSUME_TYPE_NAMED(lit, IntegerLiteral);
-        RETURN_NODE_REF(AbstractIntLiteral, lit.m_literalValue);
+        return { make<AST::AbstractIntLiteral>(lit.m_literalValue) };
     }
     case TokenType::IntegerLiteralSigned: {
         CONSUME_TYPE_NAMED(lit, IntegerLiteralSigned);
-        RETURN_NODE_REF(Int32Literal, lit.m_literalValue);
+        return { make<AST::Int32Literal>(lit.m_literalValue) };
     }
     case TokenType::IntegerLiteralUnsigned: {
         CONSUME_TYPE_NAMED(lit, IntegerLiteralUnsigned);
-        RETURN_NODE_REF(Uint32Literal, lit.m_literalValue);
+        return { make<AST::Uint32Literal>(lit.m_literalValue) };
     }
     case TokenType::DecimalFloatLiteral: {
         CONSUME_TYPE_NAMED(lit, DecimalFloatLiteral);
-        RETURN_NODE_REF(AbstractFloatLiteral, lit.m_literalValue);
+        return { make<AST::AbstractFloatLiteral>(lit.m_literalValue) };
     }
     case TokenType::HexFloatLiteral: {
         CONSUME_TYPE_NAMED(lit, HexFloatLiteral);
-        RETURN_NODE_REF(AbstractFloatLiteral, lit.m_literalValue);
+        return { make<AST::AbstractFloatLiteral>(lit.m_literalValue) };
     }
         // TODO: bitcast expression
 
@@ -761,7 +755,7 @@ Result<AST::Expression::Ref> Parser<Lexer>::parseLHSExpression()
 
     // FIXME: Add the possibility of a prefix
     PARSE(base, CoreLHSExpression);
-    return parsePostfixExpression(WTFMove(base), _startOfElementPosition);
+    return parsePostfixExpression(WTFMove(base), startPosition());
 }
 
 template<typename Lexer>
@@ -778,7 +772,7 @@ Result<AST::Expression::Ref> Parser<Lexer>::parseCoreLHSExpression()
     }
     case TokenType::Identifier: {
         CONSUME_TYPE_NAMED(ident, Identifier);
-        RETURN_NODE_REF(IdentifierExpression, ident.m_ident);
+        return { make<AST::IdentifierExpression>(ident.m_ident) };
     }
     default:
         break;
