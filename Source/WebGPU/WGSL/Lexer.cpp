@@ -25,12 +25,14 @@
 
 #include "config.h"
 #include "Lexer.h"
+#include "wtf/SortedArrayMap.h"
+#include "wtf/text/StringHash.h"
 
 #include <wtf/unicode/CharacterNames.h>
 
 namespace WGSL {
 
-template <typename T>
+template<typename T>
 Token Lexer<T>::lex()
 {
     skipWhitespace();
@@ -200,52 +202,57 @@ Token Lexer<T>::lex()
             // FIXME: a trie would be more efficient here, look at JavaScriptCore/KeywordLookupGenerator.py for an example of code autogeneration that produces such a trie.
             StringView view { startOfToken, currentTokenLength() };
             // FIXME: I don't think that true/false/f32/u32/i32/bool need to be their own tokens, they could just be regular identifiers.
-            if (view == "true"_s)
-                return makeToken(TokenType::LiteralTrue);
-            if (view == "false"_s)
-                return makeToken(TokenType::LiteralFalse);
-            if (view == "bool"_s)
-                return makeToken(TokenType::KeywordBool);
-            if (view == "i32"_s)
-                return makeToken(TokenType::KeywordI32);
-            if (view == "u32"_s)
-                return makeToken(TokenType::KeywordU32);
-            if (view == "f32"_s)
-                return makeToken(TokenType::KeywordF32);
-            if (view == "fn"_s)
-                return makeToken(TokenType::KeywordFn);
-            if (view == "function"_s)
-                return makeToken(TokenType::KeywordFunction);
-            if (view == "private"_s)
-                return makeToken(TokenType::KeywordPrivate);
-            if (view == "read"_s)
-                return makeToken(TokenType::KeywordRead);
-            if (view == "read_write"_s)
-                return makeToken(TokenType::KeywordReadWrite);
-            if (view == "return"_s)
-                return makeToken(TokenType::KeywordReturn);
-            if (view == "storage"_s)
-                return makeToken(TokenType::KeywordStorage);
-            if (view == "struct"_s)
-                return makeToken(TokenType::KeywordStruct);
-            if (view == "type"_s)
-                return makeToken(TokenType::KeywordType);
-            if (view == "uniform"_s)
-                return makeToken(TokenType::KeywordUniform);
-            if (view == "var"_s)
-                return makeToken(TokenType::KeywordVar);
-            if (view == "workgroup"_s)
-                return makeToken(TokenType::KeywordWorkgroup);
-            if (view == "write"_s)
-                return makeToken(TokenType::KeywordWrite);
-            if (view == "array"_s)
-                return makeToken(TokenType::KeywordArray);
-            if (view == "asm"_s || view == "bf16"_s || view == "const"_s || view == "do"_s || view == "enum"_s
-                || view == "f16"_s || view == "f64"_s || view == "handle"_s || view == "i8"_s || view == "i16"_s
-                || view == "i64"_s || view == "mat"_s || view == "premerge"_s || view == "regardless"_s
-                || view == "typedef"_s || view == "u8"_s || view == "u16"_s || view == "u64"_s || view == "unless"_s
-                || view == "using"_s || view == "vec"_s || view == "void"_s || view == "while"_s)
-                return makeToken(TokenType::ReservedWord);
+
+            static constexpr std::pair<ComparableASCIILiteral, TokenType> wordMappings[] {
+                { "array", TokenType::KeywordArray },
+                { "asm", TokenType::ReservedWord },
+                { "bf16", TokenType::ReservedWord },
+                { "bool", TokenType::KeywordBool },
+                { "const", TokenType::ReservedWord },
+                { "do", TokenType::ReservedWord },
+                { "enum", TokenType::ReservedWord },
+                { "f16", TokenType::ReservedWord },
+                { "f32", TokenType::KeywordF32 },
+                { "f64", TokenType::ReservedWord },
+                { "false", TokenType::LiteralFalse },
+                { "fn", TokenType::KeywordFn },
+                { "function", TokenType::KeywordFunction },
+                { "handle", TokenType::ReservedWord },
+                { "i16", TokenType::ReservedWord },
+                { "i32", TokenType::KeywordI32 },
+                { "i64", TokenType::ReservedWord },
+                { "i8", TokenType::ReservedWord },
+                { "mat", TokenType::ReservedWord },
+                { "premerge", TokenType::ReservedWord },
+                { "private", TokenType::KeywordPrivate },
+                { "read", TokenType::KeywordRead },
+                { "read_write", TokenType::KeywordReadWrite },
+                { "regardless", TokenType::ReservedWord },
+                { "return", TokenType::KeywordReturn },
+                { "storage", TokenType::KeywordStorage },
+                { "struct", TokenType::KeywordStruct },
+                { "true", TokenType::LiteralTrue },
+                { "type", TokenType::KeywordType },
+                { "typedef", TokenType::ReservedWord },
+                { "u16", TokenType::ReservedWord },
+                { "u32", TokenType::KeywordU32 },
+                { "u64", TokenType::ReservedWord },
+                { "u8", TokenType::ReservedWord },
+                { "uniform", TokenType::KeywordUniform },
+                { "unless", TokenType::ReservedWord },
+                { "using", TokenType::ReservedWord },
+                { "var", TokenType::KeywordVar },
+                { "vec", TokenType::ReservedWord },
+                { "void", TokenType::ReservedWord },
+                { "while", TokenType::ReservedWord },
+                { "workgroup", TokenType::KeywordWorkgroup },
+                { "write", TokenType::KeywordWrite },
+            };
+            static constexpr SortedArrayMap words { wordMappings };
+
+            auto tokenType = words.get(view);
+            if (tokenType != TokenType::Invalid)
+                return makeToken(tokenType);
             return makeIdentifierToken(view);
         }
         break;
@@ -253,7 +260,7 @@ Token Lexer<T>::lex()
     return makeToken(TokenType::Invalid);
 }
 
-template <typename T>
+template<typename T>
 void Lexer<T>::shift()
 {
     // At one point timing showed that setting m_current to 0 unconditionally was faster than an if-else sequence.
@@ -265,7 +272,7 @@ void Lexer<T>::shift()
         m_current = *m_code;
 }
 
-template <typename T>
+template<typename T>
 T Lexer<T>::peek(unsigned i)
 {
     if (UNLIKELY(m_code + i >= m_codeEnd))
@@ -273,7 +280,7 @@ T Lexer<T>::peek(unsigned i)
     return *(m_code + i);
 }
 
-template <typename T>
+template<typename T>
 void Lexer<T>::skipWhitespace()
 {
     while (isASCIISpace(m_current)) {
@@ -286,7 +293,7 @@ void Lexer<T>::skipWhitespace()
     }
 }
 
-template <typename T>
+template<typename T>
 bool Lexer<T>::isAtEndOfFile() const
 {
     if (m_code == m_codeEnd) {
@@ -297,7 +304,7 @@ bool Lexer<T>::isAtEndOfFile() const
     return false;
 }
 
-template <typename T>
+template<typename T>
 std::optional<uint64_t> Lexer<T>::parseDecimalInteger()
 {
     if (!isASCIIDigit(m_current))
@@ -315,7 +322,7 @@ std::optional<uint64_t> Lexer<T>::parseDecimalInteger()
 }
 
 // Parse pattern (e|E)(\+|-)?[0-9]+f? if it is present, and return the exponent
-template <typename T>
+template<typename T>
 std::optional<int64_t> Lexer<T>::parseDecimalFloatExponent()
 {
     T char1 = peek(1);
@@ -342,13 +349,13 @@ std::optional<int64_t> Lexer<T>::parseDecimalFloatExponent()
         return std::nullopt;
     CheckedInt64 exponentValue = exponent.value();
     if (negateExponent)
-        exponentValue = - exponentValue;
+        exponentValue = -exponentValue;
     if (exponentValue.hasOverflowed())
         return std::nullopt;
     return { exponentValue.value() };
 };
 
-template <typename T>
+template<typename T>
 Token Lexer<T>::parseIntegerLiteralSuffix(double literalValue)
 {
     if (m_current == 'i') {
@@ -366,4 +373,3 @@ template class Lexer<LChar>;
 template class Lexer<UChar>;
 
 }
-

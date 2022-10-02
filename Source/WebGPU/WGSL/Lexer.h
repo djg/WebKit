@@ -27,8 +27,6 @@
 
 #include "Token.h"
 #include <wtf/ASCIICType.h>
-#include <wtf/text/StringView.h>
-#include <wtf/text/WTFString.h>
 
 namespace WGSL {
 
