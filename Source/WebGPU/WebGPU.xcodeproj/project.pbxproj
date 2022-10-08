@@ -74,6 +74,7 @@
 		33EA188427BC268600A1DD52 /* StructureAccess.h in Headers */ = {isa = PBXBuildFile; fileRef = 33EA188327BC268600A1DD52 /* StructureAccess.h */; };
 		33EA188627BC26DF00A1DD52 /* CallableExpression.h in Headers */ = {isa = PBXBuildFile; fileRef = 33EA188527BC26DF00A1DD52 /* CallableExpression.h */; };
 		33EA188827BC361E00A1DD52 /* LiteralExpressions.h in Headers */ = {isa = PBXBuildFile; fileRef = 33EA188727BC361E00A1DD52 /* LiteralExpressions.h */; };
+		3A024D4728EFED6100EA938E /* Literal.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A024D4628EFED6100EA938E /* Literal.h */; };
 		3A3DD41028D4445C0073224E /* Visitor.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A3DD40F28D4445B0073224E /* Visitor.h */; };
 		3A3DD41228D4450B0073224E /* Forward.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A3DD41128D4450A0073224E /* Forward.h */; };
 		3A3DD41428D449940073224E /* Visitor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3A3DD41328D449940073224E /* Visitor.cpp */; };
@@ -328,6 +329,7 @@
 		33EA188327BC268600A1DD52 /* StructureAccess.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = StructureAccess.h; sourceTree = "<group>"; };
 		33EA188527BC26DF00A1DD52 /* CallableExpression.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CallableExpression.h; sourceTree = "<group>"; };
 		33EA188727BC361E00A1DD52 /* LiteralExpressions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LiteralExpressions.h; sourceTree = "<group>"; };
+		3A024D4628EFED6100EA938E /* Literal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Literal.h; sourceTree = "<group>"; };
 		3A3DD40F28D4445B0073224E /* Visitor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Visitor.h; sourceTree = "<group>"; };
 		3A3DD41128D4450A0073224E /* Forward.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Forward.h; sourceTree = "<group>"; };
 		3A3DD41328D449940073224E /* Visitor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Visitor.cpp; sourceTree = "<group>"; };
@@ -690,6 +692,7 @@
 				3A45DBD228D8059500723EA2 /* Dumper.h */,
 				33EA186B27BC1CBC00A1DD52 /* Expression.h */,
 				33EA185F27BC198100A1DD52 /* GlobalDirective.h */,
+				3A024D4628EFED6100EA938E /* Literal.h */,
 				33EA186F27BC1E8A00A1DD52 /* ShaderModule.h */,
 				33EA187827BC22AA00A1DD52 /* Statement.h */,
 				33EA186D27BC1D4C00A1DD52 /* TypeName.h */,
@@ -771,6 +774,7 @@
 				33EA186027BC198100A1DD52 /* GlobalDirective.h in Headers */,
 				33EA188227BC25D000A1DD52 /* IdentifierExpression.h in Headers */,
 				338BB2D427B6B66C00E066AB /* Lexer.h in Headers */,
+				3A024D4728EFED6100EA938E /* Literal.h in Headers */,
 				33EA188827BC361E00A1DD52 /* LiteralExpressions.h in Headers */,
 				3A8FE98428E9C19100E65129 /* NativeTypeDeclaration.h in Headers */,
 				339B7B1827D7FFA40072BF9A /* Parser.h in Headers */,

@@ -40,6 +40,7 @@
 #include "AST/Expressions/StructureAccess.h"
 #include "AST/Expressions/UnaryExpression.h"
 #include "AST/GlobalDirective.h"
+#include "AST/Literal.h"
 #include "AST/ShaderModule.h"
 #include "AST/Statement.h"
 #include "AST/Statements/AssignmentStatement.h"

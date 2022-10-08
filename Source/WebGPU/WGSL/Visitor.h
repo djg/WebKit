@@ -26,6 +26,7 @@
 #pragma once
 
 #include "AST/Attribute.h"
+#include "AST/Literal.h"
 #include "CompilationMessage.h"
 #include "Forward.h"
 #include <wtf/Expected.h>
@@ -62,17 +63,18 @@ public:
 
     // Expression
     virtual void visit(AST::Expression&);
-    virtual void visit(AST::BoolLiteral&);
-    virtual void visit(AST::Int32Literal&);
-    virtual void visit(AST::Uint32Literal&);
-    virtual void visit(AST::Float32Literal&);
-    virtual void visit(AST::AbstractIntLiteral&);
-    virtual void visit(AST::AbstractFloatLiteral&);
-    virtual void visit(AST::IdentifierExpression&);
     virtual void visit(AST::ArrayAccess&);
-    virtual void visit(AST::StructureAccess&);
     virtual void visit(AST::CallableExpression&);
+    virtual void visit(AST::IdentifierExpression&);
+    virtual void visit(AST::LiteralExpression&);
+    virtual void visit(AST::StructureAccess&);
     virtual void visit(AST::UnaryExpression&);
+
+    // Literal
+    virtual void visit(AST::Literal&);
+    virtual void visit(AST::BoolLiteral&);
+    virtual void visit(AST::FloatLiteral&);
+    virtual void visit(AST::IntegerLiteral&);
 
     // Statement
     virtual void visit(AST::Statement&);

@@ -26,115 +26,27 @@
 #pragma once
 
 #include "Expression.h"
+#include "Literal.h"
 
 namespace WGSL::AST {
 
-class BoolLiteral final : public Expression {
+class LiteralExpression final : public Expression {
     WTF_MAKE_FAST_ALLOCATED;
+
 public:
-    BoolLiteral(SourceSpan span, bool value)
+    LiteralExpression(SourceSpan span, Literal::Ref&& literal)
         : Expression(span)
-        , m_value(value)
+        , m_literal(WTFMove(literal))
     {
     }
 
-    Kind kind() const final { return Kind::BoolLiteral; }
-    bool value() const { return m_value; }
+    Kind kind() const final { return Kind::Literal; }
+    Literal& literal() { return m_literal.get(); }
 
 private:
-    bool m_value;
-};
-
-class Int32Literal final : public Expression {
-    WTF_MAKE_FAST_ALLOCATED;
-public:
-    Int32Literal(SourceSpan span, int32_t value)
-        : Expression(span)
-        , m_value(value)
-    {
-    }
-
-    Kind kind() const final { return Kind::Int32Literal; }
-    int32_t value() const { return m_value; }
-
-private:
-    int32_t m_value;
-};
-
-class Uint32Literal final : public Expression {
-    WTF_MAKE_FAST_ALLOCATED;
-public:
-    Uint32Literal(SourceSpan span, uint32_t value)
-        : Expression(span)
-        , m_value(value)
-    {
-    }
-
-    Kind kind() const final { return Kind::Uint32Literal; }
-    uint32_t value() const { return m_value; }
-
-private:
-    uint32_t m_value;
-};
-
-class Float32Literal final : public Expression {
-    WTF_MAKE_FAST_ALLOCATED;
-public:
-    Float32Literal(SourceSpan span, float value)
-        : Expression(span)
-        , m_value(value)
-    {
-    }
-
-    Kind kind() const final { return Kind::Float32Literal; }
-    float value() const { return m_value; }
-
-private:
-    float m_value;
-};
-
-// Literal ints without size prefix; these ints are signed 64-bit numbers.
-// https://gpuweb.github.io/gpuweb/wgsl/#abstractint
-class AbstractIntLiteral final : public Expression {
-    WTF_MAKE_FAST_ALLOCATED;
-public:
-    AbstractIntLiteral(SourceSpan span, int64_t value)
-        : Expression(span)
-        , m_value(value)
-    {
-    }
-
-    Kind kind() const final { return Kind::AbstractIntLiteral; }
-    int64_t value() const { return m_value; }
-
-private:
-    int64_t m_value;
-};
-
-// Literal floats without size prefix; these floats are double-precision
-// floating point numbers.
-// https://gpuweb.github.io/gpuweb/wgsl/#abstractfloat
-class AbstractFloatLiteral final : public Expression {
-    WTF_MAKE_FAST_ALLOCATED;
-public:
-    AbstractFloatLiteral(SourceSpan span, double value)
-        : Expression(span)
-        , m_value(value)
-    {
-    }
-
-    Kind kind() const final { return Kind::AbstractFloatLiteral; }
-    double value() const { return m_value; }
-
-private:
-    double m_value;
+    Literal::Ref m_literal;
 };
 
 } // namespace WGSL::AST
 
-SPECIALIZE_TYPE_TRAITS_WGSL_EXPRESSION(BoolLiteral, isBoolLiteral())
-SPECIALIZE_TYPE_TRAITS_WGSL_EXPRESSION(Int32Literal, isInt32Literal())
-SPECIALIZE_TYPE_TRAITS_WGSL_EXPRESSION(Float32Literal, isFloat32Literal())
-SPECIALIZE_TYPE_TRAITS_WGSL_EXPRESSION(Uint32Literal, isUInt32Literal())
-SPECIALIZE_TYPE_TRAITS_WGSL_EXPRESSION(AbstractIntLiteral, isAbstractIntLiteral())
-SPECIALIZE_TYPE_TRAITS_WGSL_EXPRESSION(AbstractFloatLiteral, isAbstractFloatLiteral())
+SPECIALIZE_TYPE_TRAITS_WGSL_EXPRESSION(LiteralExpression, isLiteral())

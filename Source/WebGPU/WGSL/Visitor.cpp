@@ -25,6 +25,7 @@
 
 #include "config.h"
 #include "AST/Declarations/NativeTypeDeclaration.h"
+#include "AST/Literal.h"
 #include "Visitor.h"
 
 #include "AST.h"
@@ -214,23 +215,8 @@ void Visitor::visit(AST::VariableQualifier&)
 void Visitor::visit(AST::Expression& expression)
 {
     switch (expression.kind()) {
-    case AST::Expression::Kind::BoolLiteral:
-        checkErrorAndVisit(downcast<AST::BoolLiteral>(expression));
-        break;
-    case AST::Expression::Kind::Int32Literal:
-        checkErrorAndVisit(downcast<AST::Int32Literal>(expression));
-        break;
-    case AST::Expression::Kind::Uint32Literal:
-        checkErrorAndVisit(downcast<AST::Uint32Literal>(expression));
-        break;
-    case AST::Expression::Kind::Float32Literal:
-        checkErrorAndVisit(downcast<AST::Float32Literal>(expression));
-        break;
-    case AST::Expression::Kind::AbstractIntLiteral:
-        checkErrorAndVisit(downcast<AST::AbstractIntLiteral>(expression));
-        break;
-    case AST::Expression::Kind::AbstractFloatLiteral:
-        checkErrorAndVisit(downcast<AST::AbstractFloatLiteral>(expression));
+    case AST::Expression::Kind::Literal:
+        checkErrorAndVisit(downcast<AST::LiteralExpression>(expression));
         break;
     case AST::Expression::Kind::Identifier:
         checkErrorAndVisit(downcast<AST::IdentifierExpression>(expression));
@@ -250,28 +236,9 @@ void Visitor::visit(AST::Expression& expression)
     }
 }
 
-void Visitor::visit(AST::BoolLiteral&)
+void Visitor::visit(AST::LiteralExpression& literalExpression)
 {
-}
-
-void Visitor::visit(AST::Int32Literal&)
-{
-}
-
-void Visitor::visit(AST::Uint32Literal&)
-{
-}
-
-void Visitor::visit(AST::Float32Literal&)
-{
-}
-
-void Visitor::visit(AST::AbstractIntLiteral&)
-{
-}
-
-void Visitor::visit(AST::AbstractFloatLiteral&)
-{
+    checkErrorAndVisit(literalExpression.literal());
 }
 
 void Visitor::visit(AST::IdentifierExpression&)
@@ -299,6 +266,35 @@ void Visitor::visit(AST::CallableExpression& callableExpression)
 void Visitor::visit(AST::UnaryExpression& unaryExpression)
 {
     checkErrorAndVisit(unaryExpression.expression());
+}
+
+#pragma mark -
+#pragma mark Literal
+
+void Visitor::visit(AST::Literal& literal)
+{
+    switch (literal.kind()) {
+    case AST::Literal::Kind::Boolean:
+        checkErrorAndVisit(downcast<AST::BoolLiteral>(literal));
+        break;
+    case AST::Literal::Kind::Float:
+        checkErrorAndVisit(downcast<AST::FloatLiteral>(literal));
+        break;
+    case AST::Literal::Kind::Integer:
+        checkErrorAndVisit(downcast<AST::IntegerLiteral>(literal));
+        break;
+    }
+}
+void Visitor::visit(AST::BoolLiteral&)
+{
+}
+
+void Visitor::visit(AST::FloatLiteral&)
+{
+}
+
+void Visitor::visit(AST::IntegerLiteral&)
+{
 }
 
 #pragma mark -

@@ -63,17 +63,16 @@ public:
     void visit(VariableQualifier&) override;
 
     // Expression
-    void visit(BoolLiteral&) override;
-    void visit(Int32Literal&) override;
-    void visit(Uint32Literal&) override;
-    void visit(Float32Literal&) override;
-    void visit(AbstractIntLiteral&) override;
-    void visit(AbstractFloatLiteral&) override;
     void visit(IdentifierExpression&) override;
     void visit(ArrayAccess&) override;
     void visit(StructureAccess&) override;
     void visit(CallableExpression&) override;
     void visit(UnaryExpression&) override;
+
+    // Literal
+    void visit(BoolLiteral&) override;
+    void visit(FloatLiteral&) override;
+    void visit(IntegerLiteral&) override;
 
     // Statement
     void visit(CompoundStatement&) override;

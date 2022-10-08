@@ -45,27 +45,25 @@ public:
     {
     }
 
+    // Shader Module
     Result<AST::ShaderModule> parseShader();
 
-    // UniqueRef whenever it can return multiple types.
+    // Attribute
     Result<AST::Attribute::List> parseAttributes();
     Result<AST::Attribute::Ref> parseAttribute();
+
+    // Declaration
+    Result<AST::FunctionDeclaration::Ref> parseFunctionDeclaration();
     Result<AST::StructureDeclaration::Ref> parseStructureDeclaration();
     Result<AST::StructureMember::Ref> parseStructureMember();
-    Result<AST::TypeName::Ref> parseTypeName();
-    Result<AST::TypeName::Ref> parseTypeNameAfterIdentifier(StringView&&);
-    Result<AST::TypeName::Ref> parseArrayTypeName();
     Result<AST::NativeTypeDeclaration::Ref> parseNativeTypeDeclaration();
     Result<AST::TypeDeclaration::Ref> parseTypeDeclaration();
     Result<AST::VariableDeclaration::Ref> parseVariableDeclaration();
     Result<AST::VariableQualifier> parseVariableQualifier();
     Result<AST::StorageClass> parseStorageClass();
     Result<AST::AccessMode> parseAccessMode();
-    Result<AST::FunctionDeclaration::Ref> parseFunctionDeclaration();
-    Result<AST::Parameter> parseParameter();
-    Result<AST::Statement::Ref> parseStatement();
-    Result<AST::CompoundStatement::Ref> parseCompoundStatement();
-    Result<AST::ReturnStatement::Ref> parseReturnStatement();
+
+    // Expression
     Result<AST::Expression::Ref> parseShortCircuitOrExpression();
     Result<AST::Expression::Ref> parseRelationalExpression();
     Result<AST::Expression::Ref> parseShiftExpression();
@@ -79,6 +77,20 @@ public:
     Result<AST::Expression::Ref> parseLHSExpression();
     Result<AST::Expression::Ref> parseCoreLHSExpression();
     Result<AST::Expression::List> parseArgumentExpressionList();
+    Result<AST::Parameter> parseParameter();
+
+    // Literal
+    Result<AST::Literal::Ref> parseLiteral();
+
+    // Statement
+    Result<AST::Statement::Ref> parseStatement();
+    Result<AST::CompoundStatement::Ref> parseCompoundStatement();
+    Result<AST::ReturnStatement::Ref> parseReturnStatement();
+
+    // Types
+    Result<AST::TypeName::Ref> parseTypeName();
+    Result<AST::TypeName::Ref> parseTypeNameAfterIdentifier(StringView&&);
+    Result<AST::TypeName::Ref> parseArrayTypeName();
 
 private:
     Expected<Token, TokenType> consumeType(TokenType);

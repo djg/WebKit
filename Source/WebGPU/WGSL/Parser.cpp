@@ -28,6 +28,7 @@
 #include "Parser.h"
 #include "ParserPrivate.h"
 
+#include "AST.h"
 #include "Lexer.h"
 #include "wtf/SetForScope.h"
 #include <wtf/text/StringBuilder.h>
@@ -727,33 +728,17 @@ Result<AST::Expression::Ref> Parser<Lexer>::parsePrimaryExpression()
         return { make<AST::CallableExpression>(WTFMove(arrayType), WTFMove(arguments)) };
     }
 
-    // const_literal
     case TokenType::LiteralTrue:
-        consume();
-        return { make<AST::BoolLiteral>(true) };
     case TokenType::LiteralFalse:
-        consume();
-        return { make<AST::BoolLiteral>(false) };
-    case TokenType::IntegerLiteral: {
-        CONSUME_TYPE_NAMED(lit, IntegerLiteral);
-        return { make<AST::AbstractIntLiteral>(lit.m_literalValue) };
-    }
-    case TokenType::IntegerLiteralSigned: {
-        CONSUME_TYPE_NAMED(lit, IntegerLiteralSigned);
-        return { make<AST::Int32Literal>(lit.m_literalValue) };
-    }
-    case TokenType::IntegerLiteralUnsigned: {
-        CONSUME_TYPE_NAMED(lit, IntegerLiteralUnsigned);
-        return { make<AST::Uint32Literal>(lit.m_literalValue) };
-    }
-    case TokenType::DecimalFloatLiteral: {
-        CONSUME_TYPE_NAMED(lit, DecimalFloatLiteral);
-        return { make<AST::AbstractFloatLiteral>(lit.m_literalValue) };
-    }
+    case TokenType::IntegerLiteral:
+    case TokenType::IntegerLiteralSigned:
+    case TokenType::IntegerLiteralUnsigned:
+    case TokenType::DecimalFloatLiteral:
     case TokenType::HexFloatLiteral: {
-        CONSUME_TYPE_NAMED(lit, HexFloatLiteral);
-        return { make<AST::AbstractFloatLiteral>(lit.m_literalValue) };
+        PARSE(literal, Literal);
+        return { make<AST::LiteralExpression>(WTFMove(literal)) };
     }
+
         // TODO: bitcast expression
 
     default:
@@ -820,6 +805,47 @@ Result<AST::Expression::List> Parser<Lexer>::parseArgumentExpressionList()
 
     CONSUME_TYPE(ParenRight);
     return { WTFMove(arguments) };
+}
+
+template<typename Lexer>
+Result<AST::Literal::Ref> Parser<Lexer>::parseLiteral()
+{
+    START_PARSE();
+
+    switch (current().m_type)
+    {
+    case TokenType::LiteralTrue:
+        consume();
+        return { make<AST::BoolLiteral>(true) };
+    case TokenType::LiteralFalse:
+        consume();
+        return { make<AST::BoolLiteral>(false) };
+    case TokenType::IntegerLiteral: {
+        CONSUME_TYPE_NAMED(lit, IntegerLiteral);
+        return { make<AST::IntegerLiteral>(lit.m_literalValue) };
+    }
+    case TokenType::IntegerLiteralSigned: {
+        CONSUME_TYPE_NAMED(lit, IntegerLiteralSigned);
+        return { make<AST::IntegerLiteral>(lit.m_literalValue, AST::IntegerLiteral::Suffix::Int32) };
+    }
+    case TokenType::IntegerLiteralUnsigned: {
+        CONSUME_TYPE_NAMED(lit, IntegerLiteralUnsigned);
+        return { make<AST::IntegerLiteral>(lit.m_literalValue, AST::IntegerLiteral::Suffix::Uint32) };
+    }
+    case TokenType::DecimalFloatLiteral: {
+        CONSUME_TYPE_NAMED(lit, DecimalFloatLiteral);
+        return { make<AST::FloatLiteral>(lit.m_literalValue) };
+    }
+    case TokenType::HexFloatLiteral: {
+        CONSUME_TYPE_NAMED(lit, HexFloatLiteral);
+        return { make<AST::FloatLiteral>(lit.m_literalValue) };
+    }
+
+    default:
+        break;
+    }
+
+    FAIL("Expected a literal"_s);
 }
 
 } // namespace WGSL

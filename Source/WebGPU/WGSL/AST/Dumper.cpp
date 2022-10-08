@@ -35,8 +35,9 @@ namespace WGSL::AST {
 
 struct Indent {
     Indent(Dumper& dumper)
-    : m_scope(dumper.m_indent, dumper.m_indent + "    ")
-    { }
+        : m_scope(dumper.m_indent, dumper.m_indent + "    ")
+    {
+    }
     SetForScope<String> m_scope;
 };
 
@@ -247,7 +248,7 @@ void Dumper::visit(StructureMember& member)
 
 void Dumper::visit(VariableQualifier& qualifier)
 {
-    constexpr ASCIILiteral accessMode[]= { "read"_s, "write"_s, "read_write"_s };
+    constexpr ASCIILiteral accessMode[] = { "read"_s, "write"_s, "read_write"_s };
     constexpr ASCIILiteral storageClass[] = { "function"_s, "private"_s, "workgroup"_s, "uniform"_s, "storage"_s };
     auto sc = WTF::enumToUnderlyingType(qualifier.storageClass());
     auto am = WTF::enumToUnderlyingType(qualifier.accessMode());
@@ -255,36 +256,6 @@ void Dumper::visit(VariableQualifier& qualifier)
 }
 
 // Expression
-void Dumper::visit(BoolLiteral& literal)
-{
-    NODENT(literal.value() ? "true": "false");
-}
-
-void Dumper::visit(Int32Literal& literal)
-{
-    NODENT(literal.value(), "i");
-}
-
-void Dumper::visit(Uint32Literal& literal)
-{
-    NODENT(literal.value(), "u");
-}
-
-void Dumper::visit(Float32Literal& literal)
-{
-    NODENT(literal.value(), "f");
-}
-
-void Dumper::visit(AbstractIntLiteral& literal)
-{
-    NODENT(literal.value());
-}
-
-void Dumper::visit(AbstractFloatLiteral& literal)
-{
-    NODENT(literal.value());
-}
-
 void Dumper::visit(IdentifierExpression& identifier)
 {
     NODENT(identifier.identifier());
@@ -323,6 +294,41 @@ void Dumper::visit(UnaryExpression& expression)
     visit(expression.expression());
 }
 
+// Literal
+void Dumper::visit(BoolLiteral& literal)
+{
+    NODENT(literal.value() ? "true" : "false");
+}
+
+void Dumper::visit(FloatLiteral& floatLiteral)
+{
+    NODENT(floatLiteral.value());
+    switch (floatLiteral.suffix()) {
+    case AST::FloatLiteral::Suffix::Float32:
+        NODENT("f");
+        break;
+    default:
+        /* do nothing */
+        break;
+    }
+}
+
+void Dumper::visit(IntegerLiteral& integerLiteral)
+{
+    NODENT(static_cast<unsigned>(integerLiteral.value()));
+    switch (integerLiteral.suffix()) {
+    case AST::IntegerLiteral::Suffix::Int32:
+        NODENT("i");
+        break;
+    case AST::IntegerLiteral::Suffix::Uint32:
+        NODENT("u");
+        break;
+    default:
+        /* do nothing */
+        break;
+    }
+}
+
 // Statement
 void Dumper::visit(CompoundStatement& block)
 {
@@ -342,7 +348,8 @@ void Dumper::visit(ReturnStatement& statement)
 {
     INDENT("return");
     if (statement.maybeExpression()) {
-        SPACE(); visit(*statement.maybeExpression());
+        SPACE();
+        visit(*statement.maybeExpression());
     }
     NODENT(";");
 }

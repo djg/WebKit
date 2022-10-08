@@ -31,6 +31,7 @@
 #include "CallableExpression.h"
 #include "IdentifierExpression.h"
 #include "Lexer.h"
+#include "Literal.h"
 #include "LiteralExpressions.h"
 #include "Parser.h"
 #include "ParserPrivate.h"
@@ -48,11 +49,32 @@ static void checkBuiltin(WGSL::AST::Attribute& attr, ASCIILiteral attrName)
     EXPECT_EQ(downcast<WGSL::AST::BuiltinAttribute>(attr).name(), attrName);
 }
 
+static void checkFloatLiteral(WGSL::AST::Expression& node, double value)
+{
+    EXPECT_TRUE(node.isLiteral());
+    auto& literalExpr = downcast<WGSL::AST::LiteralExpression>(node);
+    EXPECT_TRUE(literalExpr.literal().isFloat());
+    auto& floatLiteral = downcast<WGSL::AST::FloatLiteral>(literalExpr.literal());
+    EXPECT_EQ(floatLiteral.value(), value);
+}
+
 static void checkIntLiteral(WGSL::AST::Expression& node, int32_t value)
 {
-    EXPECT_TRUE(node.isAbstractIntLiteral());
-    auto& intLiteral = downcast<WGSL::AST::AbstractIntLiteral>(node);
+    EXPECT_TRUE(node.isLiteral());
+    auto& literalExpr = downcast<WGSL::AST::LiteralExpression>(node);
+    EXPECT_TRUE(literalExpr.literal().isInteger());
+    auto& intLiteral = downcast<WGSL::AST::IntegerLiteral>(literalExpr.literal());
     EXPECT_EQ(intLiteral.value(), value);
+}
+
+static void checkInt32Literal(WGSL::AST::Expression& node, int32_t value)
+{
+    EXPECT_TRUE(node.isLiteral());
+    auto& literalExpr = downcast<WGSL::AST::LiteralExpression>(node);
+    EXPECT_TRUE(literalExpr.literal().isInteger());
+    auto& intLiteral = downcast<WGSL::AST::IntegerLiteral>(literalExpr.literal());
+    EXPECT_EQ(intLiteral.value(), value);
+    EXPECT_EQ(intLiteral.suffix(), WGSL::AST::IntegerLiteral::Suffix::Int32);
 }
 
 static void checkNamedType(WGSL::AST::TypeName& type, ASCIILiteral name)
@@ -167,9 +189,7 @@ TEST(WGSLParserTests, FunctionDecl)
     auto& base = downcast<WGSL::AST::IdentifierExpression>(structAccess.base());
     EXPECT_EQ(base.identifier(), "x"_s);
     EXPECT_EQ(structAccess.fieldName(), "a"_s);
-    EXPECT_TRUE(stmt.rhs().isInt32Literal());
-    auto& rhs = downcast<WGSL::AST::Int32Literal>(stmt.rhs());
-    EXPECT_EQ(rhs.value(), 42);
+    checkInt32Literal(stmt.rhs(), 42);
 }
 
 TEST(WGSLParserTests, TrivialGraphicsShader)
@@ -238,10 +258,10 @@ TEST(WGSLParserTests, TrivialGraphicsShader)
         auto& expr = downcast<WGSL::AST::CallableExpression>(*stmt.maybeExpression());
         EXPECT_TRUE(expr.target().isParameterized());
         EXPECT_EQ(expr.arguments().size(), 4u);
-        EXPECT_TRUE(expr.arguments()[0].isAbstractFloatLiteral());
-        EXPECT_TRUE(expr.arguments()[1].isAbstractFloatLiteral());
-        EXPECT_TRUE(expr.arguments()[2].isAbstractFloatLiteral());
-        EXPECT_TRUE(expr.arguments()[3].isAbstractFloatLiteral());
+        checkFloatLiteral(expr.arguments()[0], 0.4);
+        checkFloatLiteral(expr.arguments()[1], 0.4);
+        checkFloatLiteral(expr.arguments()[2], 0.8);
+        checkFloatLiteral(expr.arguments()[3], 1.);
     }
 }
 
@@ -291,10 +311,10 @@ TEST(WGSLParserTests, LocalVariable)
         auto& varInitExpr = downcast<WGSL::AST::CallableExpression>(*varDecl.maybeInitializer());
         EXPECT_TRUE(varInitExpr.target().isParameterized());
         EXPECT_EQ(varInitExpr.arguments().size(), 4u);
-        EXPECT_TRUE(varInitExpr.arguments()[0].isAbstractFloatLiteral());
-        EXPECT_TRUE(varInitExpr.arguments()[1].isAbstractFloatLiteral());
-        EXPECT_TRUE(varInitExpr.arguments()[2].isAbstractFloatLiteral());
-        EXPECT_TRUE(varInitExpr.arguments()[3].isAbstractFloatLiteral());
+        checkFloatLiteral(varInitExpr.arguments()[0], 0.4);
+        checkFloatLiteral(varInitExpr.arguments()[1], 0.4);
+        checkFloatLiteral(varInitExpr.arguments()[2], 0.8);
+        checkFloatLiteral(varInitExpr.arguments()[3], 1.);
 
         // return x;
         EXPECT_TRUE(func.body().statements()[1].isReturn());
@@ -338,9 +358,7 @@ TEST(WGSLParserTests, ArrayAccess)
         EXPECT_TRUE(arrayAccess.base().isIdentifier());
         auto& base = downcast<WGSL::AST::IdentifierExpression>(arrayAccess.base());
         EXPECT_EQ(base.identifier(), "x"_s);
-        EXPECT_TRUE(arrayAccess.index().isInt32Literal());
-        auto& index = downcast<WGSL::AST::Int32Literal>(arrayAccess.index());
-        EXPECT_EQ(index.value(), 42);
+        checkInt32Literal(arrayAccess.index(), 42);
     }
 }
 
@@ -444,7 +462,6 @@ TEST(WGSLParserTests, TriangleVert)
         EXPECT_TRUE(varInitArrayType.maybeElementType());
         checkVec2F32Type(*varInitArrayType.maybeElementType());
         EXPECT_TRUE(varInitArrayType.maybeElementCount());
-        EXPECT_TRUE(varInitArrayType.maybeElementCount()->isAbstractIntLiteral());
         checkIntLiteral(*varInitArrayType.maybeElementCount(), 3);
     }
 

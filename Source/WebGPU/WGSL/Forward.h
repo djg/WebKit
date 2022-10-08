@@ -59,19 +59,21 @@ class VariableQualifier;
 #pragma mark -
 #pragma mark Expression
 class Expression;
-class BoolLiteral;
-class Int32Literal;
-class Uint32Literal;
-class Float32Literal;
-class AbstractIntLiteral;
-class AbstractFloatLiteral;
-class IdentifierExpression;
 class ArrayAccess;
-class StructureAccess;
 class CallableExpression;
+class IdentifierExpression;
+class LiteralExpression;
+class StructureAccess;
 class UnaryExpression;
 
 class Parameter;
+
+#pragma mark -
+#pragma mark Literal
+class Literal;
+class BoolLiteral;
+class FloatLiteral;
+class IntegerLiteral;
 
 #pragma mark -
 #pragma mark Statement
