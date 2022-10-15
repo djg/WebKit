@@ -26,12 +26,14 @@
 #pragma once
 
 #include "ASTNode.h"
+#include "wtf/UniqueRefVector.h"
 #include <wtf/TypeCasts.h>
 
 namespace WGSL::AST {
 
 class Decl : public ASTNode {
     WTF_MAKE_FAST_ALLOCATED;
+
 public:
     enum class Kind {
         Variable,
@@ -39,12 +41,14 @@ public:
         Function,
     };
 
+    using List = UniqueRefVector<Decl>;
+
     Decl(SourceSpan span)
         : ASTNode(span)
     {
     }
 
-    virtual ~Decl() { }
+    virtual ~Decl() {}
 
     virtual Kind kind() const = 0;
     bool isVariable() const { return kind() == Kind::Variable; }
