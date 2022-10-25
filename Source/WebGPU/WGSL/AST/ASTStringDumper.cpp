@@ -116,13 +116,13 @@ void StringDumper::visit(LocationAttribute& location)
 void StringDumper::visit(StageAttribute& stage)
 {
     switch (stage.stage()) {
-    case StageAttribute::Stage::Compute:
+    case Stage::Compute:
         m_out.print("@compute");
         break;
-    case StageAttribute::Stage::Fragment:
+    case Stage::Fragment:
         m_out.print("@fragment");
         break;
-    case StageAttribute::Stage::Vertex:
+    case Stage::Vertex:
         m_out.print("@vertex");
         break;
     }
@@ -315,9 +315,9 @@ void StringDumper::visit(ArrayType& type)
     if (type.maybeElementType()) {
         m_out.print("<");
         visit(*type.maybeElementType());
-        if (type.maybeElementCount()) {
-            m_out.print(", ");
-            visit(*type.maybeElementCount());
+        unsigned count = type.elementCount();
+        if (count != 0) {
+            m_out.print(", ", count);
         }
         m_out.print(">");
     }

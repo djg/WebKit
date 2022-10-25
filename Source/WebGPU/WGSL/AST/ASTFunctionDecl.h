@@ -28,6 +28,7 @@
 #include "ASTAttribute.h"
 #include "ASTCompoundStatement.h"
 #include "ASTDecl.h"
+#include "ASTForward.h"
 #include "ASTTypeDecl.h"
 #include "CompilationMessage.h"
 
@@ -53,6 +54,7 @@ public:
     const StringView& name() const { return m_name; }
     TypeDecl& type() { return m_type; }
     Attribute::List& attributes() { return m_attributes; }
+    const Attribute* maybeSemantic() const;
 
 private:
     StringView m_name;
@@ -84,6 +86,9 @@ public:
     Attribute::List& returnAttributes() { return m_returnAttributes; }
     TypeDecl* maybeReturnType() { return m_returnType.get(); }
     CompoundStatement& body() { return m_body; }
+    std::optional<Stage> maybeStage() const;
+    Stage stage() const;
+    const Attribute* maybeReturnSemantic() const;
 
 private:
     StringView m_name;

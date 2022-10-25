@@ -25,53 +25,22 @@
 
 #pragma once
 
-namespace WGSL::AST {
+#include "TypeForward.h"
 
-class ShaderModule;
-class GlobalDirective;
+#include <wtf/HashMap.h>
+#include <wtf/UniqueRef.h>
+#include <wtf/text/StringView.h>
 
-class Attribute;
-class BindingAttribute;
-class BuiltinAttribute;
-class GroupAttribute;
-class LocationAttribute;
-class StageAttribute;
+namespace WGSL::Type {
 
-class Decl;
-class FunctionDecl;
-class StructDecl;
-class VariableDecl;
+class Context {
+public:
+    Context();
 
-class Expression;
-class AbstractFloatLiteral;
-class AbstractIntLiteral;
-class ArrayAccess;
-class BoolLiteral;
-class CallableExpression;
-class Float32Literal;
-class IdentifierExpression;
-class Int32Literal;
-class StructureAccess;
-class Uint32Literal;
-class UnaryExpression;
+    const Node* lookup(const WTF::StringView&);
 
-class Statement;
-class AssignmentStatement;
-class CompoundStatement;
-class ReturnStatement;
-class VariableStatement;
+private:
+    HashMap<String, UniqueRef<Node>> m_internedTypes;
+};
 
-class TypeDecl;
-class ArrayType;
-class NamedType;
-class ParameterizedType;
-
-class Parameter;
-class StructMember;
-class VariableQualifier;
-
-enum class AccessMode : uint8_t;
-enum class Stage : uint8_t;
-enum class StorageClass : uint8_t;
-
-} // namespace WGSL::AST
+} // namespace WGSL::Type

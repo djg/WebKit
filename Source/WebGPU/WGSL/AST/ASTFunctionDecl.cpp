@@ -23,55 +23,49 @@
  * THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#pragma once
+#include "config.h"
+#include "ASTFunctionDecl.h"
+
+#include "ASTBuiltinAttribute.h"
+#include "ASTLocationAttribute.h"
+#include "ASTStageAttribute.h"
 
 namespace WGSL::AST {
 
-class ShaderModule;
-class GlobalDirective;
+static const Attribute* firstSemantic(const Attribute::List& attributes)
+{
+    auto index = attributes.findIf([](const auto& attr) {
+        return is<BuiltinAttribute>(attr) || is<LocationAttribute>(attr);
+    });
+    if (index == notFound)
+        return nullptr;
+    return &attributes[index];
+}
 
-class Attribute;
-class BindingAttribute;
-class BuiltinAttribute;
-class GroupAttribute;
-class LocationAttribute;
-class StageAttribute;
+const Attribute* Parameter::maybeSemantic() const
+{
+    return firstSemantic(m_attributes);
+}
 
-class Decl;
-class FunctionDecl;
-class StructDecl;
-class VariableDecl;
+std::optional<Stage> FunctionDecl::maybeStage() const
+{
+    auto index = m_attributes.findIf([](const Attribute& attr) { return is<StageAttribute>(attr); });
+    if (index == notFound)
+        return {};
 
-class Expression;
-class AbstractFloatLiteral;
-class AbstractIntLiteral;
-class ArrayAccess;
-class BoolLiteral;
-class CallableExpression;
-class Float32Literal;
-class IdentifierExpression;
-class Int32Literal;
-class StructureAccess;
-class Uint32Literal;
-class UnaryExpression;
+    return { downcast<WGSL::AST::StageAttribute>(m_attributes[index]).stage() };
+}
 
-class Statement;
-class AssignmentStatement;
-class CompoundStatement;
-class ReturnStatement;
-class VariableStatement;
+Stage FunctionDecl::stage() const
+{
+    auto stage = maybeStage();
+    ASSERT(stage);
+    return stage.value();
+}
 
-class TypeDecl;
-class ArrayType;
-class NamedType;
-class ParameterizedType;
-
-class Parameter;
-class StructMember;
-class VariableQualifier;
-
-enum class AccessMode : uint8_t;
-enum class Stage : uint8_t;
-enum class StorageClass : uint8_t;
+const Attribute* FunctionDecl::maybeReturnSemantic() const
+{
+    return firstSemantic(m_returnAttributes);
+}
 
 } // namespace WGSL::AST

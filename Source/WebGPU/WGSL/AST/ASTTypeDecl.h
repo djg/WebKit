@@ -36,30 +36,37 @@ class TypeDecl : public Node {
     WTF_MAKE_FAST_ALLOCATED;
 
 public:
+    using Ref = UniqueRef<TypeDecl>;
+    using Ptr = std::unique_ptr<TypeDecl>;
+
     TypeDecl(SourceSpan span)
         : Node(span)
     {
     }
+
+    virtual String toString() const = 0;
 };
 
 class ArrayType final : public TypeDecl {
     WTF_MAKE_FAST_ALLOCATED;
 
 public:
-    ArrayType(SourceSpan span, std::unique_ptr<TypeDecl>&& elementType, std::unique_ptr<Expression>&& elementCount)
+    ArrayType(SourceSpan span, std::unique_ptr<TypeDecl>&& elementType, unsigned elementCount)
         : TypeDecl(span)
         , m_elementType(WTFMove(elementType))
-        , m_elementCount(WTFMove(elementCount))
+        , m_elementCount(elementCount)
     {
     }
 
     Kind kind() const override;
     TypeDecl* maybeElementType() const { return m_elementType.get(); }
-    Expression* maybeElementCount() const { return m_elementCount.get(); }
+    unsigned elementCount() const { return m_elementCount; }
+
+    String toString() const override;
 
 private:
-    std::unique_ptr<TypeDecl> m_elementType;
-    std::unique_ptr<Expression> m_elementCount;
+    TypeDecl::Ptr m_elementType;
+    unsigned m_elementCount;
 };
 
 class NamedType final : public TypeDecl {
@@ -74,6 +81,8 @@ public:
 
     Kind kind() const override;
     const StringView& name() const { return m_name; }
+
+    String toString() const override;
 
 private:
     StringView m_name;
@@ -97,6 +106,8 @@ public:
         Mat4x3,
         Mat4x4
     };
+
+    using Ref = UniqueRef<ParameterizedType>;
 
     ParameterizedType(SourceSpan span, Base base, UniqueRef<TypeDecl>&& elementType)
         : TypeDecl(span)
@@ -135,20 +146,19 @@ public:
     }
 
     Kind kind() const override;
+    String toString() const override;
+
     Base base() const { return m_base; }
+    const TypeDecl& elementType() const { return m_elementType; }
+
     TypeDecl& elementType() { return m_elementType; }
 
 private:
     Base m_base;
-    UniqueRef<TypeDecl> m_elementType;
+    TypeDecl::Ref m_elementType;
 };
 
 } // namespace WGSL::AST
-
-#define SPECIALIZE_TYPE_TRAITS_WGSL_TYPE(ToValueTypeName, predicate) \
-SPECIALIZE_TYPE_TRAITS_BEGIN(WGSL::AST::ToValueTypeName) \
-    static bool isType(const WGSL::AST::TypeDecl& type) { return type.predicate; } \
-SPECIALIZE_TYPE_TRAITS_END()
 
 SPECIALIZE_TYPE_TRAITS_BEGIN(WGSL::AST::TypeDecl)
 static bool isType(const WGSL::AST::Node& node)

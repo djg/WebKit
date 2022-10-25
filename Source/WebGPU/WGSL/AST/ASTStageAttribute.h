@@ -29,16 +29,16 @@
 
 namespace WGSL::AST {
 
+enum class Stage : uint8_t {
+    Compute,
+    Vertex,
+    Fragment
+};
+
 class StageAttribute final : public Attribute {
     WTF_MAKE_FAST_ALLOCATED;
 
 public:
-    enum class Stage : uint8_t {
-        Compute,
-        Vertex,
-        Fragment
-    };
-
     StageAttribute(SourceSpan span, Stage stage)
         : Attribute(span)
         , m_stage(stage)

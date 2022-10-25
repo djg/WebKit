@@ -231,11 +231,11 @@ Expected<UniqueRef<AST::Attribute>, Error> Parser<Lexer>::parseAttribute()
 
     // https://gpuweb.github.io/gpuweb/wgsl/#pipeline-stage-attributes
     if (ident.m_ident == "vertex"_s)
-        RETURN_NODE_REF(StageAttribute, AST::StageAttribute::Stage::Vertex);
+        RETURN_NODE_REF(StageAttribute, AST::Stage::Vertex);
     if (ident.m_ident == "compute"_s)
-        RETURN_NODE_REF(StageAttribute, AST::StageAttribute::Stage::Compute);
+        RETURN_NODE_REF(StageAttribute, AST::Stage::Compute);
     if (ident.m_ident == "fragment"_s)
-        RETURN_NODE_REF(StageAttribute, AST::StageAttribute::Stage::Fragment);
+        RETURN_NODE_REF(StageAttribute, AST::Stage::Fragment);
 
     FAIL("Unknown attribute. Supported attributes are 'group', 'binding', 'location', 'builtin', 'vertex', 'compute', 'fragment'."_s);
 }
@@ -325,7 +325,7 @@ Expected<UniqueRef<AST::TypeDecl>, Error> Parser<Lexer>::parseArrayType()
     CONSUME_TYPE(KeywordArray);
 
     std::unique_ptr<AST::TypeDecl> maybeElementType;
-    std::unique_ptr<AST::Expression> maybeElementCount;
+    unsigned maybeElementCount = 0;
 
     if (current().m_type == TokenType::LT) {
         // We differ from the WGSL grammar here by allowing the type to be optional,
@@ -342,13 +342,13 @@ Expected<UniqueRef<AST::TypeDecl>, Error> Parser<Lexer>::parseArrayType()
             //
             // The WGSL grammar doesn't specify expression operator precedence so
             // until then just parse AdditiveExpression.
-            PARSE(elementCount, AdditiveExpression);
-            maybeElementCount = elementCount.moveToUniquePtr();
+            CONSUME_TYPE_NAMED(elementCount, IntegerLiteral);
+            maybeElementCount = elementCount.m_literalValue;
         }
         CONSUME_TYPE(GT);
     }
 
-    RETURN_NODE_REF(ArrayType, WTFMove(maybeElementType), WTFMove(maybeElementCount));
+    RETURN_NODE_REF(ArrayType, WTFMove(maybeElementType), maybeElementCount);
 }
 
 template<typename Lexer>

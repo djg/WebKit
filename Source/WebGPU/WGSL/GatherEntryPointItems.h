@@ -25,53 +25,27 @@
 
 #pragma once
 
-namespace WGSL::AST {
+#include "ASTForward.h"
+#include "CompilationMessage.h"
+#include "TypeForward.h"
 
-class ShaderModule;
-class GlobalDirective;
+#include <wtf/Vector.h>
 
-class Attribute;
-class BindingAttribute;
-class BuiltinAttribute;
-class GroupAttribute;
-class LocationAttribute;
-class StageAttribute;
+namespace WGSL {
 
-class Decl;
-class FunctionDecl;
-class StructDecl;
-class VariableDecl;
+struct EntryPointItem {
+    EntryPointItem(Vector<StringView>&, const Type::Node*, const AST::Attribute*);
 
-class Expression;
-class AbstractFloatLiteral;
-class AbstractIntLiteral;
-class ArrayAccess;
-class BoolLiteral;
-class CallableExpression;
-class Float32Literal;
-class IdentifierExpression;
-class Int32Literal;
-class StructureAccess;
-class Uint32Literal;
-class UnaryExpression;
+    Vector<StringView> path;
+    const Type::Node* const type;
+    const AST::Attribute* const semantic;
+};
 
-class Statement;
-class AssignmentStatement;
-class CompoundStatement;
-class ReturnStatement;
-class VariableStatement;
+struct EntryPointItems {
+    Vector<EntryPointItem> inputs;
+    Vector<EntryPointItem> outputs;
+};
 
-class TypeDecl;
-class ArrayType;
-class NamedType;
-class ParameterizedType;
+Expected<EntryPointItems, Error> gatherEntryPointItems(AST::FunctionDecl&);
 
-class Parameter;
-class StructMember;
-class VariableQualifier;
-
-enum class AccessMode : uint8_t;
-enum class Stage : uint8_t;
-enum class StorageClass : uint8_t;
-
-} // namespace WGSL::AST
+} // namespace WGSL

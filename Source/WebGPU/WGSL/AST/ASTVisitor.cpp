@@ -323,7 +323,6 @@ void Visitor::visit(TypeDecl& typeDecl)
 void Visitor::visit(ArrayType& arrayType)
 {
     maybeCheckErrorAndVisit(arrayType.maybeElementType());
-    maybeCheckErrorAndVisit(arrayType.maybeElementCount());
 }
 
 void Visitor::visit(NamedType&)

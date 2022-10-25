@@ -23,55 +23,32 @@
  * THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#pragma once
+#include "TypeContext.h"
 
-namespace WGSL::AST {
+#include "Type.h"
+#include <wtf/text/StringHash.h>
 
-class ShaderModule;
-class GlobalDirective;
+namespace WGSL::Type {
 
-class Attribute;
-class BindingAttribute;
-class BuiltinAttribute;
-class GroupAttribute;
-class LocationAttribute;
-class StageAttribute;
+Context::Context()
+    : m_internedTypes()
+{
+    auto f32 = makeUniqueRef<Float32>();
+    auto vec2_f32 = makeUniqueRef<Vector>(f32.ptr(), Dimension::_2D);
+    auto vec3_f32 = makeUniqueRef<Vector>(f32.ptr(), Dimension::_2D);
+    auto vec4_f32 = makeUniqueRef<Vector>(f32.ptr(), Dimension::_4D);
+    auto u32 = makeUniqueRef<Unsigned32>();
 
-class Decl;
-class FunctionDecl;
-class StructDecl;
-class VariableDecl;
+    m_internedTypes.add("f32"_str, WTFMove(f32));
+    m_internedTypes.add("vec2<f32>"_str, WTFMove(vec2_f32));
+    m_internedTypes.add("vec3<f32>"_str, WTFMove(vec3_f32));
+    m_internedTypes.add("vec4<f32>"_str, WTFMove(vec4_f32));
+    m_internedTypes.add("u32"_str, WTFMove(u32));
+}
 
-class Expression;
-class AbstractFloatLiteral;
-class AbstractIntLiteral;
-class ArrayAccess;
-class BoolLiteral;
-class CallableExpression;
-class Float32Literal;
-class IdentifierExpression;
-class Int32Literal;
-class StructureAccess;
-class Uint32Literal;
-class UnaryExpression;
+const Node* Context::lookup(const StringView& name)
+{
+    return m_internedTypes.get<StringViewHashTranslator>(name);
+}
 
-class Statement;
-class AssignmentStatement;
-class CompoundStatement;
-class ReturnStatement;
-class VariableStatement;
-
-class TypeDecl;
-class ArrayType;
-class NamedType;
-class ParameterizedType;
-
-class Parameter;
-class StructMember;
-class VariableQualifier;
-
-enum class AccessMode : uint8_t;
-enum class Stage : uint8_t;
-enum class StorageClass : uint8_t;
-
-} // namespace WGSL::AST
+} // namespace WGSL::Type

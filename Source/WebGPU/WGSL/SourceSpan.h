@@ -41,16 +41,19 @@ struct SourceSpan {
     unsigned m_offset;
     unsigned m_length;
 
+    SourceSpan() : SourceSpan(0, 0, 0, 0) {}
     SourceSpan(unsigned line, unsigned lineOffset, unsigned offset, unsigned length)
         : m_line(line)
         , m_lineOffset(lineOffset)
         , m_offset(offset)
         , m_length(length)
     { }
-    
+
     SourceSpan(SourcePosition start, SourcePosition end)
         : SourceSpan(start.m_line, start.m_lineOffset, start.m_offset, end.m_offset - start.m_offset)
     { }
+
+    operator bool() const { return m_line == 0 && m_lineOffset == 0 && m_offset == 0 && m_length == 0; }
 
     bool operator==(const SourceSpan& other) const
     {

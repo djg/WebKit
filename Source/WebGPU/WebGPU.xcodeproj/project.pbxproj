@@ -85,9 +85,15 @@
 		3A652ABE2918C2930091386F /* TypeChecker.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A652ABC2918C2920091386F /* TypeChecker.h */; };
 		3A652ABF2918C2930091386F /* TypeChecker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3A652ABD2918C2930091386F /* TypeChecker.cpp */; };
 		3A652AC12918C2A50091386F /* TypedShaderModule.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A652AC02918C2A50091386F /* TypedShaderModule.h */; };
+		3A4C5BA429076F92009C3B4C /* GatherEntryPointItems.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3A4C5BA229076F92009C3B4C /* GatherEntryPointItems.cpp */; };
+		3A4C5BA529076F92009C3B4C /* GatherEntryPointItems.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A4C5BA329076F92009C3B4C /* GatherEntryPointItems.h */; };
+		3A4C5BB12907A5AC009C3B4C /* TypeContext.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A4C5BAF2907A5AC009C3B4C /* TypeContext.h */; };
+		3A4C5BB22907A5AC009C3B4C /* TypeContext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3A4C5BB02907A5AC009C3B4C /* TypeContext.cpp */; };
+		3A4C5BB42907AF90009C3B4C /* ASTTypeDecl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3A4C5BB32907AF90009C3B4C /* ASTTypeDecl.cpp */; };
 		3A7E164C28C57BB8003F49C9 /* ASTArrayAccess.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A7E164B28C57BB7003F49C9 /* ASTArrayAccess.h */; };
 		3AAE4EB428C56E9A00DA484B /* ASTUnaryExpression.h in Headers */ = {isa = PBXBuildFile; fileRef = 3AAE4EB328C56E9A00DA484B /* ASTUnaryExpression.h */; };
 		3ACCE80628FE1872004A0914 /* AST.h in Headers */ = {isa = PBXBuildFile; fileRef = 3ACCE80528FE1872004A0914 /* AST.h */; };
+		3AD7AAAD29064B6D0096F7AE /* ASTFunctionDecl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3AD7AAAC29064B6D0096F7AE /* ASTFunctionDecl.cpp */; };
 		3AD7AAB02907649D0096F7AE /* Type.h in Headers */ = {isa = PBXBuildFile; fileRef = 3AD7AAAF2907649D0096F7AE /* Type.h */; };
 		3AD7AAB629076E5E0096F7AE /* TypeForward.h in Headers */ = {isa = PBXBuildFile; fileRef = 3AD7AAB129076E5D0096F7AE /* TypeForward.h */; };
 		3AD7AAB729076E5E0096F7AE /* TypeNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 3AD7AAB229076E5D0096F7AE /* TypeNode.h */; };
@@ -354,9 +360,16 @@
 		3A652ABC2918C2920091386F /* TypeChecker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TypeChecker.h; sourceTree = "<group>"; };
 		3A652ABD2918C2930091386F /* TypeChecker.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TypeChecker.cpp; sourceTree = "<group>"; };
 		3A652AC02918C2A50091386F /* TypedShaderModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TypedShaderModule.h; sourceTree = "<group>"; };
+		3A260AAA29091CC6006AEF4C /* TypeUnsigned32.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TypeUnsigned32.h; sourceTree = "<group>"; };
+		3A4C5BA229076F92009C3B4C /* GatherEntryPointItems.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GatherEntryPointItems.cpp; sourceTree = "<group>"; };
+		3A4C5BA329076F92009C3B4C /* GatherEntryPointItems.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GatherEntryPointItems.h; sourceTree = "<group>"; };
+		3A4C5BAF2907A5AC009C3B4C /* TypeContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TypeContext.h; sourceTree = "<group>"; };
+		3A4C5BB02907A5AC009C3B4C /* TypeContext.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TypeContext.cpp; sourceTree = "<group>"; };
+		3A4C5BB32907AF90009C3B4C /* ASTTypeDecl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ASTTypeDecl.cpp; sourceTree = "<group>"; };
 		3A7E164B28C57BB7003F49C9 /* ASTArrayAccess.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASTArrayAccess.h; sourceTree = "<group>"; };
 		3AAE4EB328C56E9A00DA484B /* ASTUnaryExpression.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASTUnaryExpression.h; sourceTree = "<group>"; };
 		3ACCE80528FE1872004A0914 /* AST.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AST.h; sourceTree = "<group>"; };
+		3AD7AAAC29064B6D0096F7AE /* ASTFunctionDecl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ASTFunctionDecl.cpp; sourceTree = "<group>"; };
 		3AD7AAAF2907649D0096F7AE /* Type.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Type.h; sourceTree = "<group>"; };
 		3AD7AAB129076E5D0096F7AE /* TypeForward.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TypeForward.h; sourceTree = "<group>"; };
 		3AD7AAB229076E5D0096F7AE /* TypeNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TypeNode.h; sourceTree = "<group>"; };
@@ -664,6 +677,8 @@
 				33EA186727BC1B1400A1DD52 /* CompilationMessage.cpp */,
 				33EA186527BC1AD500A1DD52 /* CompilationMessage.h */,
 				1CEBD8042716BFAB00A5254D /* config.h */,
+				3A4C5BA229076F92009C3B4C /* GatherEntryPointItems.cpp */,
+				3A4C5BA329076F92009C3B4C /* GatherEntryPointItems.h */,
 				338BB2D527B6B68700E066AB /* Lexer.cpp */,
 				338BB2D327B6B66C00E066AB /* Lexer.h */,
 				339B7B1A27D800090072BF9A /* Parser.cpp */,
@@ -720,6 +735,7 @@
 				33EA186127BC19C100A1DD52 /* ASTDecl.h */,
 				33EA186B27BC1CBC00A1DD52 /* ASTExpression.h */,
 				3A1337E928FBD56E00F29B73 /* ASTForward.h */,
+				3AD7AAAC29064B6D0096F7AE /* ASTFunctionDecl.cpp */,
 				33EA187527BC216B00A1DD52 /* ASTFunctionDecl.h */,
 				33EA185F27BC198100A1DD52 /* ASTGlobalDirective.h */,
 				3A2479D8290629CD0012B3E6 /* ASTGroupAttribute.h */,
@@ -735,6 +751,7 @@
 				3ADB94432900F7D600CFFDC2 /* ASTStringDumper.h */,
 				33EA188327BC268600A1DD52 /* ASTStructureAccess.h */,
 				33EA187327BC204900A1DD52 /* ASTStructureDecl.h */,
+				3A4C5BB32907AF90009C3B4C /* ASTTypeDecl.cpp */,
 				33EA186D27BC1D4C00A1DD52 /* ASTTypeDecl.h */,
 				3AAE4EB328C56E9A00DA484B /* ASTUnaryExpression.h */,
 				33EA186327BC1A1D00A1DD52 /* ASTVariableDecl.h */,
@@ -753,6 +770,8 @@
 				3AD7AAB329076E5D0096F7AE /* TypeArray.h */,
 				3A652ABD2918C2930091386F /* TypeChecker.cpp */,
 				3A652ABC2918C2920091386F /* TypeChecker.h */,
+				3A4C5BB02907A5AC009C3B4C /* TypeContext.cpp */,
+				3A4C5BAF2907A5AC009C3B4C /* TypeContext.h */,
 				3AD7AAB429076E5E0096F7AE /* TypeFloat32.h */,
 				3AD7AAB129076E5D0096F7AE /* TypeForward.h */,
 				3AD7AAB229076E5D0096F7AE /* TypeNode.h */,
@@ -825,6 +844,7 @@
 				3AE27DB528C1BA480043A8E0 /* ASTVariableStatement.h in Headers */,
 				3A1337E828FBD56400F29B73 /* ASTVisitor.h in Headers */,
 				33EA186627BC1AD500A1DD52 /* CompilationMessage.h in Headers */,
+				3A4C5BA529076F92009C3B4C /* GatherEntryPointItems.h in Headers */,
 				338BB2D427B6B66C00E066AB /* Lexer.h in Headers */,
 				3AF444B62914CF9C0080395A /* MetalMangledNames.h in Headers */,
 				3AF444A32914CDC10080395A /* MetalTypeNamer.h in Headers */,
@@ -835,6 +855,7 @@
 				3AD7AAB02907649D0096F7AE /* Type.h in Headers */,
 				3AD7AAB829076E5E0096F7AE /* TypeArray.h in Headers */,
 				3A652ABE2918C2930091386F /* TypeChecker.h in Headers */,
+				3A4C5BB12907A5AC009C3B4C /* TypeContext.h in Headers */,
 				3A652AC12918C2A50091386F /* TypedShaderModule.h in Headers */,
 				3AD7AAB929076E5E0096F7AE /* TypeFloat32.h in Headers */,
 				3AD7AAB629076E5E0096F7AE /* TypeForward.h in Headers */,
@@ -1061,14 +1082,18 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3AD7AAAD29064B6D0096F7AE /* ASTFunctionDecl.cpp in Sources */,
 				3ADB94442900F7D700CFFDC2 /* ASTStringDumper.cpp in Sources */,
+				3A4C5BB42907AF90009C3B4C /* ASTTypeDecl.cpp in Sources */,
 				3A1337E728FBD56400F29B73 /* ASTVisitor.cpp in Sources */,
 				339B7B1E27D816270072BF9A /* CompilationMessage.cpp in Sources */,
+				3A4C5BA429076F92009C3B4C /* GatherEntryPointItems.cpp in Sources */,
 				338BB2D627B6B68700E066AB /* Lexer.cpp in Sources */,
 				3AF444A42914CDC10080395A /* MetalTypeNamer.cpp in Sources */,
 				339B7B1B27D800090072BF9A /* Parser.cpp in Sources */,
 				338BB2D027B6B61B00E066AB /* Token.cpp in Sources */,
 				3A652ABF2918C2930091386F /* TypeChecker.cpp in Sources */,
+				3A4C5BB22907A5AC009C3B4C /* TypeContext.cpp in Sources */,
 				1CEBD8032716BF8200A5254D /* WGSL.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
