@@ -98,6 +98,9 @@
 		3ADB94452900F7D700CFFDC2 /* ASTStringDumper.h in Headers */ = {isa = PBXBuildFile; fileRef = 3ADB94432900F7D600CFFDC2 /* ASTStringDumper.h */; };
 		3AE27DB528C1BA480043A8E0 /* ASTVariableStatement.h in Headers */ = {isa = PBXBuildFile; fileRef = 3AE27DB428C1BA480043A8E0 /* ASTVariableStatement.h */; };
 		3AF444A02914CD500080395A /* TypeUnsigned32.h in Headers */ = {isa = PBXBuildFile; fileRef = 3AF4449F2914CD500080395A /* TypeUnsigned32.h */; };
+		3AF444A32914CDC10080395A /* MetalTypeNamer.h in Headers */ = {isa = PBXBuildFile; fileRef = 3AF444A12914CDC10080395A /* MetalTypeNamer.h */; };
+		3AF444A42914CDC10080395A /* MetalTypeNamer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3AF444A22914CDC10080395A /* MetalTypeNamer.cpp */; };
+		3AF444B62914CF9C0080395A /* MetalMangledNames.h in Headers */ = {isa = PBXBuildFile; fileRef = 3AF444AF2914CF9C0080395A /* MetalMangledNames.h */; };
 		664C92FD286A66090008D143 /* IOSurface.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 664C92FC286A66090008D143 /* IOSurface.framework */; };
 		66DC575528627E0B0014CABD /* ParserPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 66DC575428627E0B0014CABD /* ParserPrivate.h */; };
 		DD05A35C27BF09C60096EFAB /* libWTF.a in Product Dependencies */ = {isa = PBXBuildFile; fileRef = 1CEBD8292716CAE700A5254D /* libWTF.a */; };
@@ -364,6 +367,9 @@
 		3ADB94432900F7D600CFFDC2 /* ASTStringDumper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASTStringDumper.h; sourceTree = "<group>"; };
 		3AE27DB428C1BA480043A8E0 /* ASTVariableStatement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASTVariableStatement.h; sourceTree = "<group>"; };
 		3AF4449F2914CD500080395A /* TypeUnsigned32.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TypeUnsigned32.h; sourceTree = "<group>"; };
+		3AF444A12914CDC10080395A /* MetalTypeNamer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MetalTypeNamer.h; sourceTree = "<group>"; };
+		3AF444A22914CDC10080395A /* MetalTypeNamer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MetalTypeNamer.cpp; sourceTree = "<group>"; };
+		3AF444AF2914CF9C0080395A /* MetalMangledNames.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MetalMangledNames.h; sourceTree = "<group>"; };
 		664C92FC286A66090008D143 /* IOSurface.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOSurface.framework; path = System/Library/Frameworks/IOSurface.framework; sourceTree = SDKROOT; };
 		66DC575428627E0B0014CABD /* ParserPrivate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ParserPrivate.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -653,6 +659,7 @@
 			isa = PBXGroup;
 			children = (
 				33EA185C27BC193D00A1DD52 /* AST */,
+				3AF444AA2914CF9C0080395A /* Metal */,
 				3AD7AAAE2907649C0096F7AE /* Type */,
 				33EA186727BC1B1400A1DD52 /* CompilationMessage.cpp */,
 				33EA186527BC1AD500A1DD52 /* CompilationMessage.h */,
@@ -755,6 +762,16 @@
 			path = Type;
 			sourceTree = "<group>";
 		};
+		3AF444AA2914CF9C0080395A /* Metal */ = {
+			isa = PBXGroup;
+			children = (
+				3AF444AF2914CF9C0080395A /* MetalMangledNames.h */,
+				3AF444A22914CDC10080395A /* MetalTypeNamer.cpp */,
+				3AF444A12914CDC10080395A /* MetalTypeNamer.h */,
+			);
+			path = Metal;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -809,6 +826,8 @@
 				3A1337E828FBD56400F29B73 /* ASTVisitor.h in Headers */,
 				33EA186627BC1AD500A1DD52 /* CompilationMessage.h in Headers */,
 				338BB2D427B6B66C00E066AB /* Lexer.h in Headers */,
+				3AF444B62914CF9C0080395A /* MetalMangledNames.h in Headers */,
+				3AF444A32914CDC10080395A /* MetalTypeNamer.h in Headers */,
 				339B7B1827D7FFA40072BF9A /* Parser.h in Headers */,
 				66DC575528627E0B0014CABD /* ParserPrivate.h in Headers */,
 				338BB2D227B6B63F00E066AB /* SourceSpan.h in Headers */,
@@ -1046,6 +1065,7 @@
 				3A1337E728FBD56400F29B73 /* ASTVisitor.cpp in Sources */,
 				339B7B1E27D816270072BF9A /* CompilationMessage.cpp in Sources */,
 				338BB2D627B6B68700E066AB /* Lexer.cpp in Sources */,
+				3AF444A42914CDC10080395A /* MetalTypeNamer.cpp in Sources */,
 				339B7B1B27D800090072BF9A /* Parser.cpp in Sources */,
 				338BB2D027B6B61B00E066AB /* Token.cpp in Sources */,
 				3A652ABF2918C2930091386F /* TypeChecker.cpp in Sources */,
