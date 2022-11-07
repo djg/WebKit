@@ -82,6 +82,9 @@
 		3A2479DF290629CE0012B3E6 /* ASTStageAttribute.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A2479DA290629CE0012B3E6 /* ASTStageAttribute.h */; };
 		3A2479E0290629CE0012B3E6 /* ASTBindingAttribute.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A2479DB290629CE0012B3E6 /* ASTBindingAttribute.h */; };
 		3A2479E1290629CE0012B3E6 /* ASTBuiltinAttribute.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A2479DC290629CE0012B3E6 /* ASTBuiltinAttribute.h */; };
+		3A652ABE2918C2930091386F /* TypeChecker.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A652ABC2918C2920091386F /* TypeChecker.h */; };
+		3A652ABF2918C2930091386F /* TypeChecker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3A652ABD2918C2930091386F /* TypeChecker.cpp */; };
+		3A652AC12918C2A50091386F /* TypedShaderModule.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A652AC02918C2A50091386F /* TypedShaderModule.h */; };
 		3A7E164C28C57BB8003F49C9 /* ASTArrayAccess.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A7E164B28C57BB7003F49C9 /* ASTArrayAccess.h */; };
 		3AAE4EB428C56E9A00DA484B /* ASTUnaryExpression.h in Headers */ = {isa = PBXBuildFile; fileRef = 3AAE4EB328C56E9A00DA484B /* ASTUnaryExpression.h */; };
 		3ACCE80628FE1872004A0914 /* AST.h in Headers */ = {isa = PBXBuildFile; fileRef = 3ACCE80528FE1872004A0914 /* AST.h */; };
@@ -345,6 +348,9 @@
 		3A2479DA290629CE0012B3E6 /* ASTStageAttribute.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASTStageAttribute.h; sourceTree = "<group>"; };
 		3A2479DB290629CE0012B3E6 /* ASTBindingAttribute.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASTBindingAttribute.h; sourceTree = "<group>"; };
 		3A2479DC290629CE0012B3E6 /* ASTBuiltinAttribute.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASTBuiltinAttribute.h; sourceTree = "<group>"; };
+		3A652ABC2918C2920091386F /* TypeChecker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TypeChecker.h; sourceTree = "<group>"; };
+		3A652ABD2918C2930091386F /* TypeChecker.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TypeChecker.cpp; sourceTree = "<group>"; };
+		3A652AC02918C2A50091386F /* TypedShaderModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TypedShaderModule.h; sourceTree = "<group>"; };
 		3A7E164B28C57BB7003F49C9 /* ASTArrayAccess.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASTArrayAccess.h; sourceTree = "<group>"; };
 		3AAE4EB328C56E9A00DA484B /* ASTUnaryExpression.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASTUnaryExpression.h; sourceTree = "<group>"; };
 		3ACCE80528FE1872004A0914 /* AST.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AST.h; sourceTree = "<group>"; };
@@ -659,6 +665,7 @@
 				338BB2D127B6B63F00E066AB /* SourceSpan.h */,
 				338BB2CF27B6B61B00E066AB /* Token.cpp */,
 				338BB2CD27B6B60200E066AB /* Token.h */,
+				3A652AC02918C2A50091386F /* TypedShaderModule.h */,
 				1CEBD8022716BF8200A5254D /* WGSL.cpp */,
 				1CEBD7F72716B34400A5254D /* WGSL.h */,
 			);
@@ -737,6 +744,8 @@
 			children = (
 				3AD7AAAF2907649D0096F7AE /* Type.h */,
 				3AD7AAB329076E5D0096F7AE /* TypeArray.h */,
+				3A652ABD2918C2930091386F /* TypeChecker.cpp */,
+				3A652ABC2918C2920091386F /* TypeChecker.h */,
 				3AD7AAB429076E5E0096F7AE /* TypeFloat32.h */,
 				3AD7AAB129076E5D0096F7AE /* TypeForward.h */,
 				3AD7AAB229076E5D0096F7AE /* TypeNode.h */,
@@ -806,6 +815,8 @@
 				338BB2CE27B6B60200E066AB /* Token.h in Headers */,
 				3AD7AAB02907649D0096F7AE /* Type.h in Headers */,
 				3AD7AAB829076E5E0096F7AE /* TypeArray.h in Headers */,
+				3A652ABE2918C2930091386F /* TypeChecker.h in Headers */,
+				3A652AC12918C2A50091386F /* TypedShaderModule.h in Headers */,
 				3AD7AAB929076E5E0096F7AE /* TypeFloat32.h in Headers */,
 				3AD7AAB629076E5E0096F7AE /* TypeForward.h in Headers */,
 				3AD7AAB729076E5E0096F7AE /* TypeNode.h in Headers */,
@@ -1037,6 +1048,7 @@
 				338BB2D627B6B68700E066AB /* Lexer.cpp in Sources */,
 				339B7B1B27D800090072BF9A /* Parser.cpp in Sources */,
 				338BB2D027B6B61B00E066AB /* Token.cpp in Sources */,
+				3A652ABF2918C2930091386F /* TypeChecker.cpp in Sources */,
 				1CEBD8032716BF8200A5254D /* WGSL.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
