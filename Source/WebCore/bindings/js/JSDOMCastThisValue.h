@@ -30,7 +30,7 @@
 
 #pragma once
 
-#include "JSDOMGlobalObject.h"
+#include "JSDOMGlobalObjectConvert.h"
 
 namespace WebCore {
 

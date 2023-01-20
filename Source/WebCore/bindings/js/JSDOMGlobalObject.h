@@ -29,7 +29,6 @@
 #include "WebCoreJSBuiltinInternals.h"
 #include <JavaScriptCore/HeapInlines.h>
 #include <JavaScriptCore/JSGlobalObject.h>
-#include <JavaScriptCore/JSObjectInlines.h>
 #include <JavaScriptCore/WeakGCMap.h>
 #include <wtf/Forward.h>
 
@@ -151,20 +150,5 @@ private:
 JSDOMGlobalObject* toJSDOMGlobalObject(ScriptExecutionContext&, DOMWrapperWorld&);
 WEBCORE_EXPORT JSDOMGlobalObject& callerGlobalObject(JSC::JSGlobalObject&, JSC::CallFrame*);
 JSDOMGlobalObject& legacyActiveGlobalObjectForAccessor(JSC::JSGlobalObject&, JSC::CallFrame*);
-
-template<class JSClass>
-JSClass* toJSDOMGlobalObject(JSC::VM&, JSC::JSValue value)
-{
-    static_assert(std::is_base_of_v<JSDOMGlobalObject, JSClass>);
-
-    if (auto* object = value.getObject()) {
-        if (object->type() == JSC::PureForwardingProxyType)
-            return JSC::jsDynamicCast<JSClass*>(JSC::jsCast<JSC::JSProxy*>(object)->target());
-        if (object->inherits<JSClass>())
-            return JSC::jsCast<JSClass*>(object);
-    }
-
-    return nullptr;
-}
 
 } // namespace WebCore

@@ -521,6 +521,8 @@ set(WebCore_PRIVATE_FRAMEWORK_HEADERS
     bindings/js/JSDOMConvertXPathNSResolver.h
     bindings/js/JSDOMExceptionHandling.h
     bindings/js/JSDOMGlobalObject.h
+    bindings/js/JSDOMGlobalObjectConvert.h
+    bindings/js/JSDOMGlobalObjectInlines.h
     bindings/js/JSDOMGuardedObject.h
     bindings/js/JSDOMMicrotask.h
     bindings/js/JSDOMOperation.h

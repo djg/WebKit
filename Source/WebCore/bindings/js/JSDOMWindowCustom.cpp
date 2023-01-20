@@ -33,6 +33,7 @@
 #include "JSDOMConvertNullable.h"
 #include "JSDOMConvertNumbers.h"
 #include "JSDOMConvertStrings.h"
+#include "JSDOMGlobalObjectConvert.h"
 #include "JSDOMMicrotask.h"
 #include "JSDatabase.h"
 #include "JSDatabaseCallback.h"
@@ -58,6 +59,7 @@
 #include <JavaScriptCore/Structure.h>
 
 #if ENABLE(USER_MESSAGE_HANDLERS)
+#include "JSDOMGlobalObjectConvert.h"
 #include "JSWebKitNamespace.h"
 #endif
 
