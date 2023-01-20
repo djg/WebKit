@@ -27,7 +27,6 @@
 
 #include "JSCast.h"
 #include "JSTypeInfo.h"
-#include "PropertyDescriptor.h"
 #include "PutDirectIndexMode.h"
 #include "VM.h"
 #include "WriteBarrier.h"
