@@ -30,11 +30,12 @@
 #include "IndexingHeader.h"
 #include "MarkedSpace.h"
 #include "SparseArrayValueMap.h"
-#include "Structure.h"
 #include "WriteBarrier.h"
 #include <wtf/Noncopyable.h>
 
 namespace JSC {
+
+class Structure;
 
 // This struct holds the actual data values of an array. A JSArray object points to its contained ArrayStorage
 // struct by pointing to m_vector. To access the contained ArrayStorage struct, use the getStorage() and 
