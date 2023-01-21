@@ -26,6 +26,8 @@
 #include "config.h"
 #include "SourceBrush.h"
 
+#include "Pattern.h"
+
 namespace WebCore {
 
 SourceBrush::SourceBrush(const Color& color, std::optional<Brush>&& brush)
@@ -71,6 +73,47 @@ void SourceBrush::setGradient(Ref<Gradient>&& gradient, const AffineTransform& s
 void SourceBrush::setPattern(Ref<Pattern>&& pattern)
 {
     m_brush = { WTFMove(pattern) };
+}
+
+bool operator==(const SourceBrush::Brush::LogicalGradient& a, const SourceBrush::Brush::LogicalGradient& b)
+{
+    return a.gradient.ptr() == b.gradient.ptr() && a.spaceTransform == b.spaceTransform;
+}
+
+bool operator!=(const SourceBrush::Brush::LogicalGradient& a, const SourceBrush::Brush::LogicalGradient& b)
+{
+    return !(a == b);
+}
+
+bool operator==(const SourceBrush::Brush& a, const SourceBrush::Brush& b)
+{
+    return WTF::switchOn(a.brush,
+        [&] (const SourceBrush::Brush::LogicalGradient& aGradient) {
+            if (auto* bGradient = std::get_if<SourceBrush::Brush::LogicalGradient>(&b.brush))
+                return aGradient == *bGradient;
+            return false;
+        },
+        [&] (const Ref<Pattern>& aPattern) {
+            if (auto* bPattern = std::get_if<Ref<Pattern>>(&b.brush))
+                return aPattern.ptr() == bPattern->ptr();
+            return false;
+        }
+    );
+}
+
+bool operator!=(const SourceBrush::Brush& a, const SourceBrush::Brush& b)
+{
+    return !(a == b);
+}
+
+bool operator==(const SourceBrush& a, const SourceBrush& b)
+{
+    return a.color() == b.color() && a.brush() == b.brush();
+}
+
+bool operator!=(const SourceBrush& a, const SourceBrush& b)
+{
+    return !(a == b);
 }
 
 WTF::TextStream& operator<<(TextStream& ts, const SourceBrush& brush)

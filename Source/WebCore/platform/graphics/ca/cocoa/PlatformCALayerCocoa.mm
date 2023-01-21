@@ -56,6 +56,7 @@
 #import <wtf/Lock.h>
 #import <wtf/MachSendRight.h>
 #import <wtf/RetainPtr.h>
+#import <wtf/RunLoop.h>
 #import <wtf/cocoa/VectorCocoa.h>
 
 #if PLATFORM(IOS_FAMILY)

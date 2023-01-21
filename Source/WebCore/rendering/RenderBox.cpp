@@ -29,6 +29,7 @@
 #include "BorderPainter.h"
 #include "CSSFontSelector.h"
 #include "ControlStates.h"
+#include "ControlPart.h"
 #include "Document.h"
 #include "Editing.h"
 #include "EventHandler.h"

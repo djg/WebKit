@@ -26,11 +26,13 @@
 
 #pragma once
 
-#include "ControlPart.h"
+//#include "ControlPart.h"
 #include "DashArray.h"
 #include "DestinationColorSpace.h"
 #include "FloatRect.h"
-#include "FontCascade.h"
+//#include "FontCascade.h"
+#include "FontCascadeEnums.h"
+#include "GlyphBufferMembers.h"
 #include "GraphicsContextState.h"
 #include "Image.h"
 #include "ImageOrientation.h"
@@ -39,6 +41,7 @@
 #include "Pattern.h"
 #include "PlatformGraphicsContext.h"
 #include "RenderingMode.h"
+#include "WebCore/TextFlags.h"
 #include <wtf/Function.h>
 #include <wtf/Noncopyable.h>
 #include <wtf/OptionSet.h>
@@ -46,10 +49,13 @@
 namespace WebCore {
 
 class AffineTransform;
+class ControlPart;
 class DecomposedGlyphs;
 class Filter;
 class FilterResults;
 class FloatRoundedRect;
+class Font;
+class FontCascade;
 class Gradient;
 class GraphicsContextPlatformPrivate;
 class ImageBuffer;
@@ -59,6 +65,8 @@ class Path;
 class SystemImage;
 class TextRun;
 class VideoFrame;
+
+struct ControlStyle;
 
 class GraphicsContext {
     WTF_MAKE_NONCOPYABLE(GraphicsContext); WTF_MAKE_FAST_ALLOCATED;
@@ -295,7 +303,7 @@ public:
 
     WEBCORE_EXPORT virtual FloatSize drawText(const FontCascade&, const TextRun&, const FloatPoint&, unsigned from = 0, std::optional<unsigned> to = std::nullopt);
     WEBCORE_EXPORT virtual void drawEmphasisMarks(const FontCascade&, const TextRun&, const AtomString& mark, const FloatPoint&, unsigned from = 0, std::optional<unsigned> to = std::nullopt);
-    WEBCORE_EXPORT virtual void drawBidiText(const FontCascade&, const TextRun&, const FloatPoint&, FontCascade::CustomFontNotReadyAction = FontCascade::DoNotPaintIfFontNotReady);
+    WEBCORE_EXPORT virtual void drawBidiText(const FontCascade&, const TextRun&, const FloatPoint&, FontCascadeCustomFontNotReadyAction = FontCascadeCustomFontNotReadyAction::DoNotPaintIfFontNotReady);
 
     virtual void drawGlyphsAndCacheResources(const Font& font, const GlyphBufferGlyph* glyphs, const GlyphBufferAdvance* advances, unsigned numGlyphs, const FloatPoint& point, FontSmoothingMode fontSmoothingMode)
     {

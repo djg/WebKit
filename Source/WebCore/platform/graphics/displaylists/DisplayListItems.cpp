@@ -26,6 +26,7 @@
 #include "config.h"
 #include "DisplayListItems.h"
 
+#include "ControlPart.h"
 #include "DecomposedGlyphs.h"
 #include "DisplayListReplayer.h"
 #include "Filter.h"
@@ -419,6 +420,11 @@ DrawControlPart::DrawControlPart(ControlPart& part, const FloatRect& rect, float
     , m_deviceScaleFactor(deviceScaleFactor)
     , m_style(style)
 {
+}
+
+StyleAppearance DrawControlPart::type() const
+{
+    return m_part->type();
 }
 
 void DrawControlPart::apply(GraphicsContext& context)

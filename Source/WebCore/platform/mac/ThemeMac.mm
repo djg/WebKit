@@ -31,6 +31,7 @@
 #import "AXObjectCache.h"
 #import "ColorMac.h"
 #import "ControlStates.h"
+#import "FontCascade.h"
 #import "GraphicsContext.h"
 #import "GraphicsContextCG.h"
 #import "ImageBuffer.h"

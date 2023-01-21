@@ -28,6 +28,7 @@
 #include "RenderObject.h"
 
 #include "AXObjectCache.h"
+#include "ControlPart.h"
 #include "DocumentInlines.h"
 #include "Editing.h"
 #include "ElementAncestorIterator.h"

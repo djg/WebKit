@@ -499,7 +499,7 @@ void BifurcatedGraphicsContext::drawEmphasisMarks(const FontCascade& cascade, co
     VERIFY_STATE_SYNCHRONIZATION();
 }
 
-void BifurcatedGraphicsContext::drawBidiText(const FontCascade& cascade, const TextRun& run, const FloatPoint& point, FontCascade::CustomFontNotReadyAction customFontNotReadyAction)
+void BifurcatedGraphicsContext::drawBidiText(const FontCascade& cascade, const TextRun& run, const FloatPoint& point, FontCascadeCustomFontNotReadyAction customFontNotReadyAction)
 {
     m_primaryContext.drawBidiText(cascade, run, point, customFontNotReadyAction);
     m_secondaryContext.drawBidiText(cascade, run, point, customFontNotReadyAction);

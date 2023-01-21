@@ -1299,12 +1299,12 @@ GlyphBuffer FontCascade::layoutComplexText(const TextRun& run, unsigned from, un
     return glyphBuffer;
 }
 
-inline bool shouldDrawIfLoading(const Font& font, FontCascade::CustomFontNotReadyAction customFontNotReadyAction)
+inline bool shouldDrawIfLoading(const Font& font, FontCascadeCustomFontNotReadyAction customFontNotReadyAction)
 {
     // Don't draw anything while we are using custom fonts that are in the process of loading,
     // except if the 'customFontNotReadyAction' argument is set to UseFallbackIfFontNotReady
     // (in which case "font" will be a fallback font).
-    return !font.isInterstitial() || font.visibility() == Font::Visibility::Visible || customFontNotReadyAction == FontCascade::CustomFontNotReadyAction::UseFallbackIfFontNotReady;
+    return !font.isInterstitial() || font.visibility() == Font::Visibility::Visible || customFontNotReadyAction == FontCascadeCustomFontNotReadyAction::UseFallbackIfFontNotReady;
 }
 
 // This function assumes the GlyphBuffer's initial advance has already been incorporated into the start point.

@@ -26,6 +26,7 @@
 #pragma once
 
 #include "AlphaPremultiplication.h"
+#include "ControlStyle.h"
 #include "DisplayListItemBufferIdentifier.h"
 #include "DisplayListItemType.h"
 #include "DisplayListResourceHeap.h"
@@ -41,6 +42,7 @@
 #include "PositionedGlyphs.h"
 #include "RenderingResourceIdentifier.h"
 #include "SharedBuffer.h"
+#include "StyleAppearance.h"
 #include "SystemImage.h"
 #include <variant>
 #include <wtf/EnumTraits.h>
@@ -1824,7 +1826,7 @@ public:
 
     WEBCORE_EXPORT DrawControlPart(ControlPart&, const FloatRect&, float deviceScaleFactor, const ControlStyle&);
 
-    StyleAppearance type() const { return m_part->type(); }
+    WEBCORE_EXPORT StyleAppearance type() const;
     FloatRect rect() const { return m_rect; }
     float deviceScaleFactor() const { return m_deviceScaleFactor; }
     const ControlStyle& style() const { return m_style; }

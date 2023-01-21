@@ -27,10 +27,12 @@
 #include "GraphicsContext.h"
 
 #include "BidiResolver.h"
+#include "ControlPart.h"
 #include "DecomposedGlyphs.h"
 #include "Filter.h"
 #include "FilterImage.h"
 #include "FloatRoundedRect.h"
+#include "FontCascade.h"
 #include "Gradient.h"
 #include "ImageBuffer.h"
 #include "ImageOrientation.h"
@@ -153,7 +155,7 @@ void GraphicsContext::drawEmphasisMarks(const FontCascade& font, const TextRun& 
     font.drawEmphasisMarks(*this, run, mark, point, from, to);
 }
 
-void GraphicsContext::drawBidiText(const FontCascade& font, const TextRun& run, const FloatPoint& point, FontCascade::CustomFontNotReadyAction customFontNotReadyAction)
+void GraphicsContext::drawBidiText(const FontCascade& font, const TextRun& run, const FloatPoint& point, FontCascadeCustomFontNotReadyAction customFontNotReadyAction)
 {
     BidiResolver<TextBoxIterator, BidiCharacterRun> bidiResolver;
     bidiResolver.setStatus(BidiStatus(run.direction(), run.directionalOverride()));

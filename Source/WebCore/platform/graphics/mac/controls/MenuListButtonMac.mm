@@ -32,6 +32,7 @@
 #import "GraphicsContext.h"
 #import "LocalCurrentGraphicsContext.h"
 #import "MenuListButtonPart.h"
+#import "Path.h"
 
 namespace WebCore {
 

@@ -27,6 +27,7 @@
 #import "CSSValueList.h"
 #import "Color.h"
 #import "ColorMac.h"
+#import "ControlPart.h"
 #import "Document.h"
 #import "ElementInlines.h"
 #import "FileList.h"

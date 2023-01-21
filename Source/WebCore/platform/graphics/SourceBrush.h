@@ -25,11 +25,13 @@
 
 #pragma once
 
+#include "AffineTransform.h"
 #include "Color.h"
 #include "Gradient.h"
-#include "Pattern.h"
 
 namespace WebCore {
+
+class Pattern;
 
 class SourceBrush {
 public:
@@ -65,46 +67,12 @@ private:
     std::optional<Brush> m_brush;
 };
 
-inline bool operator==(const SourceBrush::Brush::LogicalGradient& a, const SourceBrush::Brush::LogicalGradient& b)
-{
-    return a.gradient.ptr() == b.gradient.ptr() && a.spaceTransform == b.spaceTransform;
-}
-
-inline bool operator!=(const SourceBrush::Brush::LogicalGradient& a, const SourceBrush::Brush::LogicalGradient& b)
-{
-    return !(a == b);
-}
-
-inline bool operator==(const SourceBrush::Brush& a, const SourceBrush::Brush& b)
-{
-    return WTF::switchOn(a.brush,
-        [&] (const SourceBrush::Brush::LogicalGradient& aGradient) {
-            if (auto* bGradient = std::get_if<SourceBrush::Brush::LogicalGradient>(&b.brush))
-                return aGradient == *bGradient;
-            return false;
-        },
-        [&] (const Ref<Pattern>& aPattern) {
-            if (auto* bPattern = std::get_if<Ref<Pattern>>(&b.brush))
-                return aPattern.ptr() == bPattern->ptr();
-            return false;
-        }
-    );
-}
-
-inline bool operator!=(const SourceBrush::Brush& a, const SourceBrush::Brush& b)
-{
-    return !(a == b);
-}
-
-inline bool operator==(const SourceBrush& a, const SourceBrush& b)
-{
-    return a.color() == b.color() && a.brush() == b.brush();
-}
-
-inline bool operator!=(const SourceBrush& a, const SourceBrush& b)
-{
-    return !(a == b);
-}
+WEBCORE_EXPORT bool operator==(const SourceBrush::Brush::LogicalGradient& a, const SourceBrush::Brush::LogicalGradient& b);
+WEBCORE_EXPORT bool operator!=(const SourceBrush::Brush::LogicalGradient& a, const SourceBrush::Brush::LogicalGradient& b);
+WEBCORE_EXPORT bool operator==(const SourceBrush::Brush& a, const SourceBrush::Brush& b);
+WEBCORE_EXPORT bool operator!=(const SourceBrush::Brush& a, const SourceBrush::Brush& b);
+WEBCORE_EXPORT bool operator==(const SourceBrush& a, const SourceBrush& b);
+WEBCORE_EXPORT bool operator!=(const SourceBrush& a, const SourceBrush& b);
 
 WTF::TextStream& operator<<(WTF::TextStream&, const SourceBrush&);
 

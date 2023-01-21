@@ -421,7 +421,7 @@ float CanvasRenderingContext2DBase::FontProxy::width(const TextRun& textRun, Gly
     return m_font.width(textRun, 0, overflow);
 }
 
-void CanvasRenderingContext2DBase::FontProxy::drawBidiText(GraphicsContext& context, const TextRun& run, const FloatPoint& point, FontCascade::CustomFontNotReadyAction action) const
+void CanvasRenderingContext2DBase::FontProxy::drawBidiText(GraphicsContext& context, const TextRun& run, const FloatPoint& point, FontCascadeCustomFontNotReadyAction action) const
 {
     context.drawBidiText(m_font, run, point, action);
 }
@@ -2522,7 +2522,7 @@ void CanvasRenderingContext2DBase::drawTextUnchecked(const TextRun& textRun, dou
             else
                 c->setStrokeColor(Color::black);
 
-            fontProxy.drawBidiText(*c, textRun, location + offset, FontCascade::UseFallbackIfFontNotReady);
+            fontProxy.drawBidiText(*c, textRun, location + offset, FontCascadeCustomFontNotReadyAction::UseFallbackIfFontNotReady);
         }
 
         auto maskImage = c->createAlignedImageBuffer(maskRect.size());
@@ -2544,10 +2544,10 @@ void CanvasRenderingContext2DBase::drawTextUnchecked(const TextRun& textRun, dou
             maskImageContext.translate(location - maskRect.location());
             // We draw when fontWidth is 0 so compositing operations (eg, a "copy" op) still work.
             maskImageContext.scale(FloatSize((fontWidth > 0 ? (width / fontWidth) : 0), 1));
-            fontProxy.drawBidiText(maskImageContext, textRun, FloatPoint(0, 0), FontCascade::UseFallbackIfFontNotReady);
+            fontProxy.drawBidiText(maskImageContext, textRun, FloatPoint(0, 0), FontCascadeCustomFontNotReadyAction::UseFallbackIfFontNotReady);
         } else {
             maskImageContext.translate(-maskRect.location());
-            fontProxy.drawBidiText(maskImageContext, textRun, location, FontCascade::UseFallbackIfFontNotReady);
+            fontProxy.drawBidiText(maskImageContext, textRun, location, FontCascadeCustomFontNotReadyAction::UseFallbackIfFontNotReady);
         }
 
         GraphicsContextStateSaver stateSaver(*c);
@@ -2571,15 +2571,15 @@ void CanvasRenderingContext2DBase::drawTextUnchecked(const TextRun& textRun, dou
     bool repaintEntireCanvas = false;
     if (isFullCanvasCompositeMode(state().globalComposite)) {
         beginCompositeLayer();
-        fontProxy.drawBidiText(*c, textRun, location, FontCascade::UseFallbackIfFontNotReady);
+        fontProxy.drawBidiText(*c, textRun, location, FontCascadeCustomFontNotReadyAction::UseFallbackIfFontNotReady);
         endCompositeLayer();
         repaintEntireCanvas = true;
     } else if (state().globalComposite == CompositeOperator::Copy) {
         clearCanvas();
-        fontProxy.drawBidiText(*c, textRun, location, FontCascade::UseFallbackIfFontNotReady);
+        fontProxy.drawBidiText(*c, textRun, location, FontCascadeCustomFontNotReadyAction::UseFallbackIfFontNotReady);
         repaintEntireCanvas = true;
     } else
-        fontProxy.drawBidiText(*c, textRun, location, FontCascade::UseFallbackIfFontNotReady);
+        fontProxy.drawBidiText(*c, textRun, location, FontCascadeCustomFontNotReadyAction::UseFallbackIfFontNotReady);
 
     didDraw(repaintEntireCanvas, textRect);
 }

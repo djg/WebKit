@@ -243,7 +243,7 @@ public:
         const FontMetrics& metricsOfPrimaryFont() const;
         const FontCascadeDescription& fontDescription() const;
         float width(const TextRun&, GlyphOverflow* = 0) const;
-        void drawBidiText(GraphicsContext&, const TextRun&, const FloatPoint&, FontCascade::CustomFontNotReadyAction) const;
+        void drawBidiText(GraphicsContext&, const TextRun&, const FloatPoint&, FontCascadeCustomFontNotReadyAction) const;
 
 #if ASSERT_ENABLED
         bool isPopulated() const { return m_font.fonts(); }

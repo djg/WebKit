@@ -34,6 +34,7 @@
 #include "Editor.h"
 #include "ElementInlines.h"
 #include "File.h"
+#include "FontCascade.h"
 #include "Frame.h"
 #include "HTMLImageElement.h"
 #include "HTMLNames.h"

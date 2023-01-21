@@ -28,6 +28,7 @@
 
 #if USE(CA)
 
+#include "FontCascade.h"
 #include "GraphicsContextCG.h"
 #include "LayerPool.h"
 #include "PlatformCALayerClient.h"

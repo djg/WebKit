@@ -22,6 +22,7 @@
 
 #include "ColorHash.h"
 #include "ControlStates.h"
+#include "ControlStyle.h"
 #include "GraphicsContext.h"
 #include "PaintInfo.h"
 #include "PopupMenuStyle.h"
