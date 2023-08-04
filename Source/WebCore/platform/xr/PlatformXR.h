@@ -303,7 +303,7 @@ public:
             std::tuple<MachSendRight, uint64_t> completionSyncEvent;
 #endif
 
-            template<class Encoder> void encode(Encoder&) const;
+            template<class Encoder> void encode(Encoder&) &&;
             template<class Decoder> static std::optional<LayerData> decode(Decoder&);
         };
 
@@ -367,7 +367,7 @@ public:
 
         FrameData copy() const;
 
-        template<class Encoder> void encode(Encoder&) const;
+        template<class Encoder> void encode(Encoder&) &&;
         template<class Decoder> static std::optional<FrameData> decode(Decoder&);
     };
 
@@ -578,7 +578,7 @@ std::optional<Device::FrameData::StageParameters> Device::FrameData::StageParame
 }
 
 template<class Encoder>
-void Device::FrameData::LayerData::encode(Encoder& encoder) const
+void Device::FrameData::LayerData::encode(Encoder& encoder) &&
 {
 #if USE(IOSURFACE_FOR_XR_LAYER_DATA)
     MachSendRight surfaceSendRight = surface ? surface->createSendRight() : MachSendRight();
@@ -591,7 +591,7 @@ void Device::FrameData::LayerData::encode(Encoder& encoder) const
     encoder << opaqueTexture;
 #endif
 #if USE(MTLSHAREDEVENT_FOR_XR_FRAME_COMPLETION)
-    encoder << completionSyncEvent;
+    encoder << WTFMove(completionSyncEvent);
 #endif
 }
 
@@ -729,7 +729,7 @@ std::optional<Device::FrameData::InputSource> Device::FrameData::InputSource::de
 
 
 template<class Encoder>
-void Device::FrameData::encode(Encoder& encoder) const
+void Device::FrameData::encode(Encoder& encoder) &&
 {
     encoder << isTrackingValid;
     encoder << isPositionValid;
@@ -740,7 +740,7 @@ void Device::FrameData::encode(Encoder& encoder) const
     encoder << floorTransform;
     encoder << stageParameters;
     encoder << views;
-    encoder << layers;
+    encoder << WTFMove(layers);
     encoder << inputSources;
 }
 

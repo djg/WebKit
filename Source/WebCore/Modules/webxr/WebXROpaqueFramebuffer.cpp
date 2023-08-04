@@ -124,7 +124,7 @@ WebXROpaqueFramebuffer::~WebXROpaqueFramebuffer()
     }
 }
 
-void WebXROpaqueFramebuffer::startFrame(const PlatformXR::Device::FrameData::LayerData& data)
+void WebXROpaqueFramebuffer::startFrame(PlatformXR::Device::FrameData::LayerData&& data)
 {
     if (!m_context.graphicsContextGL())
         return;
