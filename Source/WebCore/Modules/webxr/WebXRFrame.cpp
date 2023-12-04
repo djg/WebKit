@@ -34,6 +34,8 @@
 #include "WebXRReferenceSpace.h"
 #include "WebXRSession.h"
 #include "WebXRViewerPose.h"
+#include "XRLightEstimate.h"
+#include "XRLightProbe.h"
 #include <JavaScriptCore/GenericTypedArrayViewInlines.h>
 #include <wtf/IsoMallocInlines.h>
 
@@ -377,6 +379,44 @@ ExceptionOr<bool> WebXRFrame::fillPoses(const Document& document, const Vector<R
     return allValid;
 }
 
+#endif
+
+#if ENABLE(WEBXR_LIGHT_ESTIMATION)
+// https://immersive-web.github.io/lighting-estimation/#xrframe-interface
+ExceptionOr<RefPtr<XRLightEstimate>> WebXRFrame::getLightEstimate(const XRLightProbe& lightProbe)
+{
+    // If frame’s active boolean is `false`, throw an InvalidStateError and abort these steps.
+    if (!m_active)
+        return Exception { ExceptionCode::InvalidStateError, "Frame is not active"_s };
+
+    // Let session be frame’s session object.
+    // If lightProbe’s session does not equal session, throw an InvalidStateError and abort these steps.
+        if (lightProbe.session() != m_session.ptr())
+            return Exception { ExceptionCode::InvalidStateError, "Light probes's session does not match frame's session"_s };
+
+    // Let device be session’s XR device.
+    // If device cannot estimate the lighting for this frame, return null.
+    return nullptr;
+
+    //Let estimate be a new XRLightEstimate.
+    //Populate estimate’s sphericalHarmonicsCoefficients, with the coefficients provided by device.
+
+    //If device has an estimated direction for the light source
+    //Set estimate’s primaryLightDirection to the estimated direction of the light source.
+    //else
+    //Set estimate’s primaryLightDirection to { x: 0.0, y: 1.0, z: 0.0, w: 0.0 }
+    auto primaryLightDirection = DOMPointInit { 0.0, 1.0, 0.0, 0.0 };
+
+    //If device has an estimated intensity for the light source
+    //Set estimate’s primaryLightIntensity to the estimated intensity of the light source.
+    //else
+    //Set estimate’s primaryLightIntensity to {x: 0.0, y: 0.0, z: 0.0, w: 1.0}
+    auto primaryLightIntensity = DOMPointInit { 0.0, 0.0, 0.0, 1.0 };
+
+    return RefPtr<XRLightEstimate>(XRLightEstimate::create(
+                                                           primaryLightDirection, primaryLightIntensity
+                                                           ));
+}
 #endif
 
 } // namespace WebCore

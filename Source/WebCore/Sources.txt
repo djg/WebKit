@@ -513,6 +513,8 @@ Modules/webxr/WebXRViewport.cpp
 Modules/webxr/WebXRWebGLLayer.cpp
 Modules/webxr/XRInputSourceEvent.cpp
 Modules/webxr/XRInputSourcesChangeEvent.cpp
+Modules/webxr/XRLightEstimate.cpp
+Modules/webxr/XRLightProbe.cpp
 Modules/webxr/XRReferenceSpaceEvent.cpp
 Modules/webxr/XRSessionEvent.cpp
 accessibility/AXCoreObject.cpp
@@ -4569,8 +4571,12 @@ JSXRHandedness.cpp
 JSXRInputSourceEvent.cpp
 JSXRInputSourcesChangeEvent.cpp
 JSXRInteractionMode.cpp
+JSXRLightEstimate.cpp
+JSXRLightProbe.cpp
+JSXRLightProbeInit.cpp
 JSXRReferenceSpaceEvent.cpp
 JSXRReferenceSpaceType.cpp
+JSXRReflectionFormat.cpp
 JSXRRenderStateInit.cpp
 JSXRSessionEvent.cpp
 JSXRSessionInit.cpp

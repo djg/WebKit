@@ -88,3 +88,4 @@ WebXRLayer conditional=WEBXR
 WebXRSession conditional=WEBXR
 WebXRSpace conditional=WEBXR
 WebXRSystem conditional=WEBXR
+XRLightProbe conditional=WEBXR

@@ -490,6 +490,9 @@ namespace WebCore {
     macro(XRJointPose) \
     macro(XRJointSpace) \
     macro(XRLayer) \
+    macro(XRLightEstimate) \
+    macro(XRLightProbe) \
+    macro(XRLightProbeInit) \
     macro(XRPose) \
     macro(XRReferenceSpace) \
     macro(XRReferenceSpaceEvent) \

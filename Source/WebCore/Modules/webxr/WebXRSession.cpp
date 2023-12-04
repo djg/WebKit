@@ -40,6 +40,8 @@
 #include "WebXRSystem.h"
 #include "WebXRView.h"
 #include "XRFrameRequestCallback.h"
+#include "XRLightProbe.h"
+#include "XRLightProbeInit.h"
 #include "XRRenderStateInit.h"
 #include "XRSessionEvent.h"
 #include <wtf/IsoMallocInlines.h>
@@ -246,6 +248,46 @@ void WebXRSession::requestReferenceSpace(XRReferenceSpaceType type, RequestRefer
         });
     });
 }
+
+#if ENABLE(WEBXR_LIGHT_ESTIMATION)
+// https://immersive-web.github.io/lighting-estimation/#xrsession-interface
+void WebXRSession::requestLightProbe(const XRLightProbeInit& options, RequestLightProbePromise&& promise)
+{
+    (void) options;
+
+    if (!scriptExecutionContext()) {
+        promise.reject(Exception { ExceptionCode::InvalidStateError });
+        return;
+    }
+
+    // 1. Let promise be a new Promise.
+    // 2. If the light-estimation feature descriptor is not contained in the session’s list of enabled features, reject promise with NotSupportedError and abort these steps.
+    if (!isLightEstimationEnabled()) {
+        promise.reject(Exception { ExceptionCode::NotSupportedError });
+        return;
+    }
+
+    // 3. If session’s ended value is true, throw an InvalidStateError and abort these steps.
+    if (m_ended) {
+        promise.reject(Exception { ExceptionCode::InvalidStateError });
+        return;
+    }
+
+    // 4. If options’s reflectionFormat is "srgba8" or matches session’s preferredReflectionFormat:
+    if (options.reflectionFormat == XRReflectionFormat::sRGBA8 || options.reflectionFormat == preferredReflectionFormat()) {
+        auto& document = downcast<Document>(*scriptExecutionContext());
+        // 4.1. Let probe be a new XRLightProbe.
+        // 4.2. Set probe’s session to session.
+        // 4.3. Set probe’s reflection format to options’s reflectionFormat
+        // 4.4. Resolve promise with probe.
+        RefPtr<XRLightProbe> lightProbe = XRLightProbe::create(document, Ref { *this }, options.reflectionFormat);
+        promise.resolve(lightProbe.releaseNonNull());
+    } else {
+    // 1. Reject promise with a "NotSupportedError" DOMException
+        promise.reject(Exception { ExceptionCode::NotSupportedError });
+    }
+}
+#endif
 
 // https://immersive-web.github.io/webxr/#dom-xrsession-requestanimationframe
 unsigned WebXRSession::requestAnimationFrame(Ref<XRFrameRequestCallback>&& callback)
@@ -657,6 +699,13 @@ bool WebXRSession::posesCanBeReported(const Document& document) const
 bool WebXRSession::isHandTrackingEnabled() const
 {
     return m_requestedFeatures.contains(PlatformXR::SessionFeature::HandTracking);
+}
+#endif
+
+#if ENABLE(WEBXR_LIGHT_ESTIMATION)
+bool WebXRSession::isLightEstimationEnabled() const
+{
+    return m_requestedFeatures.contains(PlatformXR::SessionFeature::LightEstimation);
 }
 #endif
 

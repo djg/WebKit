@@ -241,6 +241,7 @@ namespace WebCore {
     macro(qualitychange) \
     macro(ratechange) \
     macro(readystatechange) \
+    macro(reflectionchange) \
     macro(rejectionhandled) \
     macro(release) \
     macro(remove) \

@@ -46,6 +46,8 @@ class WebXRReferenceSpace;
 class WebXRSession;
 class WebXRSpace;
 class WebXRViewerPose;
+class XRLightEstimate;
+class XRLightProbe;
 
 class WebXRFrame : public RefCounted<WebXRFrame> {
     WTF_MAKE_ISO_ALLOCATED(WebXRFrame);
@@ -63,6 +65,9 @@ public:
     ExceptionOr<RefPtr<WebXRJointPose>> getJointPose(const Document&, const WebXRJointSpace&, const WebXRSpace&);
     ExceptionOr<bool> fillJointRadii(const Vector<RefPtr<WebXRJointSpace>>&, Float32Array&);
     ExceptionOr<bool> fillPoses(const Document&, const Vector<RefPtr<WebXRSpace>>&, const WebXRSpace&, Float32Array&);
+#endif
+#if ENABLE(WEBXR_LIGHT_ESTIMATION)
+    ExceptionOr<RefPtr<XRLightEstimate>> getLightEstimate(const XRLightProbe&);
 #endif
 
     void setTime(DOMHighResTimeStamp time) { m_time = time; }

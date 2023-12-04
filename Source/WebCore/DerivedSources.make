@@ -807,6 +807,7 @@ JS_BINDING_IDLS := \
     $(WebCore)/Modules/webxr/Navigator+WebXR.idl \
     $(WebCore)/Modules/webxr/WebXRBoundedReferenceSpace.idl \
     $(WebCore)/Modules/webxr/WebXRFrame+HandInput.idl \
+    $(WebCore)/Modules/webxr/WebXRFrame+LightEstimation.idl \
     $(WebCore)/Modules/webxr/WebXRFrame.idl \
     $(WebCore)/Modules/webxr/WebXRHand.idl \
     $(WebCore)/Modules/webxr/WebXRInputSource+Gamepad.idl \
@@ -821,6 +822,7 @@ JS_BINDING_IDLS := \
     $(WebCore)/Modules/webxr/WebXRRenderState.idl \
     $(WebCore)/Modules/webxr/WebXRRigidTransform.idl \
     $(WebCore)/Modules/webxr/WebXRSession+AR.idl \
+    $(WebCore)/Modules/webxr/WebXRSession+LightEstimation.idl \
     $(WebCore)/Modules/webxr/WebXRSession.idl \
     $(WebCore)/Modules/webxr/WebXRSpace.idl \
     $(WebCore)/Modules/webxr/WebXRSystem.idl \
@@ -836,8 +838,12 @@ JS_BINDING_IDLS := \
     $(WebCore)/Modules/webxr/XRInputSourceEvent.idl \
     $(WebCore)/Modules/webxr/XRInputSourcesChangeEvent.idl \
     $(WebCore)/Modules/webxr/XRInteractionMode.idl \
+    $(WebCore)/Modules/webxr/XRLightEstimate.idl \
+    $(WebCore)/Modules/webxr/XRLightProbe.idl \
+    $(WebCore)/Modules/webxr/XRLightProbeInit.idl \
     $(WebCore)/Modules/webxr/XRReferenceSpaceEvent.idl \
     $(WebCore)/Modules/webxr/XRReferenceSpaceType.idl \
+    $(WebCore)/Modules/webxr/XRReflectionFormat.idl \
     $(WebCore)/Modules/webxr/XRRenderStateInit.idl \
     $(WebCore)/Modules/webxr/XRSessionEvent.idl \
     $(WebCore)/Modules/webxr/XRSessionInit.idl \

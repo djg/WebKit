@@ -7859,6 +7859,21 @@ WebXRHandInputModuleEnabled:
     WebCore:
       default: false
 
+WebXRLightEstimationEnabled:
+  type: bool
+  status: unstable
+  category: dom
+  humanReadableName: "WebXR Light Estimation"
+  humanReadableDescription: "Adds support for the Light Estimation API for WebXR"
+  condition: ENABLE(WEBXR_LIGHT_ESTIMATION)
+  defaultValue:
+    WebKitLegacy:
+      default: false
+    WebKit:
+      default: false
+    WebCore:
+      default: false
+
 WheelEventGesturesBecomeNonBlocking:
   type: bool
   status: mature

@@ -37,6 +37,7 @@
 #include "XREnvironmentBlendMode.h"
 #include "XRInteractionMode.h"
 #include "XRReferenceSpaceType.h"
+#include "XRReflectionFormat.h"
 #include "XRSessionMode.h"
 #include "XRVisibilityState.h"
 #include <wtf/MonotonicTime.h>
@@ -52,11 +53,14 @@ class WebCoreOpaqueRoot;
 class WebXRSystem;
 class WebXRView;
 class WebXRViewerSpace;
+class XRLightProbe;
+struct XRLightProbeInit;
 struct XRRenderStateInit;
 
 class WebXRSession final : public RefCounted<WebXRSession>, public EventTarget, public ActiveDOMObject, public PlatformXR::TrackingAndRenderingClient {
     WTF_MAKE_ISO_ALLOCATED(WebXRSession);
 public:
+    using RequestLightProbePromise = DOMPromiseDeferred<IDLInterface<XRLightProbe>>;
     using RequestReferenceSpacePromise = DOMPromiseDeferred<IDLInterface<WebXRReferenceSpace>>;
     using EndPromise = DOMPromiseDeferred<void>;
     using FeatureList = PlatformXR::Device::FeatureList;
@@ -73,6 +77,7 @@ public:
 
     XREnvironmentBlendMode environmentBlendMode() const;
     XRInteractionMode interactionMode() const;
+    XRReflectionFormat preferredReflectionFormat() const { return XRReflectionFormat::sRGBA8; }
     XRVisibilityState visibilityState() const;
     const WebXRRenderState& renderState() const;
     const WebXRInputSourceArray& inputSources() const;
@@ -80,6 +85,9 @@ public:
 
     ExceptionOr<void> updateRenderState(const XRRenderStateInit&);
     void requestReferenceSpace(XRReferenceSpaceType, RequestReferenceSpacePromise&&);
+#if ENABLE(WEBXR_LIGHT_ESTIMATION)
+    void requestLightProbe(const XRLightProbeInit&, RequestLightProbePromise&&);
+#endif
 
     unsigned requestAnimationFrame(Ref<XRFrameRequestCallback>&&);
     void cancelAnimationFrame(unsigned callbackId);
@@ -104,6 +112,9 @@ public:
     
 #if ENABLE(WEBXR_HANDS)
     bool isHandTrackingEnabled() const;
+#endif
+#if ENABLE(WEBXR_LIGHT_ESTIMATION)
+    bool isLightEstimationEnabled() const;
 #endif
 
 private:

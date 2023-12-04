@@ -1645,6 +1645,7 @@ list(APPEND WebCore_NON_SVG_IDL_FILES
     Modules/webxr/Navigator+WebXR.idl
     Modules/webxr/WebXRBoundedReferenceSpace.idl
     Modules/webxr/WebXRFrame+HandInput.idl
+    Modules/webxr/WebXRFrame+LightEstimation.idl
     Modules/webxr/WebXRFrame.idl
     Modules/webxr/WebXRHand.idl
     Modules/webxr/WebXRInputSource+Gamepad.idl
@@ -1659,6 +1660,7 @@ list(APPEND WebCore_NON_SVG_IDL_FILES
     Modules/webxr/WebXRRenderState.idl
     Modules/webxr/WebXRRigidTransform.idl
     Modules/webxr/WebXRSession+AR.idl
+    Modules/webxr/WebXRSession+LightEstimation.idl
     Modules/webxr/WebXRSession.idl
     Modules/webxr/WebXRSpace.idl
     Modules/webxr/WebXRSystem.idl
@@ -1674,8 +1676,11 @@ list(APPEND WebCore_NON_SVG_IDL_FILES
     Modules/webxr/XRInputSourceEvent.idl
     Modules/webxr/XRInputSourcesChangeEvent.idl
     Modules/webxr/XRInteractionMode.idl
+    Modules/webxr/XRLightEstimate.idl
+    Modules/webxr/XRLightProbe.idl
     Modules/webxr/XRReferenceSpaceEvent.idl
     Modules/webxr/XRReferenceSpaceType.idl
+    Modules/webxr/XRReflectionFormat.idl
     Modules/webxr/XRRenderStateInit.idl
     Modules/webxr/XRSessionEvent.idl
     Modules/webxr/XRSessionInit.idl
