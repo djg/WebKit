@@ -484,6 +484,10 @@ namespace WebCore {
     macro(WritableStreamDefaultWriter) \
     macro(XMLHttpRequest) \
     macro(XRBoundedReferenceSpace) \
+    macro(XRCompositionLayer) \
+    macro(XRCubeLayer) \
+    macro(XRCylinderLayer) \
+    macro(XREquirectLayer) \
     macro(XRFrame) \
     macro(XRHand) \
     macro(XRInputSource) \
@@ -493,7 +497,10 @@ namespace WebCore {
     macro(XRJointPose) \
     macro(XRJointSpace) \
     macro(XRLayer) \
+    macro(XRLayerEvent) \
     macro(XRPose) \
+    macro(XRProjectionLayer) \
+    macro(XRQuadLayer) \
     macro(XRReferenceSpace) \
     macro(XRReferenceSpaceEvent) \
     macro(XRRenderState) \
@@ -501,12 +508,15 @@ namespace WebCore {
     macro(XRSession) \
     macro(XRSessionEvent) \
     macro(XRSpace) \
+    macro(XRSubImage) \
     macro(XRSystem) \
     macro(XRTest) \
     macro(XRView) \
     macro(XRViewerPose) \
     macro(XRViewport) \
+    macro(XRWebGLBinding) \
     macro(XRWebGLLayer) \
+    macro(XRWebGLSubImage) \
     macro(abortAlgorithm) \
     macro(abortSteps) \
     macro(addAbortAlgorithmToSignal) \

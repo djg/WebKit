@@ -36,6 +36,12 @@ namespace WebCore {
 #define DOM_EVENT_NAME_APPLE_PAY_COUPON_CODE_CHANGED(macro)
 #endif
 
+#if ENABLE(WEBXR_LAYERS)
+#define DOM_EVENT_NAME_XR_LAYERS_REDRAW(macro) macro(redraw)
+#else
+#define DOM_EVENT_NAME_XR_LAYERS_REDRAW(macro)
+#endif
+
 #define DOM_EVENT_NAMES_FOR_EACH(macro) \
     macro(DOMActivate) \
     macro(DOMCharacterDataModified) \
@@ -242,6 +248,7 @@ namespace WebCore {
     macro(qualitychange) \
     macro(ratechange) \
     macro(readystatechange) \
+    DOM_EVENT_NAME_XR_LAYERS_REDRAW(macro) \
     macro(rejectionhandled) \
     macro(release) \
     macro(remove) \
