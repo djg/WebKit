@@ -808,6 +808,7 @@ JS_BINDING_IDLS := \
     $(WebCore)/Modules/webxr/Navigator+WebXR.idl \
     $(WebCore)/Modules/webxr/WebXRBoundedReferenceSpace.idl \
     $(WebCore)/Modules/webxr/WebXRFrame+HandInput.idl \
+    $(WebCore)/Modules/webxr/WebXRFrame+HitTest.idl \
     $(WebCore)/Modules/webxr/WebXRFrame.idl \
     $(WebCore)/Modules/webxr/WebXRHand.idl \
     $(WebCore)/Modules/webxr/WebXRInputSource+Gamepad.idl \
@@ -822,6 +823,7 @@ JS_BINDING_IDLS := \
     $(WebCore)/Modules/webxr/WebXRRenderState.idl \
     $(WebCore)/Modules/webxr/WebXRRigidTransform.idl \
     $(WebCore)/Modules/webxr/WebXRSession+AR.idl \
+    $(WebCore)/Modules/webxr/WebXRSession+HitTest.idl \
     $(WebCore)/Modules/webxr/WebXRSession.idl \
     $(WebCore)/Modules/webxr/WebXRSpace.idl \
     $(WebCore)/Modules/webxr/WebXRSystem.idl \
@@ -834,9 +836,14 @@ JS_BINDING_IDLS := \
     $(WebCore)/Modules/webxr/XRFrameRequestCallback.idl \
     $(WebCore)/Modules/webxr/XRHandJoint.idl \
     $(WebCore)/Modules/webxr/XRHandedness.idl \
+    $(WebCore)/Modules/webxr/XRHitTestOptionsInit.idl \
+    $(WebCore)/Modules/webxr/XRHitTestResult.idl \
+    $(WebCore)/Modules/webxr/XRHitTestSource.idl \
+    $(WebCore)/Modules/webxr/XRHitTestTrackableType.idl \
     $(WebCore)/Modules/webxr/XRInputSourceEvent.idl \
     $(WebCore)/Modules/webxr/XRInputSourcesChangeEvent.idl \
     $(WebCore)/Modules/webxr/XRInteractionMode.idl \
+    $(WebCore)/Modules/webxr/XRRay.idl \
     $(WebCore)/Modules/webxr/XRReferenceSpaceEvent.idl \
     $(WebCore)/Modules/webxr/XRReferenceSpaceType.idl \
     $(WebCore)/Modules/webxr/XRRenderStateInit.idl \
@@ -844,6 +851,9 @@ JS_BINDING_IDLS := \
     $(WebCore)/Modules/webxr/XRSessionInit.idl \
     $(WebCore)/Modules/webxr/XRSessionMode.idl \
     $(WebCore)/Modules/webxr/XRTargetRayMode.idl \
+    $(WebCore)/Modules/webxr/XRTransientInputHitTestOptionsInit.idl \
+    $(WebCore)/Modules/webxr/XRTransientInputHitTestResult.idl \
+    $(WebCore)/Modules/webxr/XRTransientInputHitTestSource.idl \
     $(WebCore)/Modules/webxr/XRVisibilityState.idl \
     $(WebCore)/Modules/webxr/XRWebGLLayerInit.idl \
     $(WebCore)/accessibility/AccessibilityRole.idl \

@@ -486,6 +486,8 @@ namespace WebCore {
     macro(XRBoundedReferenceSpace) \
     macro(XRFrame) \
     macro(XRHand) \
+    macro(XRHitTestResult) \
+    macro(XRHitTestSource) \
     macro(XRInputSource) \
     macro(XRInputSourceArray) \
     macro(XRInputSourceEvent) \
@@ -494,6 +496,7 @@ namespace WebCore {
     macro(XRJointSpace) \
     macro(XRLayer) \
     macro(XRPose) \
+    macro(XRRay) \
     macro(XRReferenceSpace) \
     macro(XRReferenceSpaceEvent) \
     macro(XRRenderState) \
@@ -503,6 +506,8 @@ namespace WebCore {
     macro(XRSpace) \
     macro(XRSystem) \
     macro(XRTest) \
+    macro(XRTransientInputHitTestResult) \
+    macro(XRTransientInputHitTestSource) \
     macro(XRView) \
     macro(XRViewerPose) \
     macro(XRViewport) \

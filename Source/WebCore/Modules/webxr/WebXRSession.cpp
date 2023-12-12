@@ -247,6 +247,18 @@ void WebXRSession::requestReferenceSpace(XRReferenceSpaceType type, RequestRefer
     });
 }
 
+#if ENABLE(WEBXR_HIT_TEST)
+void WebXRSession::requestHitTestSource(XRHitTestOptionsInit&&, HitTestSourcePromise&& promise)
+{
+    promise.reject(Exception { ExceptionCode::InvalidStateError });
+}
+
+void WebXRSession::requestHitTestSourceForTransientInput(XRTransientInputHitTestOptionsInit&&, TransientInputHitTestSourcePromise&& promise)
+{
+    promise.reject(Exception { ExceptionCode::InvalidStateError });
+}
+#endif
+
 // https://immersive-web.github.io/webxr/#dom-xrsession-requestanimationframe
 unsigned WebXRSession::requestAnimationFrame(Ref<XRFrameRequestCallback>&& callback)
 {

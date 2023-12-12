@@ -8003,6 +8003,21 @@ WebXRHandInputModuleEnabled:
     WebCore:
       default: false
 
+WebXRHitTestModuleEnabled:
+  type: bool
+  status: unstable
+  category: dom
+  humanReadableName: "WebXR Hit Test Module"
+  humanReadableDescription: "Adds support for the WebXR Hit Test Module"
+  condition: ENABLE(WEBXR_HIT_TEST)
+  defaultValue:
+    WebKitLegacy:
+      default: false
+    WebKit:
+      default: false
+    WebCore:
+      default: false
+
 WheelEventGesturesBecomeNonBlocking:
   type: bool
   status: mature

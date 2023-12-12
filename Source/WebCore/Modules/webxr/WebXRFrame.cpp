@@ -34,6 +34,8 @@
 #include "WebXRReferenceSpace.h"
 #include "WebXRSession.h"
 #include "WebXRViewerPose.h"
+#include "XRHitTestResult.h"
+#include "XRTransientInputHitTestResult.h"
 #include <JavaScriptCore/GenericTypedArrayViewInlines.h>
 #include <wtf/IsoMallocInlines.h>
 
@@ -376,6 +378,21 @@ ExceptionOr<bool> WebXRFrame::fillPoses(const Document& document, const Vector<R
     }
 
     return allValid;
+}
+
+#endif
+
+#if ENABLE(WEBXR_HIT_TEST)
+ExceptionOr<Vector<Ref<XRHitTestResult>>> WebXRFrame::getHitTestResults(const XRHitTestSource&)
+{
+    ASSERT_NOT_IMPLEMENTED_YET();
+    return Exception { ExceptionCode::InvalidStateError, "Not Implemented"_s };
+}
+
+ExceptionOr<Vector<Ref<XRTransientInputHitTestResult>>> WebXRFrame::getHitTestResultsForTransientInput(const XRTransientInputHitTestSource&)
+{
+    ASSERT_NOT_IMPLEMENTED_YET();
+    return Exception { ExceptionCode::InvalidStateError, "Not Implemented"_s };
 }
 
 #endif

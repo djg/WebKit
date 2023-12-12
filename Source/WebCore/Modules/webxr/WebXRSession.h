@@ -52,7 +52,16 @@ class WebCoreOpaqueRoot;
 class WebXRSystem;
 class WebXRView;
 class WebXRViewerSpace;
+#if ENABLE(WEBXR_HIT_TEST)
+class XRHitTestSource;
+class XRTransientInputHitTestSource;
+#endif
+
 struct XRRenderStateInit;
+#if ENABLE(WEBXR_HIT_TEST)
+struct XRHitTestOptionsInit;
+struct XRTransientInputHitTestOptionsInit;
+#endif
 
 class WebXRSession final : public RefCounted<WebXRSession>, public EventTarget, public ActiveDOMObject, public PlatformXR::TrackingAndRenderingClient {
     WTF_MAKE_ISO_ALLOCATED(WebXRSession);
@@ -80,6 +89,14 @@ public:
 
     ExceptionOr<void> updateRenderState(const XRRenderStateInit&);
     void requestReferenceSpace(XRReferenceSpaceType, RequestReferenceSpacePromise&&);
+
+#if ENABLE(WEBXR_HIT_TEST)
+    using HitTestSourcePromise = DOMPromiseDeferred<IDLInterface<XRHitTestSource>>;
+    void requestHitTestSource(XRHitTestOptionsInit&&, HitTestSourcePromise&&);
+
+    using TransientInputHitTestSourcePromise = DOMPromiseDeferred<IDLInterface<XRTransientInputHitTestSource>>;
+    void requestHitTestSourceForTransientInput(XRTransientInputHitTestOptionsInit&&, TransientInputHitTestSourcePromise&&);
+#endif
 
     unsigned requestAnimationFrame(Ref<XRFrameRequestCallback>&&);
     void cancelAnimationFrame(unsigned callbackId);

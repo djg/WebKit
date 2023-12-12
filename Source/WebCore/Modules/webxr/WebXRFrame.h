@@ -47,6 +47,13 @@ class WebXRSession;
 class WebXRSpace;
 class WebXRViewerPose;
 
+#if ENABLE(WEBXR_HIT_TEST)
+class XRHitTestResult;
+class XRHitTestSource;
+class XRTransientInputHitTestResult;
+class XRTransientInputHitTestSource;
+#endif
+
 class WebXRFrame : public RefCounted<WebXRFrame> {
     WTF_MAKE_ISO_ALLOCATED(WebXRFrame);
 public:
@@ -63,6 +70,11 @@ public:
     ExceptionOr<RefPtr<WebXRJointPose>> getJointPose(const Document&, const WebXRJointSpace&, const WebXRSpace&);
     ExceptionOr<bool> fillJointRadii(const Vector<RefPtr<WebXRJointSpace>>&, Float32Array&);
     ExceptionOr<bool> fillPoses(const Document&, const Vector<RefPtr<WebXRSpace>>&, const WebXRSpace&, Float32Array&);
+#endif
+
+#if ENABLE(WEBXR_HIT_TEST)
+    ExceptionOr<Vector<Ref<XRHitTestResult>>> getHitTestResults(const XRHitTestSource&);
+    ExceptionOr<Vector<Ref<XRTransientInputHitTestResult>>> getHitTestResultsForTransientInput(const XRTransientInputHitTestSource&);
 #endif
 
     void setTime(DOMHighResTimeStamp time) { m_time = time; }
