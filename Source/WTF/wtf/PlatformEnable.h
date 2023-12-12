@@ -583,6 +583,10 @@
 #define ENABLE_WEBXR_HANDS 0
 #endif
 
+#if !defined(ENABLE_WEBXR_HIT_TEST)
+#define ENABLE_WEBXR_HIT_TEST 0
+#endif
+
 #if !defined(ENABLE_WHEEL_EVENT_LATCHING)
 #define ENABLE_WHEEL_EVENT_LATCHING 0
 #endif
