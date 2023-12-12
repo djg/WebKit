@@ -7924,6 +7924,21 @@ WebXREnabled:
     WebCore:
       default: false
 
+WebXRAnchorsModuleEnabled:
+  type: bool
+  status: unstable
+  category: dom
+  humanReadableName: "WebXR Anchors Module"
+  humanReadableDescription: "Adds support for the WebXR Anchors Module"
+  condition: ENABLE(WEBXR_ANCHORS)
+  defaultValue:
+    WebKitLegacy:
+      default: false
+    WebKit:
+      default: false
+    WebCore:
+      default: false
+
 WebXRGamepadsModuleEnabled:
   type: bool
   status: testable

@@ -807,6 +807,7 @@ JS_BINDING_IDLS := \
     $(WebCore)/Modules/webtransport/WebTransportStats.idl \
     $(WebCore)/Modules/webxr/Navigator+WebXR.idl \
     $(WebCore)/Modules/webxr/WebXRBoundedReferenceSpace.idl \
+    $(WebCore)/Modules/webxr/WebXRFrame+Anchors.idl \
     $(WebCore)/Modules/webxr/WebXRFrame+HandInput.idl \
     $(WebCore)/Modules/webxr/WebXRFrame.idl \
     $(WebCore)/Modules/webxr/WebXRHand.idl \
@@ -821,6 +822,7 @@ JS_BINDING_IDLS := \
     $(WebCore)/Modules/webxr/WebXRReferenceSpace.idl \
     $(WebCore)/Modules/webxr/WebXRRenderState.idl \
     $(WebCore)/Modules/webxr/WebXRRigidTransform.idl \
+    $(WebCore)/Modules/webxr/WebXRSession+Anchors.idl \
     $(WebCore)/Modules/webxr/WebXRSession+AR.idl \
     $(WebCore)/Modules/webxr/WebXRSession.idl \
     $(WebCore)/Modules/webxr/WebXRSpace.idl \
@@ -829,6 +831,8 @@ JS_BINDING_IDLS := \
     $(WebCore)/Modules/webxr/WebXRView.idl \
     $(WebCore)/Modules/webxr/WebXRViewport.idl \
     $(WebCore)/Modules/webxr/WebXRWebGLLayer.idl \
+    $(WebCore)/Modules/webxr/XRAnchor.idl \
+    $(WebCore)/Modules/webxr/XRAnchorSet.idl \
     $(WebCore)/Modules/webxr/XREnvironmentBlendMode.idl \
     $(WebCore)/Modules/webxr/XREye.idl \
     $(WebCore)/Modules/webxr/XRFrameRequestCallback.idl \
