@@ -27,6 +27,8 @@
 
 #if ENABLE(WEBXR_HIT_TEST)
 
+#include "TransformationMatrix.h"
+
 #include <wtf/IsoMalloc.h>
 #include <wtf/RefCounted.h>
 #include <wtf/RefPtr.h>
@@ -40,7 +42,16 @@ class WebXRSpace;
 class XRHitTestResult : public RefCounted<XRHitTestResult> {
     WTF_MAKE_ISO_ALLOCATED(XRHitTestResult);
 public:
-    RefPtr<WebXRPose> getPose(const WebXRSpace&);
+    static Ref<XRHitTestResult> create(WebXRFrame&, std::optional<TransformationMatrix>&&);
+
+    ExceptionOr<RefPtr<WebXRPose>> getPose(const WebXRSpace&);
+
+protected:
+    XRHitTestResult(WebXRFrame&, std::optional<TransformationMatrix>&&);
+
+private:
+    Ref<WebXRFrame> m_frame;
+    std::optional<TransformationMatrix> m_nativeOrigin;
 };
 
 } // namespace WebCore

@@ -38,7 +38,12 @@
 namespace WebCore {
 
 WTF_MAKE_ISO_ALLOCATED_IMPL(DOMPointReadOnly);
-    
+
+DOMPointReadOnly::operator DOMPointInit() const
+{
+    return DOMPointInit { m_x, m_y, m_z, m_w };
+}
+
 ExceptionOr<Ref<DOMPoint>> DOMPointReadOnly::matrixTransform(DOMMatrixInit&& matrixInit) const
 {
     auto matrixOrException = DOMMatrixReadOnly::fromMatrix(WTFMove(matrixInit));

@@ -1923,6 +1923,10 @@ static _WKXRSessionFeatureFlags toWKXRSessionFeatureFlags(PlatformXR::SessionFea
     case PlatformXR::SessionFeature::HandTracking:
         return _WKXRSessionFeatureFlagsHandTracking;
 #endif
+#if ENABLE(WEBXR_HIT_TEST)
+    case PlatformXR::SessionFeature::HitTest:
+        return _WKXRSessionFeatureFlagsHitTest;
+#endif
     }
 }
 

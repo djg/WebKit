@@ -107,6 +107,9 @@ enum class SessionFeature : uint8_t {
 #if ENABLE(WEBXR_HANDS)
     HandTracking,
 #endif
+#if ENABLE(WEBXR_HIT_TEST)
+    HitTest,
+#endif
 };
 
 inline SessionFeature sessionFeatureFromReferenceSpaceType(ReferenceSpaceType referenceSpaceType)
@@ -146,6 +149,10 @@ inline std::optional<SessionFeature> parseSessionFeatureDescriptor(StringView st
     if (feature == "hand-tracking"_s)
         return SessionFeature::HandTracking;
 #endif
+#if ENABLE(WEBXR_HIT_TEST)
+    if (feature == "hit-test"_s)
+        return SessionFeature::HitTest;
+#endif
 
     return std::nullopt;
 }
@@ -166,6 +173,10 @@ inline String sessionFeatureDescriptor(SessionFeature sessionFeature)
 #if ENABLE(WEBXR_HANDS)
     case SessionFeature::HandTracking:
         return "hand-tracking"_s;
+#endif
+#if ENABLE(WEBXR_HIT_TEST)
+    case SessionFeature::HitTest:
+        return "hit-test"_s;
 #endif
     default:
         ASSERT_NOT_REACHED();

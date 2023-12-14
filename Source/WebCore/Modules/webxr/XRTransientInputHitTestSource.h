@@ -28,15 +28,32 @@
 #if ENABLE(WEBXR_HIT_TEST)
 
 #include <wtf/IsoMalloc.h>
+#include <wtf/Ref.h>
 #include <wtf/RefCounted.h>
+#include <wtf/text/WTFString.h>
 
 namespace WebCore {
 
+class WebXRSession;
+class XRRay;
+
+enum class XRHitTestTrackableType : uint8_t;
+
 // https://immersive-web.github.io/hit-test/#transient-input-hit-test-source-interface
-class XRTransientInputHitTestSource : public RefCounted<XRTransientInputHitTestSource> {
+class XRTransientInputHitTestSource : public RefCounted<XRTransientInputHitTestSource>, public CanMakeWeakPtr<XRTransientInputHitTestSource> {
     WTF_MAKE_ISO_ALLOCATED(XRTransientInputHitTestSource);
 public:
-    [[noreturn]] void cancel();
+    static Ref<XRTransientInputHitTestSource> create(WebXRSession&, String&&, Vector<XRHitTestTrackableType>&& entityTypes, XRRay&);
+    ExceptionOr<void> cancel();
+
+protected:
+    XRTransientInputHitTestSource(WebXRSession&, String&&, Vector<XRHitTestTrackableType>&&, XRRay&);
+
+private:
+    Ref<WebXRSession> m_session;
+    String m_profile;
+    Vector<XRHitTestTrackableType> m_entityTypes;
+    Ref<XRRay> m_offsetRay;
 };
 
 } // namespace WebCore

@@ -29,6 +29,7 @@
     EnabledBySetting=WebXRHitTestModuleEnabled,
     SecureContext,
     Exposed=Window,
+    JSGenerateToNativeObject,
 ] interface XRHitTestSource {
     undefined cancel();
 };

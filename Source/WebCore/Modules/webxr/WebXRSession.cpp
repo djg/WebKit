@@ -33,15 +33,21 @@
 #include "EventNames.h"
 #include "JSDOMPromiseDeferred.h"
 #include "JSWebXRReferenceSpace.h"
+#include "JSXRHitTestSource.h"
+#include "JSXRTransientInputHitTestSource.h"
 #include "SecurityOrigin.h"
 #include "WebCoreOpaqueRoot.h"
 #include "WebXRBoundedReferenceSpace.h"
 #include "WebXRFrame.h"
 #include "WebXRSystem.h"
 #include "WebXRView.h"
+#include "XRHitTestOptionsInit.h"
+#include "XRHitTestSource.h"
 #include "XRFrameRequestCallback.h"
 #include "XRRenderStateInit.h"
 #include "XRSessionEvent.h"
+#include "XRTransientInputHitTestOptionsInit.h"
+#include "XRTransientInputHitTestSource.h"
 #include <wtf/IsoMallocInlines.h>
 #include <wtf/RefPtr.h>
 
@@ -248,14 +254,83 @@ void WebXRSession::requestReferenceSpace(XRReferenceSpaceType type, RequestRefer
 }
 
 #if ENABLE(WEBXR_HIT_TEST)
-void WebXRSession::requestHitTestSource(XRHitTestOptionsInit&&, HitTestSourcePromise&& promise)
+ExceptionOr<void> WebXRSession::cancelHitTestSource(const XRHitTestSource& hitTestSource)
 {
-    promise.reject(Exception { ExceptionCode::InvalidStateError });
+    // 1. If the hitTestSource is not active, throw an InvalidStateError and abort these steps.
+    if (!m_activeHitTestSources.contains(&hitTestSource))
+        return Exception { ExceptionCode::InvalidStateError };
+
+    // 2. Remove hitTestSource from session's set of active hit test sources.
+    m_activeHitTestSources.removeFirst(&hitTestSource);
+    return { };
 }
 
-void WebXRSession::requestHitTestSourceForTransientInput(XRTransientInputHitTestOptionsInit&&, TransientInputHitTestSourcePromise&& promise)
+void WebXRSession::requestHitTestSource(XRHitTestOptionsInit&& options, HitTestSourcePromise&& promise)
+{
+    // 1. Let promise be a new Promise.
+    // 2. If hit-test feature descriptor is not contained in the session’s list of enabled features, reject promise with NotSupportedError and abort these steps.
+    if (!m_requestedFeatures.contains(PlatformXR::SessionFeature::HitTest)) {
+        promise.reject(Exception { ExceptionCode::NotSupportedError });
+        return;
+    }
+
+    // 3. If session’s ended value is true, throw an InvalidStateError and abort these steps.
+    if (m_ended) {
+        promise.reject(Exception { ExceptionCode::InvalidStateError });
+        return;
+    }
+
+    // 4. The user agent MAY reject promise with NotAllowedError and abort these steps if there is a unreasonable number of requests.
+    // 5. Add compute all hit test results algorithm to session’s list of frame updates if it is not already present there.
+    // 6. Create a hit test source, hitTestSource, with session, options’ space, options’ effective entityTypes and options’ effective offsetRay.
+    Ref<XRHitTestSource> hitTestSource = XRHitTestSource::create(*this, options.space.releaseNonNull(), WTFMove(options.entityTypes), options.offsetRay.releaseNonNull());
+
+    // 7. If hitTestSource is null, reject promise with an OperationError and abort these steps.
+    // 8. Store created hitTestSource in session’s set of active hit test sources.
+    m_activeHitTestSources.append(hitTestSource);
+
+    // 9. Resolve promise with created hitTestSource.
+    promise.resolve(hitTestSource);
+}
+
+ExceptionOr<void> WebXRSession::cancelHitTestSourceForTransientInput(const XRTransientInputHitTestSource& hitTestSource)
+{
+    // 1. If the hitTestSource is not active, throw an InvalidStateError and abort these steps.
+    if (!m_activeHitTestSourceForTransientInputs.contains(&hitTestSource))
+        return Exception { ExceptionCode::InvalidStateError };
+
+    // 2. Remove hitTestSource from session's set of active hit test sources.
+    m_activeHitTestSourceForTransientInputs.removeFirst(&hitTestSource);
+    return { };
+}
+
+void WebXRSession::requestHitTestSourceForTransientInput(XRTransientInputHitTestOptionsInit&& options, TransientInputHitTestSourcePromise&& promise)
 {
     promise.reject(Exception { ExceptionCode::InvalidStateError });
+    // 1. Let promise be a new Promise.
+    // 2. If hit-test feature descriptor is not contained in the session’s list of enabled features, reject promise with NotSupportedError and abort these steps.
+    if (!m_requestedFeatures.contains(PlatformXR::SessionFeature::HitTest)) {
+        promise.reject(Exception { ExceptionCode::NotSupportedError });
+        return;
+    }
+
+    // 3. If session’s ended value is true, throw an InvalidStateError and abort these steps.
+    if (m_ended) {
+        promise.reject(Exception { ExceptionCode::InvalidStateError });
+        return;
+    }
+
+    // 4. The user agent MAY reject promise with NotAllowedError and abort these steps if there is a unreasonable number of requests.
+    // 5. Add compute all hit test results algorithm to session’s list of frame updates if it is not already present there.
+    // 6. Create a hit test source for transient input, hitTestSource, with session, options’ profile, options’ effective entityTypes and options’ effective offsetRay.
+    Ref hitTestSource = XRTransientInputHitTestSource::create(*this, WTFMove(options.profile), WTFMove(options.entityTypes), options.offsetRay.releaseNonNull());
+
+    // 7. If hitTestSource is null, reject promise with an OperationError and abort these steps.
+    // 8. Store created hitTestSource in session’s set of active hit test sources for transient input.
+    m_activeHitTestSourceForTransientInputs.append(hitTestSource);
+
+    // 9. Resolve promise with created hitTestSource.
+    promise.resolve(hitTestSource);
 }
 #endif
 

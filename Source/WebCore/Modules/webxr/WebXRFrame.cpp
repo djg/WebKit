@@ -29,6 +29,7 @@
 #if ENABLE(WEBXR)
 
 #include "WebXRBoundedReferenceSpace.h"
+#include "WebXRInputSource.h"
 #include "WebXRJointPose.h"
 #include "WebXRJointSpace.h"
 #include "WebXRReferenceSpace.h"
@@ -387,12 +388,22 @@ ExceptionOr<Vector<Ref<XRHitTestResult>>> WebXRFrame::getHitTestResults(const XR
 {
     ASSERT_NOT_IMPLEMENTED_YET();
     return Exception { ExceptionCode::InvalidStateError, "Not Implemented"_s };
+
+    // 1. If frame’s active boolean is false, throw an InvalidStateError and abort these steps.
+    // 2. Check that the entry for hitTestSource is present in frame’s map of hit test sources to hit test results. If the entry is not present, throw an InvalidStateError and abort these steps.
+    // 3. Look up an entry for hitTestSource in frame’s map of hit test sources to hit test results and assign it to results.
+    // 4. Return results.
 }
 
 ExceptionOr<Vector<Ref<XRTransientInputHitTestResult>>> WebXRFrame::getHitTestResultsForTransientInput(const XRTransientInputHitTestSource&)
 {
     ASSERT_NOT_IMPLEMENTED_YET();
     return Exception { ExceptionCode::InvalidStateError, "Not Implemented"_s };
+
+    // 1. If frame’s active boolean is false, throw an InvalidStateError and abort these steps.
+    // 2. Check that the entry for hitTestSource is present in frame’s map of hit test sources to hit test results for transient input. If the entry is not present, throw an InvalidStateError and abort these steps.
+    // 3. Look up an entry for hitTestSource in frame’s map of hit test sources to hit test results for transient input and assign it to results.
+    // 4. Return results.
 }
 
 #endif

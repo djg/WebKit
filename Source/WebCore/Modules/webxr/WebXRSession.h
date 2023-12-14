@@ -35,9 +35,11 @@
 #include "WebXRInputSourceArray.h"
 #include "WebXRRenderState.h"
 #include "XREnvironmentBlendMode.h"
+#include "XRHitTestSource.h"
 #include "XRInteractionMode.h"
 #include "XRReferenceSpaceType.h"
 #include "XRSessionMode.h"
+#include "XRTransientInputHitTestSource.h"
 #include "XRVisibilityState.h"
 #include <wtf/MonotonicTime.h>
 #include <wtf/Ref.h>
@@ -52,10 +54,6 @@ class WebCoreOpaqueRoot;
 class WebXRSystem;
 class WebXRView;
 class WebXRViewerSpace;
-#if ENABLE(WEBXR_HIT_TEST)
-class XRHitTestSource;
-class XRTransientInputHitTestSource;
-#endif
 
 struct XRRenderStateInit;
 #if ENABLE(WEBXR_HIT_TEST)
@@ -65,6 +63,8 @@ struct XRTransientInputHitTestOptionsInit;
 
 class WebXRSession final : public RefCounted<WebXRSession>, public EventTarget, public ActiveDOMObject, public PlatformXR::TrackingAndRenderingClient {
     WTF_MAKE_ISO_ALLOCATED(WebXRSession);
+    friend class XRHitTestSource;
+    friend class XRTransientInputHitTestSource;
 public:
     using RequestReferenceSpacePromise = DOMPromiseDeferred<IDLInterface<WebXRReferenceSpace>>;
     using EndPromise = DOMPromiseDeferred<void>;
@@ -151,6 +151,11 @@ private:
     void onFrame(PlatformXR::FrameData&&);
     void applyPendingRenderState();
 
+#if ENABLE(WEBXR_HIT_TEST)
+    ExceptionOr<void> cancelHitTestSource(const XRHitTestSource&);
+    ExceptionOr<void> cancelHitTestSourceForTransientInput(const XRTransientInputHitTestSource&);
+#endif
+
     XREnvironmentBlendMode m_environmentBlendMode { XREnvironmentBlendMode::Opaque };
     XRInteractionMode m_interactionMode { XRInteractionMode::WorldSpace };
     XRVisibilityState m_visibilityState { XRVisibilityState::Visible };
@@ -183,6 +188,11 @@ private:
 
     // https://immersive-web.github.io/webxr/#xrsession-promise-resolved
     bool m_inputInitialized { false };
+
+#if ENABLE(WEBXR_HIT_TEST)
+    Vector<WeakPtr<XRHitTestSource>> m_activeHitTestSources;
+    Vector<WeakPtr<XRTransientInputHitTestSource>> m_activeHitTestSourceForTransientInputs;
+#endif
 };
 
 WebCoreOpaqueRoot root(WebXRSession*);

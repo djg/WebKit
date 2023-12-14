@@ -23,26 +23,45 @@
  * THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#pragma once
+#include "config.h"
+#include "XRHitTestResult.h"
 
 #if ENABLE(WEBXR_HIT_TEST)
 
-#include "XRHitTestTrackableType.h"
-
-#include <wtf/Ref.h>
-#include <wtf/text/WTFString.h>
+#include "WebXRFrame.h"
+#include "WebXRPose.h"
+#include <wtf/IsoMallocInlines.h>
 
 namespace WebCore {
 
-class XRRay;
+WTF_MAKE_ISO_ALLOCATED_IMPL(XRHitTestResult);
 
-// https://immersive-web.github.io/hit-test/#transient-input-hit-test-options-dictionary
-struct XRTransientInputHitTestOptionsInit {
-    String profile;
-    Vector<XRHitTestTrackableType> entityTypes { XRHitTestTrackableType::Plane };
-    RefPtr<XRRay> offsetRay { XRRay::create() };
-};
+XRHitTestResult::XRHitTestResult(WebXRFrame& frame, std::optional<TransformationMatrix>&& nativeOrigin)
+    : m_frame(frame)
+    , m_nativeOrigin(WTFMove(nativeOrigin))
+{ }
 
-} // namepace WebCore
+Ref<XRHitTestResult> XRHitTestResult::create(WebXRFrame& frame, std::optional<TransformationMatrix>&& nativeOrigin)
+{
+    return adoptRef(*new XRHitTestResult(frame, WTFMove(nativeOrigin)));
+}
+
+ExceptionOr<RefPtr<WebXRPose>> XRHitTestResult::getPose(const WebXRSpace&)
+{
+    // Let frame be the hitTestResult’s frame.
+    // If frame’s active boolean is false, throw an InvalidStateError and abort these steps.
+    if (!m_frame->isActive())
+        return Exception { ExceptionCode::InvalidStateError };
+
+    // Let pose be a new XRPose.
+    // Let space be a new XRSpace, with native origin set to native origin, origin offset set to identity transform, and session set to frame's session.
+    // Populate the pose of space in baseSpace at the time represented by frame into pose.
+    // Return pose.
+    ASSERT_NOT_IMPLEMENTED_YET();
+    return nullptr;
+}
+
+} // namespace WebCore
 
 #endif
+

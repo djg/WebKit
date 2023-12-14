@@ -27,19 +27,38 @@
 
 #if ENABLE(WEBXR_HIT_TEST)
 
+#include "TransformationMatrix.h"
+
 #include <wtf/IsoMalloc.h>
+#include <wtf/Ref.h>
 #include <wtf/RefCounted.h>
+#include <wtf/Vector.h>
+#include <wtf/WeakPtr.h>
 
 namespace WebCore {
 
+class WebXRSession;
+class XRRay;
+
+enum class XRHitTestTrackableType : uint8_t;
+
 // https://immersive-web.github.io/hit-test/#hit-test-source-interface
-class XRHitTestSource : public RefCounted<XRHitTestSource> {
+class XRHitTestSource : public RefCounted<XRHitTestSource>, public CanMakeWeakPtr<XRHitTestSource> {
     WTF_MAKE_ISO_ALLOCATED(XRHitTestSource);
 public:
-    [[noreturn]] void cancel();
+    static Ref<XRHitTestSource> create(WebXRSession& session, const WebXRSpace& space, Vector<XRHitTestTrackableType>&& entityTypes, XRRay&);
+    ExceptionOr<void> cancel();
+
+protected:
+    XRHitTestSource(WebXRSession&, std::optional<TransformationMatrix>&&, Vector<XRHitTestTrackableType>&&, XRRay&);
+
+private:
+    Ref<WebXRSession> m_session;
+    std::optional<TransformationMatrix> m_nativeOrigin;
+    Vector<XRHitTestTrackableType> m_entityTypes;
+    Ref<XRRay> m_offsetRay;
 };
 
 } // namespace WebCore
 
 #endif
-

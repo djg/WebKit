@@ -28,19 +28,31 @@
 #if ENABLE(WEBXR_HIT_TEST)
 
 #include <wtf/IsoMalloc.h>
+#include <wtf/Ref.h>
 #include <wtf/RefCounted.h>
 #include <wtf/RefPtr.h>
 
 namespace WebCore {
 
+class WebXRFrame;
 class WebXRInputSource;
 
 // https://immersive-web.github.io/hit-test/#xr-transient-input-hit-test-result-interface
 class XRTransientInputHitTestResult : public RefCounted<XRTransientInputHitTestResult> {
     WTF_MAKE_ISO_ALLOCATED(XRTransientInputHitTestResult);
 public:
+    static Ref<XRTransientInputHitTestResult> create(WebXRFrame&, WebXRInputSource&, Vector<Ref<XRHitTestResult>>&&);
+
     const WebXRInputSource& inputSource() const;
     const Vector<Ref<XRHitTestResult>>& results() const;
+
+protected:
+    XRTransientInputHitTestResult(WebXRFrame&, WebXRInputSource&, Vector<Ref<XRHitTestResult>>&&);
+
+private:
+    Ref<WebXRFrame> m_frame;
+    Ref<WebXRInputSource> m_inputSource;
+    Vector<Ref<XRHitTestResult>> m_results;
 };
 
 } // namespace WebCore

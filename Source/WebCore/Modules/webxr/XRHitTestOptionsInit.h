@@ -30,6 +30,7 @@
 #include "XRHitTestTrackableType.h"
 #include "XRRay.h"
 
+#include <wtf/Ref.h>
 #include <wtf/RefPtr.h>
 
 namespace WebCore {
@@ -39,8 +40,8 @@ class WebXRSpace;
 // https://immersive-web.github.io/hit-test/#hit-test-options-dictionary
 struct XRHitTestOptionsInit {
     RefPtr<WebXRSpace> space;
-    Vector<XRHitTestTrackableType> entityTypes;
-    RefPtr<XRRay> offsetRay;
+    Vector<XRHitTestTrackableType> entityTypes { XRHitTestTrackableType::Plane };
+    RefPtr<XRRay> offsetRay { XRRay::create() };
 };
 
 } // namepace WebCore

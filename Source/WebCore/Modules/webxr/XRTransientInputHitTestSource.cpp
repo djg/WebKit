@@ -23,26 +23,44 @@
  * THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#pragma once
+#include "config.h"
+#include "XRTransientInputHitTestSource.h"
 
 #if ENABLE(WEBXR_HIT_TEST)
 
-#include "XRHitTestTrackableType.h"
+#include "DOMPointReadOnly.h"
+#include "WebXRSession.h"
+#include "XRRay.h"
 
-#include <wtf/Ref.h>
-#include <wtf/text/WTFString.h>
+#include <wtf/IsoMallocInlines.h>
 
 namespace WebCore {
 
-class XRRay;
+WTF_MAKE_ISO_ALLOCATED_IMPL(XRTransientInputHitTestSource);
 
-// https://immersive-web.github.io/hit-test/#transient-input-hit-test-options-dictionary
-struct XRTransientInputHitTestOptionsInit {
-    String profile;
-    Vector<XRHitTestTrackableType> entityTypes { XRHitTestTrackableType::Plane };
-    RefPtr<XRRay> offsetRay { XRRay::create() };
-};
+XRTransientInputHitTestSource::XRTransientInputHitTestSource(WebXRSession& session, String&& profile, Vector<XRHitTestTrackableType>&& entityTypes, XRRay& offsetRay)
+    : m_session(session)
+    , m_profile(profile)
+    , m_entityTypes(WTFMove(entityTypes))
+    , m_offsetRay(offsetRay)
+{ }
 
-} // namepace WebCore
+Ref<XRTransientInputHitTestSource> XRTransientInputHitTestSource::create(WebXRSession& session, String&& profile, Vector<XRHitTestTrackableType>&& entityTypes, XRRay& offsetRay)
+{
+    // 1. Let hitTestSource be a new XRTransientInputHitTestSource.
+    // 2. Initialize hitTestSource’s session to session.
+    // 3. Initialize hitTestSource’s profile to profile.
+    // 4. Initialize hitTestSource’s entity types to entityTypes.
+    // 5. Initialize hitTestSource’s offset ray to offsetRay.
+    // 6. Return hitTestSource.
+    return adoptRef(*new XRTransientInputHitTestSource(session, WTFMove(profile), WTFMove(entityTypes), offsetRay));
+}
+
+ExceptionOr<void> XRTransientInputHitTestSource::cancel()
+{
+    return m_session->cancelHitTestSourceForTransientInput(*this);
+}
+
+} // namespace WebCore
 
 #endif

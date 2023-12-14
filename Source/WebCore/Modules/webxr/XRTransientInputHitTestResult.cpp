@@ -23,26 +23,44 @@
  * THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#pragma once
+#include "config.h"
+#include "XRTransientInputHitTestResult.h"
 
 #if ENABLE(WEBXR_HIT_TEST)
 
-#include "XRHitTestTrackableType.h"
-
-#include <wtf/Ref.h>
-#include <wtf/text/WTFString.h>
+#include "WebXRFrame.h"
+#include "WebXRInputSource.h"
+#include "XRHitTestResult.h"
+#include <wtf/IsoMallocInlines.h>
 
 namespace WebCore {
 
-class XRRay;
+WTF_MAKE_ISO_ALLOCATED_IMPL(XRTransientInputHitTestResult);
 
-// https://immersive-web.github.io/hit-test/#transient-input-hit-test-options-dictionary
-struct XRTransientInputHitTestOptionsInit {
-    String profile;
-    Vector<XRHitTestTrackableType> entityTypes { XRHitTestTrackableType::Plane };
-    RefPtr<XRRay> offsetRay { XRRay::create() };
-};
+XRTransientInputHitTestResult::XRTransientInputHitTestResult(WebXRFrame& frame, WebXRInputSource& inputSource, Vector<Ref<XRHitTestResult>>&& results)
+    : m_frame(frame)
+    , m_inputSource(inputSource)
+    , m_results(WTFMove(results))
+{ }
 
-} // namepace WebCore
+Ref<XRTransientInputHitTestResult> XRTransientInputHitTestResult::create(WebXRFrame& frame, WebXRInputSource& inputSource, Vector<Ref<XRHitTestResult>>&& results)
+{
+    return adoptRef(*new XRTransientInputHitTestResult(frame, inputSource, WTFMove(results)));
+}
+
+const WebXRInputSource& XRTransientInputHitTestResult::inputSource() const
+{
+    ASSERT_NOT_IMPLEMENTED_YET();
+    return m_inputSource;
+}
+
+const Vector<Ref<XRHitTestResult>>& XRTransientInputHitTestResult::results() const
+{
+    ASSERT_NOT_IMPLEMENTED_YET();
+    return m_results;
+}
+
+} // namespace WebCore
 
 #endif
+

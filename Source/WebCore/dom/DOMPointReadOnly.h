@@ -49,6 +49,8 @@ public:
     static Ref<DOMPointReadOnly> create(const DOMPointInit& init) { return create(init.x, init.y, init.z, init.w); }
     static Ref<DOMPointReadOnly> fromPoint(const DOMPointInit& init) { return create(init.x, init.y, init.z, init.w); }
 
+    explicit operator DOMPointInit() const;
+
     double x() const { return m_x; }
     double y() const { return m_y; }
     double z() const { return m_z; }

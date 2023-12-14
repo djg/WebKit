@@ -27,6 +27,8 @@
 
 #if ENABLE(WEBXR_HIT_TEST)
 
+#include "DOMPointInit.h"
+
 #include <JavaScriptCore/Forward.h>
 #include <wtf/IsoMalloc.h>
 #include <wtf/RefCounted.h>
@@ -36,8 +38,6 @@ namespace WebCore {
 class DOMPointReadOnly;
 class WebXRRigidTransform;
 
-struct DOMPointInit;
-
 // https://immersive-web.github.io/hit-test/#xrray-interface
 class XRRay : public RefCounted<XRRay>
 {
@@ -45,18 +45,30 @@ class XRRay : public RefCounted<XRRay>
 public:
     // https://immersive-web.github.io/hit-test/#xr-ray-direction-init-dictionary
     struct DirectionInit {
-        double x;
-        double y;
-        double z;
-        double w;
+        double x { 0 };
+        double y { 0 };
+        double z {-1 };
+        double w { 0 };
+
+        operator DOMPointInit() const { return { x, y, z, w}; }
     };
 
-    static Ref<XRRay> create(const DOMPointInit&, const DirectionInit&);
-    static Ref<XRRay> create(WebXRRigidTransform&);
+    static Ref<XRRay> create();
+    static ExceptionOr<Ref<XRRay>> create(const DOMPointInit&, const DirectionInit&);
+    static ExceptionOr<Ref<XRRay>> create(const WebXRRigidTransform&);
+    static Ref<XRRay> from(const TransformationMatrix&, const XRRay&);
 
     const DOMPointReadOnly& origin() const;
     const DOMPointReadOnly& direction() const;
     const Float32Array& matrix();
+
+protected:
+    XRRay(const DOMPointInit&, const DOMPointInit&);
+
+private:
+    Ref<DOMPointReadOnly> m_origin;
+    Ref<DOMPointReadOnly> m_direction;
+    RefPtr<Float32Array> m_matrix;
 };
 
 } // namespace WebCore
