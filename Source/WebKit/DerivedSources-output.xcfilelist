@@ -398,6 +398,10 @@ $(BUILT_PRODUCTS_DIR)/DerivedSources/WebKit/RemoteXRProjectionLayerMessageReceiv
 $(BUILT_PRODUCTS_DIR)/DerivedSources/WebKit/RemoteXRProjectionLayerMessages.h
 $(BUILT_PRODUCTS_DIR)/DerivedSources/WebKit/RemoteXRSubImageMessageReceiver.cpp
 $(BUILT_PRODUCTS_DIR)/DerivedSources/WebKit/RemoteXRSubImageMessages.h
+$(BUILT_PRODUCTS_DIR)/DerivedSources/WebKit/RemoteXRSystemMessageReceiver.cpp
+$(BUILT_PRODUCTS_DIR)/DerivedSources/WebKit/RemoteXRSystemMessages.h
+$(BUILT_PRODUCTS_DIR)/DerivedSources/WebKit/RemoteXRSystemProxyMessageReceiver.cpp
+$(BUILT_PRODUCTS_DIR)/DerivedSources/WebKit/RemoteXRSystemProxyMessages.h
 $(BUILT_PRODUCTS_DIR)/DerivedSources/WebKit/RemoteXRViewMessageReceiver.cpp
 $(BUILT_PRODUCTS_DIR)/DerivedSources/WebKit/RemoteXRViewMessages.h
 $(BUILT_PRODUCTS_DIR)/DerivedSources/WebKit/SampleBufferDisplayLayerMessageReceiver.cpp

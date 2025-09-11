@@ -167,7 +167,8 @@ bool PageClientImpl::isActiveViewVisible()
 
 #if ENABLE(WEBXR) && !USE(OPENXR)
     auto page = webView->_page;
-    if (page && page->xrSystem() && page->xrSystem()->hasActiveSession())
+    // FIXME(DJG): Needs to talk to GPUP
+    //if (page && page->xrSystem() && page->xrSystem()->hasActiveSession())
         return true;
 #endif
 

@@ -154,7 +154,11 @@
 #include <WebCore/GraphicsContextGL.h>
 #endif
 
-#if ENABLE(WEBXR)
+#if ENABLE(WEBXR_IN_GPUP)
+#include "RemoteXRSystemProxy.h"
+#endif
+
+#if ENABLE(WEBXR_IN_UIP)
 #include "PlatformXRSystemProxy.h"
 #endif
 

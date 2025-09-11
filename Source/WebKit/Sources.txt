@@ -95,6 +95,7 @@ GPUProcess/media/RemoteSourceBufferProxy.cpp
 GPUProcess/media/RemoteTextTrackProxy.cpp
 GPUProcess/media/RemoteVideoTrackProxy.cpp
 GPUProcess/webrtc/RemoteSampleBufferDisplayLayerManager.cpp
+GPUProcess/XR/RemoteXRSystem.cpp
 
 ModelProcess/ModelProcess.cpp
 ModelProcess/ModelConnectionToWebProcess.cpp
@@ -925,6 +926,7 @@ WebProcess/WebStorage/StorageNamespaceImpl.cpp
 WebProcess/WebStorage/WebStorageNamespaceProvider.cpp
 
 WebProcess/XR/PlatformXRSystemProxy.cpp
+WebProcess/XR/RemoteXRSystemProxy.cpp
 
 IPCConnectionTesterMessageReceiver.cpp
 IPCStreamTesterMessageReceiver.cpp
@@ -977,6 +979,8 @@ RemoteTextureViewMessageReceiver.cpp
 RemoteXRBindingMessageReceiver.cpp
 RemoteXRProjectionLayerMessageReceiver.cpp
 RemoteXRSubImageMessageReceiver.cpp
+RemoteXRSystemMessageReceiver.cpp
+RemoteXRSystemProxyMessageReceiver.cpp
 RemoteXRViewMessageReceiver.cpp
 RemoteWebLockRegistryMessageReceiver.cpp
 ServiceWorkerDownloadTaskMessageReceiver.cpp

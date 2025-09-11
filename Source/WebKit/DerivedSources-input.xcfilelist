@@ -46,6 +46,7 @@ $(PROJECT_DIR)/GPUProcess/RemoteSharedResourceCache.messages.in
 $(PROJECT_DIR)/GPUProcess/ShapeDetection/RemoteBarcodeDetector.messages.in
 $(PROJECT_DIR)/GPUProcess/ShapeDetection/RemoteFaceDetector.messages.in
 $(PROJECT_DIR)/GPUProcess/ShapeDetection/RemoteTextDetector.messages.in
+$(PROJECT_DIR)/GPUProcess/XR/RemoteXRSystem.messages.in
 $(PROJECT_DIR)/GPUProcess/graphics/PathSegment.serialization.in
 $(PROJECT_DIR)/GPUProcess/graphics/RemoteGraphicsContext.messages.in
 $(PROJECT_DIR)/GPUProcess/graphics/RemoteGraphicsContextGL.messages.in
@@ -703,6 +704,7 @@ $(PROJECT_DIR)/WebProcess/WebPage/WebPageTesting.messages.in
 $(PROJECT_DIR)/WebProcess/WebProcess.messages.in
 $(PROJECT_DIR)/WebProcess/WebStorage/StorageAreaMap.messages.in
 $(PROJECT_DIR)/WebProcess/XR/PlatformXRSystemProxy.messages.in
+$(PROJECT_DIR)/WebProcess/XR/RemoteXRSystemProxy.messages.in
 $(PROJECT_DIR)/WebProcess/cocoa/AudioCaptureSampleManager.messages.in
 $(PROJECT_DIR)/WebProcess/cocoa/PlaybackSessionManager.messages.in
 $(PROJECT_DIR)/WebProcess/cocoa/RemoteCaptureSampleManager.messages.in

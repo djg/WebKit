@@ -48,6 +48,10 @@
 #include <CoreGraphics/CGDisplayConfiguration.h>
 #endif
 
+#if ENABLE(WEBXR_IN_GPUP)
+#include <WebCore/PlatformXR.h>
+#endif
+
 namespace WebCore {
 class CaptureDevice;
 class SecurityOriginData;
@@ -123,6 +127,10 @@ public:
 
 #if PLATFORM(COCOA)
     void didDrawRemoteToPDF(WebCore::PageIdentifier, RefPtr<WebCore::SharedBuffer>&&, WebCore::SnapshotIdentifier);
+#endif
+    
+#if ENABLE(WEBXR_IN_GPUP)
+    void requestPermissionOnXRSessionFeatures(WebCore::PageIdentifier, const WebCore::SecurityOriginData&, PlatformXR::SessionMode, const PlatformXR::Device::FeatureList& /* granted */, const PlatformXR::Device::FeatureList& /* consentRequired */, const PlatformXR::Device::FeatureList& /* consentOptional */, const PlatformXR::Device::FeatureList& /* requiredFeaturesRequested */, const PlatformXR::Device::FeatureList& /* optionalFeaturesRequested */,  CompletionHandler<void(std::optional<PlatformXR::Device::FeatureList>&&)>&&);
 #endif
 
     void removeSession(PAL::SessionID);

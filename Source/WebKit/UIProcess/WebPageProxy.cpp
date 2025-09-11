@@ -1654,7 +1654,7 @@ void WebPageProxy::didAttachToRunningProcess()
 #endif
     m_screenOrientationManager = WebScreenOrientationManagerProxy::create(*this, currentOrientation);
 
-#if ENABLE(WEBXR)
+#if ENABLE(WEBXR_IN_UIP)
     ASSERT(!internals().xrSystem);
     internals().xrSystem = PlatformXRSystem::create(*this);
 #endif
@@ -9651,7 +9651,14 @@ void WebPageProxy::didChangeIntrinsicContentSize(const IntSize& intrinsicContent
 #endif
 }
 
-#if ENABLE(WEBXR)
+
+#if ENABLE(WEBXR_IN_GPUP)
+void WebPageProxy::requestPermissionOnXRSessionFeatures(const WebCore::SecurityOriginData& securityOriginData, PlatformXR::SessionMode mode, const PlatformXR::Device::FeatureList& granted, const PlatformXR::Device::FeatureList& consentRequired, const PlatformXR::Device::FeatureList& consentOptional, const PlatformXR::Device::FeatureList& requiredFeaturesRequested, const PlatformXR::Device::FeatureList& optionalFeaturesRequested, CompletionHandler<void(std::optional<PlatformXR::Device::FeatureList>&&)>&& completionHandler)
+{
+    uiClient().requestPermissionOnXRSessionFeatures(*this, securityOriginData, mode, granted, consentRequired, consentOptional, requiredFeaturesRequested, optionalFeaturesRequested, WTFMove(completionHandler));
+}
+#endif
+#if ENABLE(WEBXR_IN_UIP)
 PlatformXRSystem* WebPageProxy::xrSystem() const
 {
     return internals().xrSystem.get();
@@ -11717,7 +11724,7 @@ void WebPageProxy::resetState(ResetStateReason resetStateReason)
 
     m_speechRecognitionPermissionManager = nullptr;
 
-#if ENABLE(WEBXR)
+#if ENABLE(WEBXR_IN_UIP)
     if (RefPtr xrSystem = internals().xrSystem) {
         xrSystem->invalidate();
         internals().xrSystem = nullptr;

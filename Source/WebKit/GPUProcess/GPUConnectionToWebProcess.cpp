@@ -82,6 +82,10 @@
 #include "RemoteGraphicsContextGLMessages.h"
 #endif
 
+#if ENABLE(WEBXR_IN_GPUP)
+#include "RemoteXRSystem.h"
+#endif
+
 #if ENABLE(ENCRYPTED_MEDIA)
 #include "RemoteCDMFactoryProxy.h"
 #include "RemoteCDMFactoryProxyMessages.h"
@@ -516,6 +520,33 @@ void GPUConnectionToWebProcess::createWCLayerTreeHost(WebKit::WCLayerTreeHostIde
 void GPUConnectionToWebProcess::releaseWCLayerTreeHost(WebKit::WCLayerTreeHostIdentifier identifier)
 {
     m_remoteWCLayerTreeHostMap.remove(identifier);
+}
+#endif
+
+#if ENABLE(WEBXR_IN_GPUP)
+void GPUConnectionToWebProcess::createXRSystem(WebCore::PageIdentifier pageIdentifier, IPC::StreamServerConnection::Handle&& connectionHandle)
+{
+    MESSAGE_CHECK(m_sharedPreferencesForWebProcess.webXREnabled);
+
+    IPC::StreamServerConnectionParameters params;
+#if ENABLE(IPC_TESTING_API)
+    params.ignoreInvalidMessageForTesting = connection().ignoreInvalidMessageForTesting();
+#endif
+    auto streamConnection = IPC::StreamServerConnection::tryCreate(WTFMove(connectionHandle), params);
+    MESSAGE_CHECK(streamConnection);
+
+    auto addResult = m_remoteXRSystemMap.ensure(pageIdentifier, [&] {
+        return IPC::ScopedActiveMessageReceiveQueue { RemoteXRSystem::create(*this, pageIdentifier, streamConnection.releaseNonNull()) };
+    });
+    ASSERT_UNUSED(addResult, addResult.isNewEntry);
+}
+
+void GPUConnectionToWebProcess::releaseXRSystem(WebCore::PageIdentifier pageID)
+{
+    // TODO: Implement proper RemoteXRSystem removal
+    bool found = m_remoteXRSystemMap.remove(pageID);
+    ASSERT_UNUSED(found, found);
+    m_gpuProcess->tryExitIfUnusedAndUnderMemoryPressure();
 }
 #endif
 

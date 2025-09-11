@@ -99,6 +99,11 @@
 #include "AudioSessionRoutingArbitrator.h"
 #endif
 
+#if ENABLE(WEBXR_IN_GPUP)
+#include "RemoteXRSystemProxy.h"
+#include "RemoteXRSystemProxyMessages.h"
+#endif
+
 namespace WebKit {
 using namespace WebCore;
 
@@ -460,6 +465,19 @@ void GPUProcessConnection::releaseGPU(WebGPUIdentifier identifier)
 {
     m_connection->send(Messages::GPUConnectionToWebProcess::ReleaseGPU(identifier), 0, IPC::SendOption::DispatchMessageEvenWhenWaitingForSyncReply);
 }
+
+#if ENABLE(WEBXR_IN_GPUP)
+void GPUProcessConnection::createXRSystem(PageIdentifier pageIdentifier, IPC::StreamServerConnection::Handle&& serverHandle)
+{
+    m_connection->send(Messages::GPUConnectionToWebProcess::CreateXRSystem(pageIdentifier, WTFMove(serverHandle)), 0, IPC::SendOption::DispatchMessageEvenWhenWaitingForSyncReply);
+}
+
+void GPUProcessConnection::releaseXRSystem(PageIdentifier pageIdentifier)
+{
+    m_connection->send(Messages::GPUConnectionToWebProcess::ReleaseXRSystem(pageIdentifier), 0, IPC::SendOption::DispatchMessageEvenWhenWaitingForSyncReply);
+}
+
+#endif
 
 } // namespace WebKit
 

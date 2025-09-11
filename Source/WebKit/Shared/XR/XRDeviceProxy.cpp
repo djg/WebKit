@@ -28,7 +28,12 @@
 
 #if ENABLE(WEBXR)
 
+#if ENABLE(WEBXR_IN_GPUP)
+#include "RemoteXRSystemProxy.h"
+#endif
+#if ENABLE(WEBXR_IN_UIP)
 #include "PlatformXRSystemProxy.h"
+#endif
 #include "XRDeviceInfo.h"
 #include <WebCore/SecurityOriginData.h>
 #include <WebCore/XRCanvasConfiguration.h>
@@ -37,12 +42,12 @@ using namespace PlatformXR;
 
 namespace WebKit {
 
-Ref<XRDeviceProxy> XRDeviceProxy::create(XRDeviceInfo&& deviceInfo, PlatformXRSystemProxy& xrSystem)
+Ref<XRDeviceProxy> XRDeviceProxy::create(XRDeviceInfo&& deviceInfo, XRDeviceSystemProxy& xrSystem)
 {
     return adoptRef(*new XRDeviceProxy(WTFMove(deviceInfo), xrSystem));
 }
 
-XRDeviceProxy::XRDeviceProxy(XRDeviceInfo&& deviceInfo, PlatformXRSystemProxy& xrSystem)
+XRDeviceProxy::XRDeviceProxy(XRDeviceInfo&& deviceInfo, XRDeviceSystemProxy& xrSystem)
     : m_identifier(deviceInfo.identifier)
     , m_xrSystem(xrSystem)
 {
@@ -128,8 +133,12 @@ void XRDeviceProxy::requestFrame(std::optional<PlatformXR::RequestData>&& reques
 
 std::optional<PlatformXR::LayerHandle> XRDeviceProxy::createLayerProjection(uint32_t width, uint32_t height, bool alpha)
 {
+#if USE(OPENXR)
     RefPtr xrSystem = m_xrSystem.get();
     return xrSystem ? xrSystem->createLayerProjection(width, height, alpha) : std::nullopt;
+#else
+    return { };
+#endif
 }
 
 void XRDeviceProxy::submitFrame(Vector<PlatformXR::Device::Layer>&& layers)

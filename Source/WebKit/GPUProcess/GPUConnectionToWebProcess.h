@@ -125,6 +125,10 @@ class RemoteVideoFrameObjectHeap;
 class RemoteGraphicsContextGL;
 #endif
 
+#if ENABLE(WEBXR_IN_GPUP)
+class RemoteXRSystem;
+#endif
+
 class GPUConnectionToWebProcess
     : public ThreadSafeRefCountedAndCanMakeThreadSafeWeakPtr<GPUConnectionToWebProcess, WTF::DestructionThread::Main>
     , public WebCore::NowPlayingManagerClient
@@ -342,6 +346,11 @@ private:
     void releaseWCLayerTreeHost(WebKit::WCLayerTreeHostIdentifier);
 #endif
 
+#if ENABLE(WEBXR_IN_GPUP)
+    void createXRSystem(WebCore::PageIdentifier, IPC::StreamServerConnection::Handle&&);
+    void releaseXRSystem(WebCore::PageIdentifier);
+#endif
+
     // IPC::Connection::Client
     void didClose(IPC::Connection&) final;
     void didReceiveInvalidMessage(IPC::Connection&, IPC::MessageName, const Vector<uint32_t>& indicesOfObjectsFailingDecoding) final;
@@ -411,6 +420,10 @@ private:
 #endif
     using RemoteGPUMap = HashMap<WebGPUIdentifier, IPC::ScopedActiveMessageReceiveQueue<RemoteGPU>>;
     RemoteGPUMap m_remoteGPUMap;
+#if ENABLE(WEBXR_IN_GPUP)
+    using RemoteXRSystemMap = HashMap<WebCore::PageIdentifier, IPC::ScopedActiveMessageReceiveQueue<RemoteXRSystem>>;
+    RemoteXRSystemMap m_remoteXRSystemMap;
+#endif
 #if ENABLE(ENCRYPTED_MEDIA)
     RefPtr<RemoteCDMFactoryProxy> m_cdmFactoryProxy;
 #endif
@@ -455,6 +468,7 @@ private:
 #if ENABLE(ROUTING_ARBITRATION) && HAVE(AVAUDIO_ROUTING_ARBITER)
     std::unique_ptr<LocalAudioSessionRoutingArbitrator> m_routingArbitrator;
 #endif
+
 #if ENABLE(IPC_TESTING_API)
     const Ref<IPCTester> m_ipcTester;
 #endif

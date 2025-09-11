@@ -40,20 +40,30 @@ struct XRCanvasConfiguration;
 
 namespace WebKit {
 
+#if ENABLE(WEBXR_IN_GPUP)
+class RemoteXRSystemProxy;
+using XRDeviceSystemProxy = RemoteXRSystemProxy;
+#endif
+
+#if ENABLE(WEBXR_IN_UIP)
 class PlatformXRSystemProxy;
+using XRDeviceSystemProxy = PlatformXRSystemProxy;
+#endif
 
 struct XRDeviceInfo;
 
 class XRDeviceProxy final : public PlatformXR::Device {
+
 public:
-    static Ref<XRDeviceProxy> create(XRDeviceInfo&&, PlatformXRSystemProxy&);
+    static Ref<XRDeviceProxy> create(XRDeviceInfo&&, XRDeviceSystemProxy&);
     XRDeviceIdentifier identifier() const { return m_identifier; }
 
     void sessionDidEnd();
     void updateSessionVisibilityState(PlatformXR::VisibilityState);
 
 private:
-    XRDeviceProxy(XRDeviceInfo&&, PlatformXRSystemProxy&);
+
+    XRDeviceProxy(XRDeviceInfo&&, XRDeviceSystemProxy&);
 
     WebCore::IntSize recommendedResolution(PlatformXR::SessionMode) final { return m_recommendedResolution; }
     double minimumNearClipPlane() const final { return m_minimumNearClipPlane; }
@@ -69,7 +79,7 @@ private:
     void submitFrame(Vector<PlatformXR::Device::Layer>&&) final;
 
     XRDeviceIdentifier m_identifier;
-    WeakPtr<PlatformXRSystemProxy> m_xrSystem;
+    WeakPtr<XRDeviceSystemProxy> m_xrSystem;
     bool m_supportsStereoRendering { false };
     WebCore::IntSize m_recommendedResolution { 0, 0 };
     double m_minimumNearClipPlane { 0.1 };

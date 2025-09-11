@@ -740,16 +740,17 @@ RefPtr<WebPageProxy> WebProcessProxy::audioCapturingWebPage()
     return nullptr;
 }
 
-#if ENABLE(WEBXR)
 RefPtr<WebPageProxy> WebProcessProxy::webPageWithActiveXRSession()
 {
+    // FIXME(DJG):
+#if ENABLE(WEBXR_IN_UIP)
     for (Ref page : globalPages()) {
         if (page->xrSystem() && page->xrSystem()->hasActiveSession())
             return page;
     }
+#endif
     return nullptr;
 }
-#endif
 
 void WebProcessProxy::setThirdPartyCookieBlockingMode(ThirdPartyCookieBlockingMode thirdPartyCookieBlockingMode, CompletionHandler<void()>&& completionHandler)
 {

@@ -72,13 +72,13 @@ enum class PlatformXR::XRTargetRayMode : uint8_t {
     TransientPointer,
 };
 
-[Nested] struct PlatformXR::DepthRange {
+[Nested, AdditionalEncoder=StreamConnectionEncoder] struct PlatformXR::DepthRange {
     float near;
     float far;
 };
 
 header: <WebCore/PlatformXR.h>
-[CustomHeader] struct PlatformXR::RequestData {
+[CustomHeader, AdditionalEncoder=StreamConnectionEncoder] struct PlatformXR::RequestData {
     PlatformXR::DepthRange depthRange;
 };
 

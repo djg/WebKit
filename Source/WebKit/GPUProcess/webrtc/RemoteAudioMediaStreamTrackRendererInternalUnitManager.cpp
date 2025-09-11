@@ -51,6 +51,8 @@
 
 namespace WebKit {
 
+using namespace WebCore;
+
 class RemoteAudioMediaStreamTrackRendererInternalUnitManagerUnit
     : public WebCore::CoreAudioSpeakerSamplesProducer
     , public WebCore::AudioSessionInterruptionObserver

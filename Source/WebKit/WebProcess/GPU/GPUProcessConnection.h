@@ -127,6 +127,10 @@ public:
 #endif
     void createGPU(WebGPUIdentifier, RenderingBackendIdentifier, IPC::StreamServerConnection::Handle&&);
     void releaseGPU(WebGPUIdentifier);
+#if ENABLE(WEBXR_IN_GPUP)
+    void createXRSystem(WebCore::PageIdentifier, IPC::StreamServerConnection::Handle&&);
+    void releaseXRSystem(WebCore::PageIdentifier);
+#endif
 
     class Client : public AbstractThreadSafeRefCountedAndCanMakeWeakPtr {
     public:

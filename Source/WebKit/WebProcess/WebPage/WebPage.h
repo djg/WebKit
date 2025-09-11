@@ -392,8 +392,13 @@ class ModelProcessConnection;
 class NotificationPermissionRequestManager;
 class PDFPluginBase;
 class PageBanner;
-#if ENABLE(WEBXR)
+#if ENABLE(WEBXR_IN_GPUP)
+class RemoteXRSystemProxy;
+using XRSystemProxy = RemoteXRSystemProxy;
+#endif
+#if ENABLE(WEBXR_IN_UIP)
 class PlatformXRSystemProxy;
+using XRSystemProxy = PlatformXRSystemProxy;
 #endif
 class PluginView;
 class RemoteLayerTreeTransaction;
@@ -1889,7 +1894,7 @@ public:
 #endif
 
 #if ENABLE(WEBXR)
-    PlatformXRSystemProxy& xrSystemProxy();
+    XRSystemProxy& xrSystemProxy();
 #endif
 
     void prepareToRunModalJavaScriptDialog();
@@ -3133,8 +3138,11 @@ private:
     Vector<std::pair<WeakPtr<WebCore::HTMLElement, WebCore::WeakPtrImplWithEventTargetData>, Vector<CompletionHandler<void(RefPtr<WebCore::Element>&&)>>>> m_elementsPendingTextRecognition;
 #endif
 
-#if ENABLE(WEBXR)
-    const std::unique_ptr<PlatformXRSystemProxy> m_xrSystemProxy;
+#if ENABLE(WEBXR_IN_GPUP)
+    const RefPtr<XRSystemProxy> m_xrSystemProxy;
+#endif
+#if ENABLE(WEBXR_IN_UIP)
+    const std::unique_ptr<XRSystemProxy> m_xrSystemProxy;
 #endif
 
 #if ENABLE(APP_HIGHLIGHTS)

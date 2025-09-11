@@ -69,6 +69,11 @@ messages -> GPUConnectionToWebProcess WantsDispatchMessage {
 #if ENABLE(EXTENSION_CAPABILITIES)
     SetMediaEnvironment(WebCore::PageIdentifier pageIdentifier, String mediaEnvironment);
 #endif
+
+#if ENABLE(WEBXR_IN_GPUP)
+    [EnabledBy=WebXREnabled] void CreateXRSystem(WebCore::PageIdentifier pageID, IPC::StreamServerConnectionHandle connectionHandle) AllowedWhenWaitingForSyncReply
+    [EnabledBy=WebXREnabled] void ReleaseXRSystem(WebCore::PageIdentifier pageID) AllowedWhenWaitingForSyncReply
+#endif
 }
 
 #endif // ENABLE(GPU_PROCESS)

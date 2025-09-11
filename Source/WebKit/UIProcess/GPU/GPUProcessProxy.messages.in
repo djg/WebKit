@@ -55,6 +55,10 @@ messages -> GPUProcessProxy {
 #if PLATFORM(COCOA)
     DidDrawRemoteToPDF(WebCore::PageIdentifier pageID, RefPtr<WebCore::SharedBuffer> data, WebCore::SnapshotIdentifier snapshotIdentifier)
 #endif
+
+#if ENABLE(WEBXR_IN_GPUP)
+    RequestPermissionOnXRSessionFeatures(WebCore::PageIdentifier pageID, WebCore::SecurityOriginData origin, PlatformXR::SessionMode mode, Vector<PlatformXR::SessionFeature> granted, Vector<PlatformXR::SessionFeature> consentRequired, Vector<PlatformXR::SessionFeature> consentOptional, Vector<PlatformXR::SessionFeature> requiredFeaturesRequested, Vector<PlatformXR::SessionFeature> optionalFeaturesRequested) -> (std::optional<Vector<PlatformXR::SessionFeature>> userGranted)
+#endif
 }
 
 #endif // ENABLE(GPU_PROCESS)

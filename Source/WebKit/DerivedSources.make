@@ -28,6 +28,7 @@ VPATH = \
     $(WebKit2)/GPUProcess/media \
     $(WebKit2)/GPUProcess/media/ios \
     $(WebKit2)/GPUProcess/webrtc \
+    $(WebKit2)/GPUProcess/XR \
     $(WebKit2)/ModelProcess \
     $(WebKit2)/NetworkProcess \
     $(WebKit2)/NetworkProcess/Cookies \
@@ -273,6 +274,7 @@ MESSAGE_RECEIVERS = \
 	WebProcess/WebPage/Cocoa/TextCheckingControllerProxy \
 	WebProcess/WebPage/ViewUpdateDispatcher \
 	WebProcess/XR/PlatformXRSystemProxy \
+	WebProcess/XR/RemoteXRSystemProxy \
 	GPUProcess/GPUConnectionToWebProcess \
 	GPUProcess/RemoteSharedResourceCache \
 	GPUProcess/ShapeDetection/RemoteBarcodeDetector \
@@ -316,6 +318,7 @@ MESSAGE_RECEIVERS = \
 	GPUProcess/webrtc/RemoteSampleBufferDisplayLayer \
 	GPUProcess/webrtc/RemoteAudioMediaStreamTrackRendererInternalUnitManager \
 	GPUProcess/webrtc/UserMediaCaptureManagerProxy \
+	GPUProcess/XR/RemoteXRSystem \
 	GPUProcess/GPUProcess \
 	GPUProcess/media/RemoteImageDecoderAVFProxy \
 	GPUProcess/media/RemoteLegacyCDMSessionProxy \

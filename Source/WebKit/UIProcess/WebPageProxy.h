@@ -436,6 +436,14 @@ enum class ExceptionCode : uint8_t;
 using NodeIdentifier = ObjectIdentifier<NodeIdentifierType>;
 }
 
+#if ENABLE(WEBXR_IN_GPUP)
+namespace PlatformXR {
+enum class SessionFeature : uint8_t;
+enum class SessionMode : uint8_t;
+using FeatureList = Vector<SessionFeature>;
+}
+#endif
+
 namespace WebKit {
 
 class AboutSchemeHandler;
@@ -467,7 +475,9 @@ class NetworkIssueReporter;
 class PageClient;
 class PageLoadState;
 class PageLoadStateObserverBase;
+#if ENABLE(WEBXR_IN_UIP)
 class PlatformXRSystem;
+#endif
 class PlaybackSessionManagerProxy;
 class ProcessAssertion;
 class ProcessThrottlerActivity;
@@ -2583,7 +2593,10 @@ public:
 #endif
     String scrollbarStateForScrollingNodeID(std::optional<WebCore::ScrollingNodeID>, bool isVertical);
 
-#if ENABLE(WEBXR)
+#if ENABLE(WEBXR_IN_GPUP)
+    void requestPermissionOnXRSessionFeatures(const WebCore::SecurityOriginData&, PlatformXR::SessionMode, const PlatformXR::FeatureList&, const PlatformXR::FeatureList&, const PlatformXR::FeatureList&, const PlatformXR::FeatureList&, const PlatformXR::FeatureList&, CompletionHandler<void(std::optional<PlatformXR::FeatureList>&&)>&&);
+#endif
+#if ENABLE(WEBXR_IN_UIP)
     PlatformXRSystem* xrSystem() const;
     void restartXRSessionActivityOnProcessResumeIfNeeded();
 #endif

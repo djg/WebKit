@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 55;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXAggregateTarget section */
@@ -5326,6 +5326,13 @@
 		3A18A2F32B02969800DB976C /* _WKArchiveExclusionRule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _WKArchiveExclusionRule.h; sourceTree = "<group>"; };
 		3A26F82D2B258CEF00FEB1B0 /* PlatformXR.serialization.in */ = {isa = PBXFileReference; lastKnownFileType = text; path = PlatformXR.serialization.in; sourceTree = "<group>"; };
 		3A36AFAF2B9667770098631A /* WebCookieJarCocoa.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = WebCookieJarCocoa.mm; sourceTree = "<group>"; };
+		3A3D92572E66BFB700418C89 /* RemoteXRSystem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RemoteXRSystem.h; sourceTree = "<group>"; };
+		3A3D92582E66BFB700418C89 /* RemoteXRSystem.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = RemoteXRSystem.cpp; sourceTree = "<group>"; };
+		3A3D92592E66BFB700418C89 /* RemoteXRSystem.messages.in */ = {isa = PBXFileReference; lastKnownFileType = text; path = RemoteXRSystem.messages.in; sourceTree = "<group>"; };
+		3A3D925B2E67C0EE00418C89 /* RemoteXRSystemProxy.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RemoteXRSystemProxy.h; sourceTree = "<group>"; };
+		3A3D925C2E67C0EE00418C89 /* RemoteXRSystemProxy.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = RemoteXRSystemProxy.cpp; sourceTree = "<group>"; };
+		3A3D925D2E67C0EE00418C89 /* RemoteXRSystemProxy.messages.in */ = {isa = PBXFileReference; lastKnownFileType = text; path = RemoteXRSystemProxy.messages.in; sourceTree = "<group>"; };
+		3A3D925E2E69163300418C89 /* XRSystemIdentifier.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XRSystemIdentifier.h; sourceTree = "<group>"; };
 		3A5B68962AC266D400B11868 /* WKARPresentationSession.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WKARPresentationSession.h; sourceTree = "<group>"; };
 		3A5B68972AC266D400B11868 /* WKARPresentationSession.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = WKARPresentationSession.mm; sourceTree = "<group>"; };
 		3A7D62D229D35D9D00D57DAC /* WebSWRegistrationStore.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = WebSWRegistrationStore.cpp; sourceTree = "<group>"; };
@@ -9491,6 +9498,9 @@
 				118502582673B01600A6425E /* PlatformXRSystemProxy.cpp */,
 				118502562673B01600A6425E /* PlatformXRSystemProxy.h */,
 				118502572673B01600A6425E /* PlatformXRSystemProxy.messages.in */,
+				3A3D925C2E67C0EE00418C89 /* RemoteXRSystemProxy.cpp */,
+				3A3D925B2E67C0EE00418C89 /* RemoteXRSystemProxy.h */,
+				3A3D925D2E67C0EE00418C89 /* RemoteXRSystemProxy.messages.in */,
 			);
 			path = XR;
 			sourceTree = "<group>";
@@ -11739,6 +11749,7 @@
 				07C75C172399A3DB0088E65B /* media */,
 				1C9F4BF929E51D300015819E /* ShapeDetection */,
 				4172198E23B633CA00AE5686 /* webrtc */,
+				3A3D925A2E66BFB700418C89 /* XR */,
 				2D9FB20C2375209D0049F936 /* GPUConnectionToWebProcess.cpp */,
 				2D9FB2002375209D0049F936 /* GPUConnectionToWebProcess.h */,
 				2D9FB2092375209D0049F936 /* GPUConnectionToWebProcess.messages.in */,
@@ -12815,6 +12826,17 @@
 				1A9E329C1822FEDD00F5D04C /* WKRemoteObjectCoder.mm */,
 			);
 			path = Cocoa;
+			sourceTree = "<group>";
+		};
+		3A3D925A2E66BFB700418C89 /* XR */ = {
+			isa = PBXGroup;
+			children = (
+				3A3D92582E66BFB700418C89 /* RemoteXRSystem.cpp */,
+				3A3D92572E66BFB700418C89 /* RemoteXRSystem.h */,
+				3A3D92592E66BFB700418C89 /* RemoteXRSystem.messages.in */,
+				3A3D925E2E69163300418C89 /* XRSystemIdentifier.h */,
+			);
+			path = XR;
 			sourceTree = "<group>";
 		};
 		3AEE89902AA5954000D4DF44 /* ios */ = {
@@ -21446,9 +21468,7 @@
 		};
 		5C400E6A29DB8AB500446F6F /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			platformFilters = (
-				ios,
-			);
+			platformFilter = ios;
 			target = 5C139DA129DB82E500D5117B /* WebContentCaptivePortalExtension */;
 			targetProxy = 5C400E6929DB8AB500446F6F /* PBXContainerItemProxy */;
 		};
@@ -21464,25 +21484,19 @@
 		};
 		5CE4B60729CEBB760038F565 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			platformFilters = (
-				ios,
-			);
+			platformFilter = ios;
 			target = 5CA5A2C929CBBA1A000F1046 /* WebContentExtension */;
 			targetProxy = 5CE4B60629CEBB760038F565 /* PBXContainerItemProxy */;
 		};
 		5CE4B62329CF880B0038F565 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			platformFilters = (
-				ios,
-			);
+			platformFilter = ios;
 			target = 5CE4B61529CF877F0038F565 /* GPUExtension */;
 			targetProxy = 5CE4B62229CF880B0038F565 /* PBXContainerItemProxy */;
 		};
 		5CE4B62529CF880B0038F565 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			platformFilters = (
-				ios,
-			);
+			platformFilter = ios;
 			target = 5CE4B60829CF87680038F565 /* NetworkingExtension */;
 			targetProxy = 5CE4B62429CF880B0038F565 /* PBXContainerItemProxy */;
 		};

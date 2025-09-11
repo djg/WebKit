@@ -25,7 +25,7 @@
 
 #pragma once
 
-#if ENABLE(WEBXR)
+#if ENABLE(WEBXR_IN_UIP)
 
 #include "MessageReceiver.h"
 #include "XRDeviceIdentifier.h"
@@ -82,4 +82,4 @@ private:
 
 }
 
-#endif // ENABLE(WEBXR)
+#endif // ENABLE(WEBXR_IN_UIP)

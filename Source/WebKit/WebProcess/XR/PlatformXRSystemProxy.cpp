@@ -26,7 +26,7 @@
 #include "config.h"
 #include "PlatformXRSystemProxy.h"
 
-#if ENABLE(WEBXR)
+#if ENABLE(WEBXR_IN_UIP)
 
 #include "MessageSenderInlines.h"
 #include "PlatformXRCoordinator.h"
@@ -188,4 +188,4 @@ void PlatformXRSystemProxy::deref() const
 
 } // namespace WebKit
 
-#endif // ENABLE(WEBXR)
+#endif // ENABLE(WEBXR_IN_UIP)

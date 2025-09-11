@@ -483,7 +483,11 @@
 #include "WebExtensionControllerProxy.h"
 #endif
 
-#if ENABLE(WEBXR)
+#if ENABLE(WEBXR_IN_GPUP)
+#include "RemoteXRSystemProxy.h"
+#endif
+
+#if ENABLE(WEBXR_IN_UIP)
 #include "PlatformXRSystemProxy.h"
 #endif
 
@@ -9198,7 +9202,16 @@ void WebPage::textAutosizingUsesIdempotentModeChanged()
 }
 #endif // ENABLE(TEXT_AUTOSIZING)
 
-#if ENABLE(WEBXR)
+#if ENABLE(WEBXR_IN_GPUP)
+RemoteXRSystemProxy& WebPage::xrSystemProxy()
+{
+    if (!m_xrSystemProxy)
+        lazyInitialize(m_xrSystemProxy, RemoteXRSystemProxy::create(*this));
+    return *m_xrSystemProxy;
+}
+#endif
+
+#if ENABLE(WEBXR_IN_UIP)
 PlatformXRSystemProxy& WebPage::xrSystemProxy()
 {
     if (!m_xrSystemProxy)
