@@ -162,16 +162,37 @@
 #ifdef __cplusplus
 
 #if !PLATFORM(WIN)
+#include <wtf/CompactPointerTuple.h>
+#include <wtf/CompactRefPtrTuple.h>
 #include <wtf/FastMalloc.h>
 #include <wtf/HashMap.h>
+#include <wtf/HashSet.h>
+#include <wtf/StackBounds.h>
+#include <wtf/StackStats.h>
 #include <wtf/StdLibExtras.h>
+#include <wtf/TaggedPtr.h>
+#include <wtf/Threading.h>
+#include <wtf/ThreadSafeRefCounted.h>
+#include <wtf/ThreadSafeWeakHashSet.h>
+#include <wtf/ThreadSafeWeakPtr.h>
 #include <wtf/TZoneMalloc.h>
 #include <wtf/TZoneMallocInlines.h>
+#include <wtf/WeakPtr.h>
+#include <wtf/WeakPtrFactory.h>
+#include <wtf/WeakPtrImpl.h>
+#include <wtf/WeakRef.h>
+#include <wtf/WordLock.h>
 #include <wtf/text/AtomString.h>
+#include <wtf/text/AtomStringTable.h>
 #include <wtf/text/WTFString.h>
 #endif
 
-#define new ("if you use new/delete make sure to include config.h at the top of the file"()) 
+#include <JavaScriptCore/Weak.h>
+
+#include "Element.h"
+#include "ElementInlines.h"
+
+#define new ("if you use new/delete make sure to include config.h at the top of the file"())
 #define delete ("if you use new/delete make sure to include config.h at the top of the file"()) 
 #endif
 
@@ -183,4 +204,3 @@
 #undef try
 #undef catch
 #endif
-
