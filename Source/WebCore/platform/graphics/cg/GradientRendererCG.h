@@ -50,10 +50,10 @@ public:
     void drawRadialGradient(CGContextRef, CGPoint startCenter, CGFloat startRadius, CGPoint endCenter, CGFloat endRadius, CGGradientDrawingOptions);
     void drawConicGradient(CGContextRef, CGPoint center, CGFloat angle);
 
+    static RetainPtr<CGGradientRef> createGradientBySampling(ColorInterpolationMethod, const GradientColorStops::StopVector&);
+
 private:
-    struct Gradient {
-        RetainPtr<CGGradientRef> gradient;
-    };
+    using Gradient = RetainPtr<CGGradientRef>;
 
     struct Shading {
         template<typename InterpolationSpace, AlphaPremultiplication> static void shadingFunction(void*, const CGFloat*, CGFloat*);
@@ -85,19 +85,13 @@ private:
             bool m_lastStopIsSynthetic { false };
             Vector<ColorConvertedToInterpolationColorSpaceStop> m_stops;
         };
-
-        Ref<Data> data;
-        RetainPtr<CGFunctionRef> function;
-        RetainPtr<CGColorSpaceRef> colorSpace;
     };
 
-    using Strategy = Variant<Gradient, Shading>;
+    Gradient pickStrategy(ColorInterpolationMethod, const GradientColorStops&) const;
+    Gradient makeGradient(ColorInterpolationMethod, const GradientColorStops&) const;
+    Gradient makeGradientBySampling(ColorInterpolationMethod, const GradientColorStops&) const;
 
-    Strategy pickStrategy(ColorInterpolationMethod, const GradientColorStops&) const;
-    Strategy makeGradient(ColorInterpolationMethod, const GradientColorStops&) const;
-    Strategy makeShading(ColorInterpolationMethod, const GradientColorStops&) const;
-
-    Strategy m_strategy;
+    Gradient m_gradient;
 };
 
 }
