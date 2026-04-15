@@ -26,13 +26,14 @@
 #pragma once
 
 #include <WebCore/PathSegmentData.h>
+#include <wtf/FastVariant.h>
 #include <wtf/Function.h>
 
 namespace WebCore {
 
 class PathSegment {
 public:
-    using Data = Variant<
+    using Data = FastVariant<
         PathMoveTo,
 
         PathLineTo,

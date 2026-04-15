@@ -30,6 +30,7 @@
 #include "Encoder.h"
 #include "GeneratedSerializers.h"
 #include <utility>
+#include <wtf/FastVariant.h>
 #include <variant>
 #include <wtf/ArgumentCoder.h>
 #include <wtf/Box.h>
@@ -821,6 +822,57 @@ template<typename... Types> struct ArgumentCoder<Variant<Types...>> {
                 if (!optional)
                     return std::nullopt;
                 return std::make_optional<Variant<Types...>>(WTF::InPlaceIndex<index>, WTF::move(*optional));
+            }
+            return decode(decoder, std::make_index_sequence<index + 1> { }, i);
+        } else
+            return std::nullopt;
+    }
+};
+
+template<typename... Types> struct ArgumentCoder<FastVariant<Types...>> {
+    template<typename Encoder, typename T>
+    static void encode(Encoder& encoder, T&& variant)
+    {
+        static_assert(std::is_same_v<std::remove_cvref_t<T>, FastVariant<Types...>>);
+        static_assert(sizeof...(Types) <= static_cast<size_t>(std::numeric_limits<EncodedVariantIndex>::max()));
+
+        EncodedVariantIndex i = variant.index();
+        encoder << i;
+        encode(encoder, std::forward<T>(variant), std::index_sequence<> { }, i);
+    }
+
+    template<typename Encoder, typename T, size_t... Indices>
+    static void encode(Encoder& encoder, T&& variant, std::index_sequence<Indices...>, size_t i)
+    {
+        constexpr size_t index = sizeof...(Indices);
+        if constexpr (index < sizeof...(Types)) {
+            if (index == i) {
+                encoder << std::get<index>(std::forward<T>(variant));
+                return;
+            }
+            encode(encoder, std::forward<T>(variant), std::make_index_sequence<index + 1> { }, i);
+        }
+    }
+
+    template<typename Decoder>
+    static std::optional<FastVariant<Types...>> decode(Decoder& decoder)
+    {
+        auto i = decoder.template decode<EncodedVariantIndex>();
+        if (!i || *i >= sizeof...(Types))
+            return std::nullopt;
+        return decode(decoder, std::index_sequence<> { }, *i);
+    }
+
+    template<typename Decoder, size_t... Indices>
+    static std::optional<FastVariant<Types...>> decode(Decoder& decoder, std::index_sequence<Indices...>, size_t i)
+    {
+        constexpr size_t index = sizeof...(Indices);
+        if constexpr (index < sizeof...(Types)) {
+            if (index == i) {
+                auto optional = decoder.template decode<typename WTF::VariantAlternativeT<index, FastVariant<Types...>>>();
+                if (!optional)
+                    return std::nullopt;
+                return std::make_optional<FastVariant<Types...>>(std::in_place_index<index>, WTF::move(*optional));
             }
             return decode(decoder, std::make_index_sequence<index + 1> { }, i);
         } else
