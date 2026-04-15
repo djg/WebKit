@@ -90,6 +90,7 @@ TestWTF.WTF_EmbeddedFixedVector
 TestWTF.WTF_EnumTraits
 TestWTF.WTF_EnumeratedArray
 TestWTF.WTF_Expected
+TestWTF.WTF_FastVariant
 TestWTF.WTF_FixedBitVector
 TestWTF.WTF_FixedVector
 TestWTF.WTF_Function

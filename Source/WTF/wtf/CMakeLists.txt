@@ -92,6 +92,7 @@ set(WTF_PUBLIC_HEADERS
     Expected.h
     ExperimentalFeatureNames.h
     ExportMacros.h
+    FastVariant.h
     FailureAction.h
     FastBitVector.h
     FastFloat.h

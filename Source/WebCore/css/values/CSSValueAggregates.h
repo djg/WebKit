@@ -33,6 +33,7 @@
 #include <tuple>
 #include <utility>
 #include <wtf/EnumSet.h>
+#include <wtf/FastVariant.h>
 #include <wtf/FixedVector.h>
 #include <wtf/ListHashSet.h>
 #include <wtf/Markable.h>
@@ -192,6 +193,7 @@ template<typename... Ts> inline constexpr auto TreatAsTupleLike<std::tuple<Ts...
 
 // - Variant-like
 template<typename... Ts> inline constexpr auto TreatAsVariantLike<Variant<Ts...>> = true;
+template<typename... Ts> inline constexpr auto TreatAsVariantLike<WTF::FastVariant<Ts...>> = true;
 
 // MARK: - Standard Leaf Types
 

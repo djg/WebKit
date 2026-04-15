@@ -613,6 +613,13 @@ template<class T, class... Types> struct variant_alternative_index<T, Variant<Ty
     static_assert(detail::alternative_index_helper<0, T, std::remove_cv_t<Variant<Types...>>>::count == 1);
 };
 
+template<typename... Ts> class FastVariant;
+
+template<class T, class... Types> struct variant_alternative_index<T, FastVariant<Types...>>
+    : std::integral_constant<size_t, detail::alternative_index_helper<0, T, Variant<Types...>>::value> {
+    static_assert(detail::alternative_index_helper<0, T, std::remove_cv_t<Variant<Types...>>>::count == 1);
+};
+
 template<class T, class Variant> constexpr std::size_t alternativeIndexV = variant_alternative_index<T, Variant>::value;
 
 // `holdsAlternative<T/I>` are WTF namespaced versions of `std::holds_alternative<T/I>` that work with any "variant-like".

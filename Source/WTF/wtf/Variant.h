@@ -2922,7 +2922,24 @@ template<typename... Types> struct VariantSize<Variant<Types...>> : std::integra
 template<typename T> struct VariantSize<const T> : VariantSize<T> { };
 template<typename T> constexpr size_t VariantSizeV = VariantSize<T>::value;
 
-template<typename Visitor, typename... Variants> constexpr auto visit(Visitor&& v, Variants&&... values)
+// FastVariant specializations.
+template<typename... Ts> class FastVariant;
+template<typename... Types> struct VariantSize<FastVariant<Types...>> : std::integral_constant<std::size_t, sizeof...(Types)> { };
+template<size_t I, typename... Types> struct VariantAlternative<I, FastVariant<Types...>> {
+    using type = std::tuple_element_t<I, std::tuple<Types...>>;
+};
+
+namespace detail {
+template<typename T> inline constexpr bool isFastVariantV = false;
+template<typename... Ts> inline constexpr bool isFastVariantV<FastVariant<Ts...>> = true;
+} // namespace detail
+
+// Exclude FastVariant from the mpark::visit path — mpark::visit accesses
+// valueless_by_exception which causes a hard error (not SFINAE-friendly).
+// FastVariant overloads of visit are defined in FastVariant.h.
+template<typename Visitor, typename... Variants>
+    requires (!(detail::isFastVariantV<std::remove_cvref_t<Variants>> || ...))
+constexpr auto visit(Visitor&& v, Variants&&... values)
     -> decltype(mpark::visit<Visitor, Variants...>(std::forward<Visitor>(v), std::forward<Variants>(values)...))
 {
     return mpark::visit<Visitor, Variants...>(std::forward<Visitor>(v), std::forward<Variants>(values)...);
