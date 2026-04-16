@@ -30,6 +30,7 @@
 #include <optional>
 #include <tuple>
 #include <utility>
+#include <wtf/FastVariant.h>
 #include <wtf/StdLibExtras.h>
 
 namespace WebCore {
@@ -153,6 +154,9 @@ template<typename T, size_t N> struct ToCSSMapping<CommaSeparatedVector<T, N>> {
 
 // Standard Variant-Like type mappings:
 template<typename... Ts> struct ToCSSMapping<Variant<Ts...>> {
+    using type = Variant<CSSType<Ts>...>;
+};
+template<typename... Ts> struct ToCSSMapping<FastVariant<Ts...>> {
     using type = Variant<CSSType<Ts>...>;
 };
 
@@ -1224,7 +1228,68 @@ template<typename... StyleTypes> struct Blending<Variant<StyleTypes...>> {
     }
 };
 
-// Specialization for `ValueOrKeyword`, constrained to types whose value is blendable.
+template<typename... StyleTypes> struct Blending<FastVariant<StyleTypes...>> {
+    auto equals(const FastVariant<StyleTypes...>& a, const FastVariant<StyleTypes...>& b) -> bool
+    {
+        if (a.index() != b.index())
+            return false;
+        return a.switchOn([&]<typename T>(const T& aVal) -> bool {
+            return WebCore::Style::equalsForBlending(aVal, *get_if<T>(&b));
+        });
+    }
+    auto equals(const FastVariant<StyleTypes...>& a, const FastVariant<StyleTypes...>& b, const RenderStyle& aStyle, const RenderStyle& bStyle) -> bool
+    {
+        if (a.index() != b.index())
+            return false;
+        return a.switchOn([&]<typename T>(const T& aVal) -> bool {
+            return WebCore::Style::equalsForBlending(aVal, *get_if<T>(&b), aStyle, bStyle);
+        });
+    }
+    auto canBlend(const FastVariant<StyleTypes...>& a, const FastVariant<StyleTypes...>& b) -> bool
+    {
+        if (a.index() != b.index())
+            return false;
+        return a.switchOn([&]<typename T>(const T& aVal) -> bool {
+            return WebCore::Style::canBlend(aVal, *get_if<T>(&b));
+        });
+    }
+    auto canBlend(const FastVariant<StyleTypes...>& a, const FastVariant<StyleTypes...>& b, const RenderStyle& aStyle, const RenderStyle& bStyle) -> bool
+    {
+        if (a.index() != b.index())
+            return false;
+        return a.switchOn([&]<typename T>(const T& aVal) -> bool {
+            return WebCore::Style::canBlend(aVal, *get_if<T>(&b), aStyle, bStyle);
+        });
+    }
+    auto requiresInterpolationForAccumulativeIteration(const FastVariant<StyleTypes...>& a, const FastVariant<StyleTypes...>& b) -> bool
+    {
+        if (a.index() != b.index())
+            return false;
+        return a.switchOn([&]<typename T>(const T& aVal) -> bool {
+            return WebCore::Style::requiresInterpolationForAccumulativeIteration(aVal, *get_if<T>(&b));
+        });
+    }
+    auto requiresInterpolationForAccumulativeIteration(const FastVariant<StyleTypes...>& a, const FastVariant<StyleTypes...>& b, const RenderStyle& aStyle, const RenderStyle& bStyle) -> bool
+    {
+        if (a.index() != b.index())
+            return false;
+        return a.switchOn([&]<typename T>(const T& aVal) -> bool {
+            return WebCore::Style::requiresInterpolationForAccumulativeIteration(aVal, *get_if<T>(&b), aStyle, bStyle);
+        });
+    }
+    auto blend(const FastVariant<StyleTypes...>& a, const FastVariant<StyleTypes...>& b, const auto& context) -> FastVariant<StyleTypes...>
+    {
+        return a.switchOn([&]<typename T>(const T& aVal) -> FastVariant<StyleTypes...> {
+            return WebCore::Style::blend(aVal, *get_if<T>(&b), context);
+        });
+    }
+    auto blend(const FastVariant<StyleTypes...>& a, const FastVariant<StyleTypes...>& b, const RenderStyle& aStyle, const RenderStyle& bStyle, const auto& context) -> FastVariant<StyleTypes...>
+    {
+        return a.switchOn([&]<typename T>(const T& aVal) -> FastVariant<StyleTypes...> {
+            return WebCore::Style::blend(aVal, *get_if<T>(&b), aStyle, bStyle, context);
+        });
+    }
+};
 template<ValueOrKeywordDerived T> requires HasBlendWithoutRenderStyleAndWithBlendingContext<typename T::Value> struct Blending<T> {
     auto canBlend(const T& a, const T& b) -> bool
     {

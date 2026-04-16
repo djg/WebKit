@@ -30,6 +30,7 @@
 #include <WebCore/StylePosition.h>
 #include <WebCore/StylePrimitiveNumericTypes.h>
 #include <WebCore/StyleWindRuleComputation.h>
+#include <wtf/FastVariant.h>
 
 namespace WebCore {
 
@@ -131,7 +132,7 @@ struct MoveCommand {
     static constexpr auto name = CSSValueMove;
     using To = ToPosition;
     using By = ByCoordinatePair;
-    Variant<To, By> toBy;
+    FastVariant<To, By> toBy;
 
     bool operator==(const MoveCommand&) const = default;
 };
@@ -147,7 +148,7 @@ struct LineCommand {
     static constexpr auto name = CSSValueLine;
     using To = ToPosition;
     using By = ByCoordinatePair;
-    Variant<To, By> toBy;
+    FastVariant<To, By> toBy;
 
     bool operator==(const LineCommand&) const = default;
 };
@@ -177,7 +178,7 @@ struct HLineCommand {
 
         bool operator==(const By&) const = default;
     };
-    Variant<To, By> toBy;
+    FastVariant<To, By> toBy;
 
     bool operator==(const HLineCommand&) const = default;
 };
@@ -211,7 +212,7 @@ struct VLineCommand {
 
         bool operator==(const By&) const = default;
     };
-    Variant<To, By> toBy;
+    FastVariant<To, By> toBy;
 
     bool operator==(const VLineCommand&) const = default;
 };
@@ -248,7 +249,7 @@ struct CurveCommand {
 
         bool operator==(const By&) const = default;
     };
-    Variant<To, By> toBy;
+    FastVariant<To, By> toBy;
 
     bool operator==(const CurveCommand&) const = default;
 };
@@ -300,7 +301,7 @@ struct SmoothCommand {
 
         bool operator==(const By&) const = default;
     };
-    Variant<To, By> toBy;
+    FastVariant<To, By> toBy;
 
     bool operator==(const SmoothCommand&) const = default;
 };
@@ -333,7 +334,7 @@ struct ArcCommand {
     static constexpr auto name = CSSValueArc;
     using To = ToPosition;
     using By = ByCoordinatePair;
-    Variant<To, By> toBy;
+    FastVariant<To, By> toBy;
 
     using SizeOfEllipse = MinimallySerializingSpaceSeparatedSize<LengthPercentage<CSS::AllUnzoomed>>;
     SizeOfEllipse size;
@@ -375,7 +376,7 @@ using CloseCommand = CSS::Keyword::Close;
 
 // <shape-command> = <move-command> | <line-command> | <hv-line-command> | <curve-command> | <smooth-command> | <arc-command> | close
 // https://drafts.csswg.org/css-shapes-2/#typedef-shape-command
-using ShapeCommand = Variant<MoveCommand, LineCommand, HLineCommand, VLineCommand, CurveCommand, SmoothCommand, ArcCommand, CloseCommand>;
+using ShapeCommand = FastVariant<MoveCommand, LineCommand, HLineCommand, VLineCommand, CurveCommand, SmoothCommand, ArcCommand, CloseCommand>;
 
 // MARK: - <shape()>
 
