@@ -28,6 +28,7 @@
 #include <WebCore/CSSValueKeywords.h>
 #include <optional>
 #include <tuple>
+#include <wtf/FastVariant.h>
 #include <wtf/Ref.h>
 #include <wtf/TZoneMalloc.h>
 #include <wtf/Vector.h>
@@ -129,7 +130,7 @@ template<typename Op> struct IndirectNode {
     bool operator==(const IndirectNode<Op>& other) const { return op.get() == other.op.get(); }
 };
 
-using Node = Variant<
+using Node = FastVariant<
     Number,
     Percentage,
     Dimension,
@@ -178,7 +179,7 @@ struct Child {
 };
 
 struct ChildOrNone {
-    Variant<Child, CSS::Keyword::None> value;
+    FastVariant<Child, CSS::Keyword::None> value;
 
     ChildOrNone(Child&&);
     ChildOrNone(CSS::Keyword::None);
