@@ -32,13 +32,14 @@
 #include <WebCore/CSSRectFunction.h>
 #include <WebCore/CSSShapeFunction.h>
 #include <WebCore/CSSXywhFunction.h>
+#include <wtf/FastVariant.h>
 
 namespace WebCore {
 namespace CSS {
 
 // <basic-shape> = <circle()> | <ellipse() | <inset()> | <path()> | <polygon()> | <rect()> | <shape()> | <xywh()>
 // https://drafts.csswg.org/css-shapes/#typedef-basic-shape
-using BasicShape = Variant<
+using BasicShape = FastVariant<
     CircleFunction,
     EllipseFunction,
     InsetFunction,

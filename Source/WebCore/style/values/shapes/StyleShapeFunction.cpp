@@ -317,7 +317,7 @@ private:
         return toCoordinatePair(p);
     }
 
-    static Variant<ToPosition, ByCoordinatePair> fromOffsetPoint(const FloatPoint& offsetPoint, PathCoordinateMode mode)
+    static FastVariant<ToPosition, ByCoordinatePair> fromOffsetPoint(const FloatPoint& offsetPoint, PathCoordinateMode mode)
     {
         switch (mode) {
         case AbsoluteCoordinates:
@@ -328,7 +328,7 @@ private:
         RELEASE_ASSERT_NOT_REACHED();
     }
 
-    template<typename Command> static Variant<typename Command::To, typename Command::By> fromOffsetLength(float offset, PathCoordinateMode mode)
+    template<typename Command> static FastVariant<typename Command::To, typename Command::By> fromOffsetLength(float offset, PathCoordinateMode mode)
     {
         switch (mode) {
         case AbsoluteCoordinates:

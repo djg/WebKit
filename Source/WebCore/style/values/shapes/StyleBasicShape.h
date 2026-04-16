@@ -45,7 +45,7 @@ namespace Style {
 
 // NOTE: This differs from CSS::BasicShape due to lack of RectFunction and XywhFunction, both of
 // which convert to InsetFunction during style conversion.
-using BasicShape = Variant<
+using BasicShape = FastVariant<
     CircleFunction,
     EllipseFunction,
     InsetFunction,

@@ -26,6 +26,7 @@
 #pragma once
 
 #include <WebCore/CSSValueKeywords.h>
+#include <wtf/FastVariant.h>
 
 namespace WebCore {
 
@@ -48,7 +49,7 @@ using PathFunction = FunctionNotation<CSSValuePath, Path>;
 using PolygonFunction = FunctionNotation<CSSValuePolygon, Polygon>;
 using ShapeFunction = FunctionNotation<CSSValueShape, Shape>;
 
-using BasicShape = Variant<
+using BasicShape = FastVariant<
     CircleFunction,
     EllipseFunction,
     InsetFunction,

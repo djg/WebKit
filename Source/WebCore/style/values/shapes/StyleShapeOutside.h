@@ -98,7 +98,7 @@ private:
 
     class Value : public RefCounted<Value> {
     public:
-        using Kind = Variant<Shape, ShapeBox, ShapeAndShapeBox, Image>;
+        using Kind = FastVariant<Shape, ShapeBox, ShapeAndShapeBox, Image>;
 
         static Ref<Value> create(Kind&& value)
         {

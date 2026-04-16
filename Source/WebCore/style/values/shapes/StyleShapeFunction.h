@@ -378,6 +378,27 @@ using CloseCommand = CSS::Keyword::Close;
 // https://drafts.csswg.org/css-shapes-2/#typedef-shape-command
 using ShapeCommand = FastVariant<MoveCommand, LineCommand, HLineCommand, VLineCommand, CurveCommand, SmoothCommand, ArcCommand, CloseCommand>;
 
+// Explicit type mappings for inner Variant<To, By> fields that now map to FastVariant on the Style side.
+// These override the generic ToStyleMapping<Variant<Ts...>> which would produce Variant<...>.
+template<> struct ToStyleMapping<Variant<CSS::ToPosition, CSS::ByCoordinatePair>> { using type = FastVariant<ToPosition, ByCoordinatePair>; };
+template<> struct ToCSSMapping<FastVariant<ToPosition, ByCoordinatePair>> { using type = Variant<CSS::ToPosition, CSS::ByCoordinatePair>; };
+
+template<> struct ToStyleMapping<Variant<CSS::HLineCommand::To, CSS::HLineCommand::By>> { using type = FastVariant<HLineCommand::To, HLineCommand::By>; };
+template<> struct ToCSSMapping<FastVariant<HLineCommand::To, HLineCommand::By>> { using type = Variant<CSS::HLineCommand::To, CSS::HLineCommand::By>; };
+
+template<> struct ToStyleMapping<Variant<CSS::VLineCommand::To, CSS::VLineCommand::By>> { using type = FastVariant<VLineCommand::To, VLineCommand::By>; };
+template<> struct ToCSSMapping<FastVariant<VLineCommand::To, VLineCommand::By>> { using type = Variant<CSS::VLineCommand::To, CSS::VLineCommand::By>; };
+
+template<> struct ToStyleMapping<Variant<CSS::CurveCommand::To, CSS::CurveCommand::By>> { using type = FastVariant<CurveCommand::To, CurveCommand::By>; };
+template<> struct ToCSSMapping<FastVariant<CurveCommand::To, CurveCommand::By>> { using type = Variant<CSS::CurveCommand::To, CSS::CurveCommand::By>; };
+
+template<> struct ToStyleMapping<Variant<CSS::SmoothCommand::To, CSS::SmoothCommand::By>> { using type = FastVariant<SmoothCommand::To, SmoothCommand::By>; };
+template<> struct ToCSSMapping<FastVariant<SmoothCommand::To, SmoothCommand::By>> { using type = Variant<CSS::SmoothCommand::To, CSS::SmoothCommand::By>; };
+
+// Top-level ShapeCommand: CSS Variant -> Style FastVariant.
+template<> struct ToStyleMapping<CSS::ShapeCommand> { using type = ShapeCommand; };
+template<> struct ToCSSMapping<ShapeCommand> { using type = CSS::ShapeCommand; };
+
 // MARK: - <shape()>
 
 // shape() = shape( <'fill-rule'>? from <coordinate-pair>, <shape-command>#)
