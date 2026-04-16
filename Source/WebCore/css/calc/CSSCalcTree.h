@@ -31,6 +31,7 @@
 #include <WebCore/CSSPrimitiveNumericRange.h>
 #include <WebCore/CSSUnits.h>
 #include <WebCore/CSSValueKeywords.h>
+#include <wtf/FastVariant.h>
 #include <wtf/StdLibExtras.h>
 #include <wtf/TZoneMalloc.h>
 #include <wtf/Vector.h>
@@ -190,7 +191,7 @@ template<typename Op> struct IndirectNode {
     bool operator==(const IndirectNode<Op>& other) const { return type == other.type && arePointingToEqualData(op, other.op); }
 };
 
-using Node = Variant<
+using Node = FastVariant<
     Number,
     Percentage,
     CanonicalDimension,
@@ -244,7 +245,7 @@ struct Child {
 };
 
 struct ChildOrNone {
-    Variant<Child, CSS::Keyword::None> value;
+    FastVariant<Child, CSS::Keyword::None> value;
 
     ChildOrNone(Child&&);
     ChildOrNone(CSS::Keyword::None);
@@ -753,7 +754,7 @@ struct Random {
 
             bool operator==(const Auto&) const = default;
         };
-        Variant<Auto, CSS::CustomIdent> identifier;
+        FastVariant<Auto, CSS::CustomIdent> identifier;
         std::optional<CSS::Keyword::ElementScoped> elementScoped;
 
         bool operator==(const SharingOptions&) const = default;
@@ -763,7 +764,7 @@ struct Random {
 
         bool operator==(const SharingFixed&) const = default;
     };
-    using Sharing = Variant<SharingOptions, SharingFixed>;
+    using Sharing = FastVariant<SharingOptions, SharingFixed>;
 
     // <random()> = random( <random-value-sharing>? , <calc-sum>, <calc-sum>, <calc-sum>? )
     //     - INPUT: "same" <number>, <dimension>, or <percentage>
@@ -803,7 +804,7 @@ struct Progress {
 
 struct AnchorSide {
     // <anchor-side> = inside | outside | top | left | right | bottom | start | end | self-start | self-end | <percentage> | center
-    Variant<CSSValueID, Child> value;
+    FastVariant<CSSValueID, Child> value;
 
     AnchorSide(CSSValueID);
     AnchorSide(Child&&);
